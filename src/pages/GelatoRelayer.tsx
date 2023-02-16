@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { useConnectWallet } from "@web3-onboard/react";
 import WalletIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import SendIcon from "@mui/icons-material/SendRounded";
-import { utils } from "ethers";
+import { utils, ethers, BigNumber } from "ethers";
+import AccountAbstraction, {
+  MetaTransactionData,
+  MetaTransactionOptions,
+} from "@safe-global/account-abstraction";
+import GelatoNetworkRelay from "@safe-global/relay-provider";
 
 import SafesOwnedSelector from "src/components/safes-owned-selector/SafesOwnedSelector";
 import SafeInfo from "src/components/safe-info/SafeInfo";
 import useSafeCoreSDK from "src/hooks/useSafeCoreSDK";
-import createSafeTransaction from "src/utils/createSafeTransaction";
+import GelatoTaskStatusLabel from "src/components/gelato-task-status-label/GelatoTaskStatusLabel";
 
 function GelatoRelayer() {
   const [
@@ -26,8 +32,10 @@ function GelatoRelayer() {
   ] = useConnectWallet();
 
   const [safeSelected, setSafeSelected] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [gelatoTaskId, setGelatoTaskId] = useState<string>();
 
-  const safeSdk = useSafeCoreSDK(safeSelected);
+  const { web3Provider } = useSafeCoreSDK(safeSelected);
 
   const ownerAddress = wallet?.accounts?.[0]?.address;
   const chainId = wallet?.chains?.[0]?.id;
@@ -38,6 +46,44 @@ function GelatoRelayer() {
       setPrimaryWallet(wallet, ownerAddress);
     }
   }, [wallet, ownerAddress, setPrimaryWallet]);
+
+  const relayTransaction = async () => {
+    if (web3Provider) {
+      setIsLoading(true);
+
+      const relayProvider = new GelatoNetworkRelay();
+
+      const safeAccountAbstraction = new AccountAbstraction(
+        web3Provider.getSigner(), // safe owner signer
+        safeSelected, // safe address
+        Number(chainId) // safe chain Id
+      );
+
+      safeAccountAbstraction.setRelayProvider(relayProvider);
+
+      const safeTransaction: MetaTransactionData = {
+        to: safeSelected,
+        data: "0x",
+        // value: utils.parseUnits("0.01", "ether").toString(),
+        value: BigNumber.from(utils.parseUnits("0.01", "ether").toString()),
+        operation: 0, // OperationType.Call,
+      };
+
+      const options: MetaTransactionOptions = {
+        isSponsored: false,
+        gasLimit: BigNumber.from("200000"),
+        gasToken: ethers.constants.AddressZero,
+      };
+
+      const gelatoTaskId = await safeAccountAbstraction.relayTransaction(
+        safeTransaction,
+        options
+      );
+
+      setIsLoading(false);
+      setGelatoTaskId(gelatoTaskId);
+    }
+  };
 
   return (
     <Container
@@ -64,49 +110,24 @@ function GelatoRelayer() {
           {/* Safe selected info */}
           <SafeInfo safeAddress={safeSelected} chainId={chainId} />
 
-          {/* send transaction button */}
-          <Button
-            startIcon={<SendIcon />}
-            variant="contained"
-            disabled={!safeSelected}
-            onClick={async () => {
-              if (safeSdk) {
-                const transaction = {
-                  to: safeSelected,
-                  value: utils.parseUnits("0.01", "ether").toString(),
-                  data: "0x",
-                };
+          {/* send relay transaction button */}
+          {!isLoading && !gelatoTaskId && (
+            <Button
+              startIcon={<SendIcon />}
+              variant="contained"
+              disabled={!safeSelected}
+              onClick={relayTransaction}
+            >
+              Send Relayed Tx
+            </Button>
+          )}
 
-                const safeTransaction = await createSafeTransaction(
-                  safeSdk,
-                  transaction
-                );
+          {isLoading && <CircularProgress />}
 
-                console.log("safeTransaction: ", safeTransaction);
-
-                const signedSafeTransaction = await safeSdk.signTransaction(
-                  safeTransaction
-                );
-
-                console.log("signedSafeTransaction: ", signedSafeTransaction);
-
-                // TODO: REMOVE THIS
-                const executeTxResponse = await safeSdk.executeTransaction(
-                  safeTransaction
-                );
-
-                console.log("executeTxResponse: ", executeTxResponse);
-
-                await executeTxResponse.transactionResponse?.wait();
-
-                console.log("Transaction Executed!: ");
-
-                console.log("TODO: Send Transaction (SDK)");
-              }
-            }}
-          >
-            Send Tx
-          </Button>
+          {/* Gelato status label */}
+          {gelatoTaskId && (
+            <GelatoTaskStatusLabel gelatoTaskId={gelatoTaskId} />
+          )}
         </Box>
       ) : (
         <Button

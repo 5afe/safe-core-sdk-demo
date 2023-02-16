@@ -40,10 +40,6 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
   // TODO: create get chain fn
   const chain = chains.find(({ id }) => id === chainId);
 
-  // console.log("safeInfo: ", safeInfo);
-  // console.log("balances: ", balances);
-  // console.log("isLoading: ", isLoading);
-
   // TODO: create get native token amount
   const amount = balances?.find(
     (balance) => balance.tokenAddress === null
@@ -130,7 +126,7 @@ const AmountContainer = styled("div")<{
 
   background-color: ${
     theme.palette.mode === LIGHT_THEME
-      ? theme.palette.background.paper
+      ? theme.palette.grey["200"]
       : theme.palette.grey["800"]
   };
 

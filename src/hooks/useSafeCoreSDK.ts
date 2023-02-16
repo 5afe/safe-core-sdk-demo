@@ -8,6 +8,8 @@ function useSafeCoreSDK(safeAddress: string) {
   const [connectedWallet] = useWallets();
 
   const [safeSdk, setSafeSdk] = useState<Safe>();
+  const [web3Provider, setWeb3Provider] =
+    useState<ethers.providers.Web3Provider>();
 
   useEffect(() => {
     (async () => {
@@ -23,12 +25,14 @@ function useSafeCoreSDK(safeAddress: string) {
         });
 
         const safeSdk: Safe = await Safe.create({ ethAdapter, safeAddress });
+
+        setWeb3Provider(provider);
         setSafeSdk(safeSdk);
       }
     })();
   }, [connectedWallet, safeAddress]);
 
-  return safeSdk;
+  return { safeSdk, web3Provider };
 }
 
 export default useSafeCoreSDK;
