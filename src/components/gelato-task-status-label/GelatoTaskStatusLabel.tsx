@@ -3,22 +3,29 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Skeleton from "@mui/material/Skeleton";
-import { Theme } from "@mui/material";
+import Stack from "@mui/material/Stack";
+import Link from "@mui/material/Link";
+import { CircularProgress, Theme } from "@mui/material";
 import styled from "@emotion/styled";
+import CancelledIcon from "@mui/icons-material/HighlightOffRounded";
+import SuccessIcon from "@mui/icons-material/CheckCircleRounded";
 
 import getGelatoTaskInfo from "src/api/getGelatoTaskInfo";
 import useApi from "src/hooks/useApi";
-import { LIGHT_THEME } from "src/theme/theme";
 import { GelatoTask } from "src/models/gelatoTask";
+import AddressLabel from "src/components/address-label/AddressLabel";
+import getChain from "src/utils/getChain";
 
 type GelatoTaskStatusLabelProps = {
   gelatoTaskId: string;
+  chainId: string;
 };
 
-const pollingTime = 4_000;
+const pollingTime = 4_000; // 4 seconds of polling time to update the Gelato task status
 
 const GelatoTaskStatusLabel = ({
   gelatoTaskId,
+  chainId,
 }: GelatoTaskStatusLabelProps) => {
   const fetchGelatoTaskInfo = useCallback(
     (signal: AbortSignal) => getGelatoTaskInfo(gelatoTaskId, { signal }),
@@ -27,7 +34,11 @@ const GelatoTaskStatusLabel = ({
 
   const { data: gelatoTaskInfo } = useApi(fetchGelatoTaskInfo, pollingTime);
 
-  console.log("gelatoTaskInfo: ", gelatoTaskInfo);
+  const chain = getChain(chainId);
+
+  const isCancelled = gelatoTaskInfo?.taskState === "Cancelled";
+  const isSuccess = gelatoTaskInfo?.taskState === "ExecSuccess";
+  const isLoading = !isCancelled && !isSuccess;
 
   return (
     <Container
@@ -40,14 +51,58 @@ const GelatoTaskStatusLabel = ({
       <Typography variant="h6" component="h2">
         Gelato Task details
       </Typography>
-
       {/* Status label */}
       {gelatoTaskInfo?.taskState ? (
         <StatusContainer taskStatus={gelatoTaskInfo.taskState}>
-          <Typography variant="body2">{gelatoTaskInfo.taskState}</Typography>
+          <Typography variant="body2">
+            {getGelatoTaskStatusLabel(gelatoTaskInfo.taskState)}
+          </Typography>
         </StatusContainer>
       ) : (
         <Skeleton variant="text" width={100} height={20} />
+      )}
+
+      {/* Status indicator */}
+      <Stack display="flex" justifyContent="center">
+        {/* Cancelled Icon */}
+        {isCancelled && <CancelledIcon color="error" fontSize="large" />}
+
+        {/* Success Icon */}
+        {isSuccess && <SuccessIcon color="success" fontSize="large" />}
+
+        {/* Loading Icon */}
+        {isLoading && <CircularProgress />}
+      </Stack>
+
+      {/* Transaction hash */}
+      {!isCancelled && (
+        <Stack
+          display="flex"
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <Typography variant="body2">Transaction Hash: </Typography>
+
+          {gelatoTaskInfo?.transactionHash ? (
+            <Link
+              href={`${chain?.blockExplorerUrl}/tx/${gelatoTaskInfo?.transactionHash}`}
+              target="_blank"
+            >
+              <AddressLabel address={gelatoTaskInfo.transactionHash} />
+            </Link>
+          ) : (
+            <Skeleton variant="text" width={150} height={20} />
+          )}
+        </Stack>
+      )}
+
+      {/* Task extra info */}
+      {gelatoTaskInfo?.lastCheckMessage && (
+        <Typography variant="caption">
+          {gelatoTaskInfo.lastCheckMessage}
+        </Typography>
       )}
     </Container>
   );
@@ -90,4 +145,16 @@ const getGelatoTaskStatusColor = (
   };
 
   return colors[taskStatus];
+};
+
+const getGelatoTaskStatusLabel = (taskStatus: GelatoTask["taskState"]) => {
+  const label: Record<GelatoTask["taskState"], string> = {
+    CheckPending: "Pending",
+    WaitingForConfirmation: "Waiting confirmations",
+    ExecPending: "Executing",
+    ExecSuccess: "Success",
+    Cancelled: "Cancelled",
+  };
+
+  return label[taskStatus];
 };

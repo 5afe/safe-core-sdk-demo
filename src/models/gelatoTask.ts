@@ -11,5 +11,6 @@ export type GelatoTask = {
 
   transactionHash?: string;
   executionDate?: string;
-  blockNumber?: 8501850;
+  lastCheckMessage?: string;
+  blockNumber?: number;
 };

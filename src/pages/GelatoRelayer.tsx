@@ -126,7 +126,10 @@ function GelatoRelayer() {
 
           {/* Gelato status label */}
           {gelatoTaskId && (
-            <GelatoTaskStatusLabel gelatoTaskId={gelatoTaskId} />
+            <GelatoTaskStatusLabel
+              gelatoTaskId={gelatoTaskId}
+              chainId={chainId}
+            />
           )}
         </Box>
       ) : (

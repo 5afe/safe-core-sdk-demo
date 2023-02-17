@@ -1,7 +1,7 @@
 import axios, { RawAxiosRequestConfig } from "axios";
 import { utils } from "ethers";
 
-import chains from "src/chains/chains";
+import getChain from "src/utils/getChain";
 
 type BalanceType = {
   tokenAddress: null | string;
@@ -26,8 +26,7 @@ const getSafeBalances = async (
   connectedChainId: string,
   options?: RawAxiosRequestConfig
 ): Promise<safeBalancesType> => {
-    // TODO: create get chain fn
-  const chain = chains.find(({ id }) => id === connectedChainId);
+  const chain = getChain(connectedChainId);
 
   const address = utils.getAddress(safeAddress);
 

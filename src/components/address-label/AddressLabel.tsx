@@ -7,7 +7,7 @@ import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import { styled } from "@mui/material/styles";
 
 import useMemoizedAddressLabel from "src/hooks/useMemoizedAddressLabel";
-import chains from "src/chains/chains";
+import getChain from "src/utils/getChain";
 
 type AddressLabelProps = {
   address: string;
@@ -22,10 +22,7 @@ const AddressLabel = ({
 }: AddressLabelProps) => {
   const [connectedWallet] = useWallets();
 
-  // TODO: create get chain fn
-  const chain = chains.find(
-    (chain) => chain.id === connectedWallet?.chains?.[0]?.id
-  );
+  const chain = getChain(connectedWallet?.chains?.[0]?.id);
 
   const addressLabel = useMemoizedAddressLabel(address);
 

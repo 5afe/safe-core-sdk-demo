@@ -1,7 +1,8 @@
 import axios, { RawAxiosRequestConfig } from "axios";
 import { utils } from "ethers";
 
-import chains from "src/chains/chains";
+
+import getChain from "src/utils/getChain";
 
 export type SafesOwnedType = {
   safes: string[];
@@ -12,8 +13,7 @@ const getSafesByOwner = async (
   connectedChainId: string,
   options?: RawAxiosRequestConfig
 ): Promise<SafesOwnedType> => {
-    // TODO: create get chain fn
-  const chain = chains.find(({ id }) => id === connectedChainId);
+  const chain = getChain(connectedChainId)
 
   const address = utils.getAddress(owner);
 

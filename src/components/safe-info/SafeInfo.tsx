@@ -15,6 +15,7 @@ import chains from "src/chains/chains";
 import useApi from "src/hooks/useApi";
 import safeLogo from "src/assets/safe-logo.svg";
 import { DARK_THEME, LIGHT_THEME } from "src/theme/theme";
+import getChain from "src/utils/getChain";
 
 type SafeInfoProps = {
   safeAddress: string;
@@ -37,8 +38,7 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
 
   const isLoading = isLoadingInfo || isLoadingBalance;
 
-  // TODO: create get chain fn
-  const chain = chains.find(({ id }) => id === chainId);
+  const chain = getChain(chainId)
 
   // TODO: create get native token amount
   const amount = balances?.find(
