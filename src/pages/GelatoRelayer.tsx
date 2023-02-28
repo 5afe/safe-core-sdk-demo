@@ -3,7 +3,6 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { useConnectWallet } from "@web3-onboard/react";
 import WalletIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import SendIcon from "@mui/icons-material/SendRounded";
 import { utils, ethers, BigNumber } from "ethers";
@@ -11,71 +10,83 @@ import AccountAbstraction, {
   MetaTransactionData,
   MetaTransactionOptions,
 } from "@safe-global/account-abstraction";
-import GelatoNetworkRelay from "@safe-global/relay-provider";
+import { GelatoRelayAdapter } from "@safe-global/relay-kit";
+import {
+  SafeOnRampKit,
+  SafeOnRampEvent,
+  SafeOnRampProviderType,
+} from "@safe-global/onramp-kit";
 
 import SafesOwnedSelector from "src/components/safes-owned-selector/SafesOwnedSelector";
 import SafeInfo from "src/components/safe-info/SafeInfo";
-import useSafeCoreSDK from "src/hooks/useSafeCoreSDK";
 import GelatoTaskStatusLabel from "src/components/gelato-task-status-label/GelatoTaskStatusLabel";
+import { useWallet } from "src/store/walletContext";
 
+// TODO: rename this to Account Abstraction demo
 function GelatoRelayer() {
-  const [
-    {
-      wallet, // the wallet that has been connected or null if not yet connected
-      connecting, // boolean indicating if connection is in progress
-    },
-    connect, // function to call to initiate user to connect wallet, returns a list of WalletState objects (connected wallets)
-    disconnect, // function to call with wallet<DisconnectOptions> to disconnect wallet, returns a list of WalletState objects (connected wallets)
-    updateBalances, // function to be called with an optional array of wallet addresses connected through Onboard to update balance or empty/no params to update all connected wallets
-    setWalletModules, // function to be called with an array of wallet modules to conditionally allow connection of wallet types i.e. setWalletModules([ledger, trezor, injected])
-    setPrimaryWallet, // function that can set the primary wallet and/or primary account within that wallet. The wallet that is set needs to be passed in for the first parameter and if you would like to set the primary account, the address of that account also needs to be passed in
-  ] = useConnectWallet();
+  const {
+    walletAddress: ownerAddress,
+    web3Provider,
+    chainId,
+    connectWeb2Login,
+    safes,
+  } = useWallet();
+
+  const isWalletConnected = !!ownerAddress && !!chainId;
 
   const [safeSelected, setSafeSelected] = useState<string>("");
+  const [safeAccountAbstraction, setSafeAccountAbstraction] =
+    useState<AccountAbstraction>();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [gelatoTaskId, setGelatoTaskId] = useState<string>();
 
-  const { web3Provider } = useSafeCoreSDK(safeSelected);
-
-  const ownerAddress = wallet?.accounts?.[0]?.address;
-  const chainId = wallet?.chains?.[0]?.id;
-  const isWalletConnected = !!ownerAddress && !!chainId;
-
+  // TODO: MOVE THIS T= USE_ACCOUNT_ABSTRACTION custom hook
   useEffect(() => {
-    if (wallet && ownerAddress) {
-      setPrimaryWallet(wallet, ownerAddress);
-    }
-  }, [wallet, ownerAddress, setPrimaryWallet]);
+    // initialize account abstraction here
+    const initializeSDK = async () => {
+      if (web3Provider) {
+        const signer = web3Provider.getSigner();
+        const relayAdapter = new GelatoRelayAdapter();
+        const safeAccountAbstraction = new AccountAbstraction(signer);
+
+        await safeAccountAbstraction.init({ relayAdapter });
+
+        setSafeAccountAbstraction(safeAccountAbstraction);
+
+        const hasSafes = safes.length > 0;
+
+        const safeSelected = hasSafes
+          ? safes[0]
+          : safeAccountAbstraction.getSafeAddress();
+
+        setSafeSelected(safeSelected);
+      }
+    };
+
+    initializeSDK();
+  }, [safes, web3Provider]);
 
   const relayTransaction = async () => {
     if (web3Provider) {
       setIsLoading(true);
 
-      const relayProvider = new GelatoNetworkRelay();
-
-      const safeAccountAbstraction = new AccountAbstraction(
-        web3Provider.getSigner(), // safe owner signer
-        safeSelected, // safe address
-        Number(chainId) // safe chain Id
-      );
-
-      safeAccountAbstraction.setRelayProvider(relayProvider);
-
+      // TODO: create a mint NTF tranasction instead of a dump tx?
       const safeTransaction: MetaTransactionData = {
         to: safeSelected,
         data: "0x",
-        // value: utils.parseUnits("0.01", "ether").toString(),
         value: BigNumber.from(utils.parseUnits("0.01", "ether").toString()),
         operation: 0, // OperationType.Call,
       };
 
       const options: MetaTransactionOptions = {
         isSponsored: false,
-        gasLimit: BigNumber.from("200000"),
-        gasToken: ethers.constants.AddressZero,
+        // TODO: remove this
+        gasLimit: BigNumber.from("600000"),
+        gasToken: ethers.constants.AddressZero, // native token ???
       };
 
-      const gelatoTaskId = await safeAccountAbstraction.relayTransaction(
+      const gelatoTaskId = await safeAccountAbstraction?.relayTransaction(
         safeTransaction,
         options
       );
@@ -83,6 +94,37 @@ function GelatoRelayer() {
       setIsLoading(false);
       setGelatoTaskId(gelatoTaskId);
     }
+  };
+
+  // onramp implementation
+  const getFundsWithStripe = async () => {
+    const onRampClient = await SafeOnRampKit.init(
+      SafeOnRampProviderType.Stripe,
+      {
+        onRampProviderConfig: {
+          stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY || "",
+          onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL || "",
+        },
+      }
+    );
+
+    const sessionData = await onRampClient?.open({
+      // sessionId: sessionId, // TODO: add optional sessionId ?¿
+      walletAddress: safeSelected,
+      networks: ["ethereum", "polygon"],
+      element: "#stripe-root",
+      events: {
+        onLoaded: () => console.log("onLoaded()"),
+        onPaymentSuccessful: (eventData: SafeOnRampEvent) =>
+          console.log("onPaymentSuccessful(): ", eventData),
+        onPaymentProcessing: (eventData: SafeOnRampEvent) =>
+          console.log("onPaymentProcessing(): ", eventData),
+        onPaymentError: (eventData: SafeOnRampEvent) =>
+          console.log("onPaymentError(): ", eventData),
+      },
+    });
+
+    console.log("Stripe sessionData: ", sessionData);
   };
 
   return (
@@ -97,18 +139,16 @@ function GelatoRelayer() {
     >
       {isWalletConnected ? (
         <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-          {/* TODO: NO SAFES OWNER LABEL (redirect to create a safe) */}
-
           {/* Safe salector */}
           <SafesOwnedSelector
-            ownerAddress={ownerAddress}
-            chainId={chainId}
             safeSelected={safeSelected}
-            handleChange={setSafeSelected}
+            onSelectSafe={setSafeSelected}
           />
 
           {/* Safe selected info */}
-          <SafeInfo safeAddress={safeSelected} chainId={chainId} />
+          {safeSelected && (
+            <SafeInfo safeAddress={safeSelected} chainId={chainId} />
+          )}
 
           {/* send relay transaction button */}
           {!isLoading && !gelatoTaskId && (
@@ -131,14 +171,28 @@ function GelatoRelayer() {
               chainId={chainId}
             />
           )}
+
+          {/* OnRamp Stripe example */}
+          <>
+            {/* Stripe root widget */}
+            <div id="stripe-root"></div>
+
+            <Button
+              startIcon={<WalletIcon />}
+              variant="contained"
+              onClick={getFundsWithStripe}
+            >
+              Get funds with Stripe
+            </Button>
+          </>
         </Box>
       ) : (
         <Button
           startIcon={<WalletIcon />}
           variant="contained"
-          onClick={() => connect()}
+          onClick={() => connectWeb2Login()}
         >
-          Connect
+          Connect with Web2 Auth
         </Button>
       )}
     </Container>

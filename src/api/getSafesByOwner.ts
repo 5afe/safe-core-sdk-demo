@@ -8,6 +8,7 @@ export type SafesOwnedType = {
   safes: string[];
 };
 
+// TODO: remove this endpoint
 const getSafesByOwner = async (
   owner: string,
   connectedChainId: string,

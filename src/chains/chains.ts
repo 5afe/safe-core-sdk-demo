@@ -44,8 +44,19 @@ export const polygonChain: Chain = {
   transactionServiceUrl: "https://safe-transaction-polygon.safe.global",
 };
 
-const chains: Chain[] = [gnosisChain, goerliChain, mainnetChain, polygonChain];
+export const mumbaiChain: Chain = {
+  id: "0x13881",
+  token: "matic",
+  shortName: "matic",
+  label: "Mumbai",
+  rpcUrl: "https://rpc-mumbai.maticvigil.com/",
+  blockExplorerUrl: "https://mumbai.polygonscan.com",
+  color: "#8248E5",
+  // transactionServiceUrl: "https://safe-transaction-polygon.safe.global",
+};
 
-export const initialChain = goerliChain;
+const chains: Chain[] = [gnosisChain, goerliChain, mainnetChain, mumbaiChain, polygonChain];
+
+export const initialChain = mumbaiChain;
 
 export default chains;

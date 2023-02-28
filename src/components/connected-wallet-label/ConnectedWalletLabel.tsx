@@ -2,29 +2,20 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
-import { useWallets } from "@web3-onboard/react";
 import QuestionMarkRoundedIcon from "@mui/icons-material/QuestionMarkRounded";
 
 import AddressLabel from "src/components/address-label/AddressLabel";
-import metamaskLogo from "src/assets/Metamask_logo.svg";
-import walletConnectLogo from "src/assets/WalletConnect_logo.png";
-import { LIGHT_THEME } from "src/theme/theme";
 
-const logos: Record<string, string> = {
-  WalletConnect: walletConnectLogo,
-  MetaMask: metamaskLogo,
-};
+import { LIGHT_THEME } from "src/theme/theme";
+import { useWallet } from "src/store/walletContext";
 
 function ConnectedWalletLabel() {
-  const [connectedWallet] = useWallets();
+  const { isWalletConnected, walletLogo, walletAddress } = useWallet();
 
-  if (!connectedWallet) {
+  if (!isWalletConnected) {
     // TODO: ADD NO CONNECTED WALLET LABEL
     return null;
   }
-
-  const walletLogo = logos[connectedWallet?.label];
-  const walletAddress = connectedWallet?.accounts?.[0]?.address;
 
   return (
     <Container>

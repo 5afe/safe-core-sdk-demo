@@ -21,6 +21,7 @@ type BalanceType = {
 
 export type safeBalancesType = BalanceType[];
 
+// TODO: remove this fn?
 const getSafeBalances = async (
   safeAddress: string,
   connectedChainId: string,

@@ -83,7 +83,7 @@ const GelatoTaskStatusLabel = ({
           alignItems="center"
           gap={2}
         >
-          <Typography variant="body2">Transaction Hash: </Typography>
+          <Typography variant="body2">Transaction: </Typography>
 
           {gelatoTaskInfo?.transactionHash ? (
             <Link

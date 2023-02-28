@@ -10,14 +10,13 @@ import LightThemeIcon from "@mui/icons-material/Brightness7";
 import styled from "@emotion/styled";
 
 import ConnectedWalletLabel from "src/components/connected-wallet-label/ConnectedWalletLabel";
+import ChainSelector from "src/components/chain-selector/ChainSelector";
 import safeLogo from "src/assets/safe-logo.svg";
+import { useTheme } from "src/store/themeContext";
 
-type HeaderProps = {
-  switchThemeMode: () => void;
-  isDarkTheme: boolean;
-};
+function Header() {
+  const { switchThemeMode, isDarkTheme } = useTheme();
 
-function Header({ switchThemeMode, isDarkTheme }: HeaderProps) {
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -36,6 +35,9 @@ function Header({ switchThemeMode, isDarkTheme }: HeaderProps) {
             justifyContent="flex-end"
             flexGrow={1}
           >
+            {/* chain label */}
+            {<ChainSelector />}
+
             {/* connected Wallet */}
             <ConnectedWalletLabel />
 

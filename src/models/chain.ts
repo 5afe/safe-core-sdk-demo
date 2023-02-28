@@ -7,7 +7,7 @@ type Chain = {
   color?: string;
   icon?: string;
   blockExplorerUrl: string;
-  transactionServiceUrl: string;
+  transactionServiceUrl?: string;
 };
 
 export default Chain;
