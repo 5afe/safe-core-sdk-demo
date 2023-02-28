@@ -6,7 +6,7 @@ import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import { styled } from "@mui/material/styles";
 
 import useMemoizedAddressLabel from "src/hooks/useMemoizedAddressLabel";
-import { useWallet } from "src/store/walletContext";
+import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
 type AddressLabelProps = {
   address: string;
@@ -19,7 +19,7 @@ const AddressLabel = ({
   showBlockExplorerLink,
   showCopyIntoClipboardButton,
 }: AddressLabelProps) => {
-  const { chain } = useWallet();
+  const { chain } = useAccountAbstraction();
 
   const addressLabel = useMemoizedAddressLabel(address);
 

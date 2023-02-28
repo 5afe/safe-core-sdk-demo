@@ -5,10 +5,10 @@ import { useState } from "react";
 import chains from "src/chains/chains";
 
 import ChainLabel from "src/components/chain-label/ChainLabel";
-import { useWallet } from "src/store/walletContext";
+import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
 const ChainSelector = () => {
-  const { chain, setChainId } = useWallet();
+  const { chain, setChainId } = useAccountAbstraction();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);

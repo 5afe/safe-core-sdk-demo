@@ -7,12 +7,14 @@ import QuestionMarkRoundedIcon from "@mui/icons-material/QuestionMarkRounded";
 import AddressLabel from "src/components/address-label/AddressLabel";
 
 import { LIGHT_THEME } from "src/theme/theme";
-import { useWallet } from "src/store/walletContext";
+import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
+
+// TODO: rename this to connected owner?
 function ConnectedWalletLabel() {
-  const { isWalletConnected, walletLogo, walletAddress } = useWallet();
+  const { isOwnerConnected, walletLogo, ownerAddress } = useAccountAbstraction();
 
-  if (!isWalletConnected) {
+  if (!isOwnerConnected) {
     // TODO: ADD NO CONNECTED WALLET LABEL
     return null;
   }
@@ -29,8 +31,8 @@ function ConnectedWalletLabel() {
         )}
 
         <Typography variant="body2">
-          {walletAddress && (
-            <AddressLabel address={walletAddress} showBlockExplorerLink />
+          {ownerAddress && (
+            <AddressLabel address={ownerAddress} showBlockExplorerLink />
           )}
         </Typography>
       </Stack>

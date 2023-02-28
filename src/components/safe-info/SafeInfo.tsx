@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -11,13 +11,11 @@ import { providers, utils } from "ethers";
 import AddressLabel from "src/components/address-label/AddressLabel";
 import AmountLabel from "src/components/amount-label/AmountLabel";
 import getSafeInfo from "src/api/getSafeInfo";
-import getSafeBalances from "src/api/getSafeBalances";
-import chains from "src/chains/chains";
 import useApi from "src/hooks/useApi";
 import safeLogo from "src/assets/safe-logo.svg";
 import { DARK_THEME, LIGHT_THEME } from "src/theme/theme";
-import getChain from "src/utils/getChain";
-import { useWallet } from "src/store/walletContext";
+import usePolling from "src/hooks/usePolling";
+import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
 type SafeInfoProps = {
   safeAddress: string;
@@ -25,44 +23,41 @@ type SafeInfoProps = {
 };
 
 function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
-  const { web3Provider, chain, safes } = useWallet();
+  const { web3Provider, chain } = useAccountAbstraction();
 
-  const [balance, setBalance] = useState<string>();
+  const [isDeployed, setIsDeployed] = useState<boolean>(false);
 
-  useEffect(() => {
-    web3Provider?.getBalance(safeAddress).then((balance) => {
-      setBalance(balance.toString());
-    });
+  // fetch safe address balance with polling
+  const fetchSafeBalance = useCallback(async () => {
+    const balance = await web3Provider?.getBalance(safeAddress);
+
+    return balance?.toString();
   }, [web3Provider, safeAddress]);
 
+  const safeBalance = usePolling(fetchSafeBalance);
+
+  // detect if the safe is deployed with polling
+  const detectSafeIsDeployed = useCallback(async () => {
+    const isDeployed = await isContractAddress(safeAddress, web3Provider);
+
+    setIsDeployed(isDeployed);
+  }, [web3Provider, safeAddress]);
+
+  usePolling(detectSafeIsDeployed);
+
+  // safe info from Safe transaction service (used to know the threshold & owners of the Safe if its deployed)
   const fetchInfo = useCallback(
     (signal: AbortSignal) => getSafeInfo(safeAddress, chainId, { signal }),
     [safeAddress, chainId]
   );
 
-  // const fetchBalances = useCallback(
-  //   (signal: AbortSignal) => getSafeBalances(safeAddress, chainId, { signal }),
-  //   [safeAddress, chainId]
-  // );
-
   const { isLoading: isLoadingInfo, data: safeInfo } = useApi(fetchInfo);
-  // const { isLoading: isLoadingBalance, data: balances } = useApi(fetchBalances);
 
-  // const isLoading = isLoadingInfo || isLoadingBalance;
+  const owners = safeInfo?.owners.length || 1;
+  const threshold = safeInfo?.threshold || 1;
 
-  // TODO: create get native token amount
-  // const amount =
-  //   balances?.find((balance) => balance.tokenAddress === null)?.balance ||
-  //   walletBalance;
 
-  const owners = safeInfo?.owners;
-  const threshold = safeInfo?.threshold;
-
-  // TODO: implement get code?
-
-  const isDeployed =
-    safes.length > 0 ||
-    (web3Provider && isContractAddress(safeAddress, web3Provider));
+  console.log("balanes: ", safeBalance)
 
   return (
     <SafeInfoContainer
@@ -99,7 +94,7 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
             {isDeployed && (
               <Typography variant="body2" mb="8px">
                 <SafeSettingsLabel>
-                  {threshold || 1}/{owners?.length || 1}
+                  {threshold}/{owners}
                 </SafeSettingsLabel>
               </Typography>
             )}
@@ -120,7 +115,7 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
       <AmountContainer>
         <Typography variant="body2">
           <AmountLabel
-            amount={utils.formatEther(balance || "0")}
+            amount={utils.formatEther(safeBalance || "0")}
             tokenSymbol={chain?.token || ""}
           />
         </Typography>
@@ -187,10 +182,10 @@ const AmountContainer = styled("div")<{
 
 const isContractAddress = async (
   address: string,
-  provider: providers.Web3Provider
+  provider?: providers.Web3Provider
 ): Promise<boolean> => {
   try {
-    const code = await provider.getCode(address);
+    const code = await provider?.getCode(address);
 
     return code !== "0x";
   } catch (error) {

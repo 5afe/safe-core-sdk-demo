@@ -1,8 +1,8 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import Header from "src/components/header/Header";
 
-import GelatoRelayer from "src/pages/GelatoRelayer";
 import Providers from "./components/providers/Providers";
+import AccountAbstractionDemo from "./pages/AccountAbstractionDemo";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
         <Header />
 
         {/* App Routes */}
-        <GelatoRelayer />
+        <AccountAbstractionDemo />
       </>
     </Providers>
   );

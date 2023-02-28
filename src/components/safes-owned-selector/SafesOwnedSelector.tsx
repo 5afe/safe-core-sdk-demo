@@ -1,10 +1,9 @@
-import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-import { useWallet } from "src/store/walletContext";
+import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
 type SafesOwnedSelectorProps = {
   safeSelected: string;
@@ -15,7 +14,7 @@ function SafesOwnedSelector({
   safeSelected,
   onSelectSafe,
 }: SafesOwnedSelectorProps) {
-  const { safes } = useWallet();
+  const { safes } = useAccountAbstraction();
 
   const showDerivedSafeAddress = safes.length === 0;
 
