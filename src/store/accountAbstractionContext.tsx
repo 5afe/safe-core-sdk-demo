@@ -10,7 +10,7 @@ import { SafeAuthKit, SafeAuthProviderType } from "@safe-global/auth-kit";
 import AccountAbstraction, {
   MetaTransactionData,
   MetaTransactionOptions,
-} from "@safe-global/account-abstraction";
+} from "@safe-global/account-abstraction-kit-poc";
 import { GelatoRelayAdapter } from "@safe-global/relay-kit";
 import {
   SafeOnRampKit,

@@ -1628,7 +1628,7 @@
     elliptic "6.5.4"
     hash.js "1.1.7"
 
-"@ethersproject/solidity@5.7.0", "@ethersproject/solidity@^5.7.0":
+"@ethersproject/solidity@5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/solidity/-/solidity-5.7.0.tgz#5e9c911d8a2acce2a5ebb48a5e2e0af20b631cb8"
   integrity sha512-HmabMd2Dt/raavyaGukF4XxizWKhKQ24DoLtdNbBmNKUOPqwjsKQSdV9GQtj9CBEea9DlzETlVER1gYeXXBGaA==
@@ -2288,10 +2288,13 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz#8be36a1f66f3265389e90b5f9c9962146758f728"
   integrity sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==
 
-"@safe-global/account-abstraction@file:/Users/dani/code/safe/account-abstraction-sdk/packages/account-abstraction":
-  version "0.1.0"
+"@safe-global/account-abstraction-kit-poc@^0.1.0-alpha.0":
+  version "0.1.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/account-abstraction-kit-poc/-/account-abstraction-kit-poc-0.1.0-alpha.0.tgz#b7df5e4fcdcfc1c6e6509dee0b99e925657907ff"
+  integrity sha512-cOALMY9KI3sLvaOzXoI37ZiFLYBIIgT3AcD7wzXFivMNoZuxaUCQbIQKRK0SHOVsDtPCarkLgVrPYeFPq/T/FA==
   dependencies:
     "@gnosis.pm/safe-contracts" "^1.3.0"
+    "@safe-global/relay-kit" "^0.1.0-alpha.1"
     "@safe-global/safe-deployments" "^1.20.2"
     ethereumjs-util "^7.1.5"
     ethers "^5.7.2"
@@ -2314,7 +2317,7 @@
   dependencies:
     "@ethersproject/address" "^5.7.0"
 
-"@safe-global/relay-kit@0.1.0-alpha.1":
+"@safe-global/relay-kit@0.1.0-alpha.1", "@safe-global/relay-kit@^0.1.0-alpha.1":
   version "0.1.0-alpha.1"
   resolved "https://registry.yarnpkg.com/@safe-global/relay-kit/-/relay-kit-0.1.0-alpha.1.tgz#4d346fd45b8b01c25c88c6aabcbd912ae8570232"
   integrity sha512-DO9a8O/NDVyh7CaQCKGr/csNZOvKe4xr5uNU9Sxu94s37ZQj0sXMg51r8p67VDy/CId9/K8LO9DgxmIW9f05QA==
@@ -2340,19 +2343,6 @@
   integrity sha512-nlS9/vtd6rj+2IK0tgt4xq6vqdGOAa+6MwAeiYCoP1ihcqFD38k6LBn7ZdXWjRF9VBvMXTgclkjvzp+PkLKtAw==
   dependencies:
     "@safe-global/safe-core-sdk-types" "^1.9.0"
-    semver "^7.3.8"
-    web3-utils "^1.8.1"
-
-"@safe-global/safe-core-sdk@^3.3.1":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk/-/safe-core-sdk-3.3.2.tgz#571e38eec152668bf2c04771f62f1b123161ec7c"
-  integrity sha512-IhAxGyYnnG+Zl2zWe1520l00l+FT1QTeMDQlTtnhKCeISs2krXZSEKuolj/sHltXzrswuntaGElAYJyruWEG/A==
-  dependencies:
-    "@ethersproject/solidity" "^5.7.0"
-    "@safe-global/safe-core-sdk-types" "^1.9.0"
-    "@safe-global/safe-core-sdk-utils" "^1.7.2"
-    "@safe-global/safe-deployments" "^1.20.2"
-    ethereumjs-util "^7.1.5"
     semver "^7.3.8"
     web3-utils "^1.8.1"
 
