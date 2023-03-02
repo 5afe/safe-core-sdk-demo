@@ -1,18 +1,16 @@
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
-import QuestionMarkRoundedIcon from "@mui/icons-material/QuestionMarkRounded";
 
 import AddressLabel from "src/components/address-label/AddressLabel";
-
-import { LIGHT_THEME } from "src/theme/theme";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
+import { LIGHT_THEME } from "src/theme/theme";
+import authLogo from "src/assets/web3Auth_logo.png";
 
 
 // TODO: rename this to connected owner?
 function ConnectedWalletLabel() {
-  const { isOwnerConnected, walletLogo, ownerAddress } = useAccountAbstraction();
+  const { isOwnerConnected, ownerAddress } = useAccountAbstraction();
 
   if (!isOwnerConnected) {
     // TODO: ADD NO CONNECTED WALLET LABEL
@@ -22,13 +20,7 @@ function ConnectedWalletLabel() {
   return (
     <Container>
       <Stack direction="row" alignItems="center" spacing={0.5} component="span">
-        {walletLogo ? (
-          <img src={walletLogo} alt="connected Wallet logo" height={24} />
-        ) : (
-          <Tooltip title="Unknown connected Wallet">
-            <QuestionMarkRoundedIcon />
-          </Tooltip>
-        )}
+      <img src={authLogo} alt="connected Wallet logo" height={24} />
 
         <Typography variant="body2">
           {ownerAddress && (

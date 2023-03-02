@@ -22,19 +22,12 @@ type SafeInfoProps = {
   chainId: string;
 };
 
+// TODO: ADD USDC LABEL
+
 function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
-  const { web3Provider, chain } = useAccountAbstraction();
+  const { web3Provider, chain, safeBalance } = useAccountAbstraction();
 
   const [isDeployed, setIsDeployed] = useState<boolean>(false);
-
-  // fetch safe address balance with polling
-  const fetchSafeBalance = useCallback(async () => {
-    const balance = await web3Provider?.getBalance(safeAddress);
-
-    return balance?.toString();
-  }, [web3Provider, safeAddress]);
-
-  const safeBalance = usePolling(fetchSafeBalance);
 
   // detect if the safe is deployed with polling
   const detectSafeIsDeployed = useCallback(async () => {
@@ -51,13 +44,12 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
     [safeAddress, chainId]
   );
 
-  const { isLoading: isLoadingInfo, data: safeInfo } = useApi(fetchInfo);
+  const { data: safeInfo } = useApi(fetchInfo);
 
   const owners = safeInfo?.owners.length || 1;
   const threshold = safeInfo?.threshold || 1;
 
-
-  console.log("balanes: ", safeBalance)
+  console.log("balanes: ", safeBalance);
 
   return (
     <SafeInfoContainer
@@ -129,7 +121,6 @@ export default SafeInfo;
 const SafeInfoContainer = styled(Box)`
   max-width: 800px;
   margin: 0 auto;
-  margin-top: 24px;
   padding: 16px;
 `;
 

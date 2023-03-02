@@ -21,11 +21,11 @@ import {
 import getChain from "src/utils/getChain";
 import Chain from "src/models/chain";
 import { initialChain } from "src/chains/chains";
+import usePolling from "src/hooks/usePolling";
 
 type accountAbstractionContextValue = {
   ownerAddress?: string;
   chainId: string;
-  walletLogo?: string;
   safes: string[];
   chain?: Chain;
   isOwnerConnected: boolean;
@@ -33,6 +33,7 @@ type accountAbstractionContextValue = {
   connectWeb2Login: () => void;
   setChainId: (chainId: string) => void;
   safeSelected?: string;
+  safeBalance?: string;
   setSafeSelected: React.Dispatch<React.SetStateAction<string>>;
   isRelayerLoading: boolean;
   relayTransaction: () => Promise<void>;
@@ -216,6 +217,20 @@ const AccountAbstractionProvider = ({
     console.log("Stripe sessionData: ", sessionData);
   };
 
+
+  // we can pay Gelato tx relayer fees with native token & USDC
+  // TODO: ADD native Safe Balance polling
+  // TODO: ADD USDC Safe Balance polling
+
+  // fetch safe address balance with polling
+  const fetchSafeBalance = useCallback(async () => {
+    const balance = await web3Provider?.getBalance(safeSelected);
+
+    return balance?.toString();
+  }, [web3Provider, safeSelected]);
+
+  const safeBalance = usePolling(fetchSafeBalance);
+
   const state = {
     ownerAddress,
     chainId,
@@ -230,6 +245,7 @@ const AccountAbstractionProvider = ({
     setChainId,
 
     safeSelected,
+    safeBalance,
     setSafeSelected,
 
     isRelayerLoading,

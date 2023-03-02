@@ -21,7 +21,7 @@ const ChainSelector = () => {
 
   const switchChain = (chainId: string) => {
     setChainId(chainId);
-    handleClose()
+    handleClose();
   };
 
   return (
@@ -45,7 +45,10 @@ const ChainSelector = () => {
         }}
       >
         {chains.map((chain) => (
-          <MenuItem onClick={() => switchChain(chain.id)}>
+          <MenuItem
+            onClick={() => switchChain(chain.id)}
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
             <ChainLabel chain={chain} />
           </MenuItem>
         ))}

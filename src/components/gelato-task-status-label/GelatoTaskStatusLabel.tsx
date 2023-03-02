@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -9,8 +9,8 @@ import { CircularProgress, Theme } from "@mui/material";
 import styled from "@emotion/styled";
 import CancelledIcon from "@mui/icons-material/HighlightOffRounded";
 import SuccessIcon from "@mui/icons-material/CheckCircleRounded";
+import { GelatoRelayAdapter } from "@safe-global/relay-kit";
 
-import getGelatoTaskInfo from "src/api/getGelatoTaskInfo";
 import useApi from "src/hooks/useApi";
 import { GelatoTask } from "src/models/gelatoTask";
 import AddressLabel from "src/components/address-label/AddressLabel";
@@ -19,26 +19,41 @@ import getChain from "src/utils/getChain";
 type GelatoTaskStatusLabelProps = {
   gelatoTaskId: string;
   chainId: string;
+  transactionHash?: string;
+  setTransactionHash: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const pollingTime = 4_000; // 4 seconds of polling time to update the Gelato task status
 
+// TODO: rename this to TrackGelatoTaskStatus
 const GelatoTaskStatusLabel = ({
   gelatoTaskId,
   chainId,
+  transactionHash,
+  setTransactionHash,
 }: GelatoTaskStatusLabelProps) => {
   const fetchGelatoTaskInfo = useCallback(
-    (signal: AbortSignal) => getGelatoTaskInfo(gelatoTaskId, { signal }),
+    async () => await new GelatoRelayAdapter().checkTask(gelatoTaskId),
     [gelatoTaskId]
   );
 
-  const { data: gelatoTaskInfo } = useApi(fetchGelatoTaskInfo, pollingTime);
+  const { data } = useApi(fetchGelatoTaskInfo, pollingTime);
+
+  const gelatoTaskInfo = data?.task;
+
+  console.log("gelatoTaskInfo: ", gelatoTaskInfo);
 
   const chain = getChain(chainId);
 
   const isCancelled = gelatoTaskInfo?.taskState === "Cancelled";
   const isSuccess = gelatoTaskInfo?.taskState === "ExecSuccess";
   const isLoading = !isCancelled && !isSuccess;
+
+  useEffect(() => {
+    if (gelatoTaskInfo?.transactionHash) {
+      setTransactionHash(gelatoTaskInfo.transactionHash);
+    }
+  }, [gelatoTaskInfo, setTransactionHash]);
 
   return (
     <Container
@@ -85,12 +100,12 @@ const GelatoTaskStatusLabel = ({
         >
           <Typography variant="body2">Transaction: </Typography>
 
-          {gelatoTaskInfo?.transactionHash ? (
+          {transactionHash ? (
             <Link
-              href={`${chain?.blockExplorerUrl}/tx/${gelatoTaskInfo?.transactionHash}`}
+              href={`${chain?.blockExplorerUrl}/tx/${transactionHash}`}
               target="_blank"
             >
-              <AddressLabel address={gelatoTaskInfo.transactionHash} />
+              <AddressLabel address={transactionHash} />
             </Link>
           ) : (
             <Skeleton variant="text" width={150} height={20} />

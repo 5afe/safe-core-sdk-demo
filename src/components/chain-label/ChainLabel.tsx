@@ -15,8 +15,6 @@ export default ChainLabel;
 
 const Label = styled("span")(
   ({ theme, color }) => `
-    
-    margin-right: 8px;
     border-radius: 4px;
     padding: 4px 12px;
 
