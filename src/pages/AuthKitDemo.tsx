@@ -42,6 +42,38 @@ const AuthKitDemo = () => {
       {/* Connect Owner button */}
       {isOwnerConnected ? (
         <>
+          <Box display="flex" flexDirection="row" flexWrap="wrap" gap={3}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              gap={2}
+            >
+              <Typography textAlign="center" variant="h6" component="h3">
+                This is Your Safe (Contract Address)
+              </Typography>
+
+              {/* Safe Info */}
+              {safeSelected && (
+                <SafeInfo safeAddress={safeSelected} chainId={chainId} />
+              )}
+            </Box>
+
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              gap={2}
+            >
+              <Typography textAlign="center" variant="h6" component="h3">
+                This is Your Owner (EOA Address)
+              </Typography>
+
+              {/* Owner Info */}
+              <ConnectedWalletLabel />
+            </Box>
+          </Box>
+
           <Typography textAlign="center" variant="h5" component="h3">
             You are authenticated!
           </Typography>
@@ -50,22 +82,6 @@ const AuthKitDemo = () => {
           <Button variant="contained" onClick={nextStep}>
             Go to OnRamp Demo
           </Button>
-
-          <Typography textAlign="center" variant="h6" component="h3">
-            This is Your Safe (Contract Address)
-          </Typography>
-
-          {/* Safe Info */}
-          {safeSelected && (
-            <SafeInfo safeAddress={safeSelected} chainId={chainId} />
-          )}
-
-          <Typography textAlign="center" variant="h6" component="h3">
-            This is Your Owner (EOA Address)
-          </Typography>
-
-          {/* Owner Info */}
-          <ConnectedWalletLabel />
         </>
       ) : (
         <Button
@@ -105,29 +121,25 @@ const AuthKitDemo = () => {
 
 export default AuthKitDemo;
 
-const code = `try {
-  const safeAuth = await SafeAuthKit.init(SafeAuthProviderType.Web3Auth, {
-    chainId: chain.id,
-    txServiceUrl: chain.transactionServiceUrl,
-    authProviderConfig: {
-      rpcTarget: chain.rpcUrl,
-      clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID || "",
-      network: "testnet",
-      theme: "dark",
-    },
-  });
+const code = `import { SafeAuthKit, SafeAuthProviderType } from '@safe-global/auth-kit'
 
-  if (safeAuth) {
-    const { safes, eoa } = await safeAuth.signIn();
-    const provider =
-      safeAuth.getProvider() as ethers.providers.ExternalProvider;
-
-    // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
-    setChainId(chain.id);
-    setOwnerAddress(eoa);
-    setSafes(safes || []);
-    setWeb3Provider(new ethers.providers.Web3Provider(provider));
+const safeAuthKit = await SafeAuthKit.init(SafeAuthProviderType.Web3Auth, {
+  chainId: '0x5',
+  authProviderConfig: {
+    rpc: <Your rpc url>, // Add your RPC e.g. https://goerli.infura.io/v3/<your project id>
+    clientId: <Your client id>, // Add your client id. Get it from the Web3Auth dashboard
+    network: 'testnet' | 'mainnet', // The network to use for the Web3Auth modal.
+    theme: 'light' | 'dark' // The theme to use for the Web3Auth modal
   }
-} catch (error) {
-  console.log("error: ", error);
-}`;
+})
+
+// Allow to login and get the derived eoa
+safeAuthKit.signIn()
+
+// Logout
+safeAuthKit.signOut()
+
+// Get the provider
+safeAuthKit.getProvider()
+
+`;

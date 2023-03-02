@@ -12,18 +12,27 @@ import ChainLabel from "src/components/chain-label/ChainLabel";
 import safeHeaderLogo from "src/assets/safe-header-logo.svg";
 import { useTheme } from "src/store/themeContext";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
+import { useStepper } from "src/store/stepperContext";
 
 function Header() {
   const { switchThemeMode, isDarkTheme } = useTheme();
 
   const { chain } = useAccountAbstraction();
 
+  const { setStep } = useStepper();
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* App Logo */}
-          <img id="app-logo-header" src={safeHeaderLogo} alt="app logo" />
+          <img
+            style={{ cursor: "pointer" }}
+            onClick={() => setStep(0)} // go to Home
+            id="app-logo-header"
+            src={safeHeaderLogo}
+            alt="app logo"
+          />
 
           <Box
             display="flex"

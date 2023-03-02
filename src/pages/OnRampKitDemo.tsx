@@ -100,31 +100,24 @@ const OnRampKitDemo = () => {
 
 export default OnRampKitDemo;
 
-// TODO: update this
-const code = `const onRampClient = await SafeOnRampKit.init(
-  SafeOnRampProviderType.Stripe,
-  {
-    onRampProviderConfig: {
-      stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY || "",
-      onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL || "",
-    },
+const code = `import { SafeOnRampKit, SafeOnRampProviderType } from '@safe-global/onramp-kit'
+
+const safeOnRamp = await SafeOnRampKit.init(SafeOnRampProviderType.Stripe, {
+  onRampProviderConfig: {
+    stripePublicKey: <You public key>, // You should get your own keys from Stripe
+    onRampBackendUrl: <Your backend url> // You should deploy your own server
   }
-);
+})
 
-const sessionData = await onRampClient?.open({
-  // sessionId: sessionId, optional parameter
-  walletAddress: safeSelected,
-  networks: ["ethereum", "polygon"],
-  element: "#stripe-root",
+const sessionData = await safeOnRamp.open({
+  walletAddress,
+  networks: ['polygon']
+  element: '#stripe-root',
   events: {
-    onLoaded: () => console.log("onLoaded()"),
-    onPaymentSuccessful: (eventData: SafeOnRampEvent) =>
-      console.log("onPaymentSuccessful(): ", eventData),
-    onPaymentProcessing: (eventData: SafeOnRampEvent) =>
-      console.log("onPaymentProcessing(): ", eventData),
-    onPaymentError: (eventData: SafeOnRampEvent) =>
-      console.log("onPaymentError(): ", eventData),
-  },
-});
-
-console.log("Stripe sessionData: ", sessionData);`;
+    onLoaded: () => console.log('Loaded'),
+    onPaymentSuccessful: () => console.log('Payment successful')
+    onPaymentError: () => console.log('Payment failed')
+    onPaymentProcessing: () => console.log('Payment processing')
+  }
+})
+`;

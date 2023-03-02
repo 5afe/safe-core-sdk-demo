@@ -13,9 +13,9 @@ import AmountLabel from "src/components/amount-label/AmountLabel";
 import getSafeInfo from "src/api/getSafeInfo";
 import useApi from "src/hooks/useApi";
 import safeLogo from "src/assets/safe-logo.svg";
-import { DARK_THEME, LIGHT_THEME } from "src/theme/theme";
 import usePolling from "src/hooks/usePolling";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
+import { DARK_THEME, LIGHT_THEME } from "src/store/themeContext";
 
 type SafeInfoProps = {
   safeAddress: string;

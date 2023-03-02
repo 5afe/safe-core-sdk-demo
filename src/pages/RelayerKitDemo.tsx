@@ -119,28 +119,12 @@ const RelayerKitDemo = () => {
 
 export default RelayerKitDemo;
 
-const code = `const signer = web3Provider.getSigner();
-const relayAdapter = new GelatoRelayAdapter();
-const safeAccountAbstraction = new AccountAbstraction(signer);
+const code = `import { GelatoRelayAdapter } from '@safe-global/relay-kit'
 
-await safeAccountAbstraction.init({ relayAdapter });
+const relayAdapter = new GelatoRelayAdapter()
 
-// we use a dump safe transfer as a demo transaction
-const dumpSafeTransafer: MetaTransactionData = {
-  to: safeSelected,
-  data: "0x",
-  value: BigNumber.from(utils.parseUnits("0.01", "ether").toString()),
-  operation: 0, // OperationType.Call,
-};
-
-const options: MetaTransactionOptions = {
-  isSponsored: false,
-  gasLimit: BigNumber.from("600000"), // in this alfa version we need to manually set the gas limit :<
-  gasToken: ethers.constants.AddressZero, // native token ???
-};
-
-const gelatoTaskId = await safeAccountAbstraction.relayTransaction(
-  dumpSafeTransafer,
-  options
-);
- `;
+relayAdapter.relayTransaction({
+  target: '0x...', // the Safe address
+  encodedTransaction: '0x...', // Encoded Safe transaction data
+  chainId: 5
+})`;

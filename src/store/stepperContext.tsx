@@ -4,12 +4,14 @@ type stepperContextValue = {
   activeStep: number;
   nextStep: () => void;
   previousStep: () => void;
+  setStep: (newStep: number) => void;
 };
 
 const initialState = {
   activeStep: 0,
   nextStep: () => {},
   previousStep: () => {},
+  setStep: () => {},
 };
 
 const stepperContext = createContext<stepperContextValue>(initialState);
@@ -35,11 +37,16 @@ const StepperProvider = ({ children }: { children: JSX.Element }) => {
     setActiveStep((activeStep) => activeStep - 1);
   }, []);
 
+  const setStep = useCallback((newStep: number) => {
+    setActiveStep(newStep);
+  }, []);
+
   const state = {
     activeStep,
 
     nextStep,
     previousStep,
+    setStep,
   };
 
   return (

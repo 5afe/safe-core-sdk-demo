@@ -1,14 +1,16 @@
-import { createContext, useContext, useCallback, useMemo } from "react";
+import { createContext, useContext, useCallback } from "react";
 import { PaletteMode, Theme } from "@mui/material";
 import { ThemeProvider as MUIThemeProvider } from "@mui/material/styles";
+import { SafeThemeProvider } from "@safe-global/safe-react-components";
 
 import useLocalStorageState from "src/hooks/useLocalStorageState";
-import getTheme, { DARK_THEME, LIGHT_THEME } from "src/theme/theme";
 
 const STORAGE_KEY_THEME_MODE = "THEME_MODE_REACT_SERVICE_STATUS_KEY";
 
+export const DARK_THEME: PaletteMode = "dark";
+export const LIGHT_THEME: PaletteMode = "light";
+
 type themeContextValue = {
-  theme: Theme;
   themeMode: PaletteMode;
   switchThemeMode: () => void;
   isDarkTheme: boolean;
@@ -16,7 +18,6 @@ type themeContextValue = {
 };
 
 const initialState = {
-  theme: getTheme(DARK_THEME),
   themeMode: DARK_THEME,
   switchThemeMode: () => {},
   isDarkTheme: true,
@@ -44,8 +45,6 @@ const ThemeProvider = ({ children }: { children: JSX.Element }) => {
   const isDarkTheme = themeMode === DARK_THEME;
   const isLightTheme = themeMode === LIGHT_THEME;
 
-  const theme = useMemo(() => getTheme(themeMode), [themeMode]);
-
   const switchThemeMode = useCallback(() => {
     setThemeMode((prevThemeMode: PaletteMode) => {
       const isDarkTheme = prevThemeMode === DARK_THEME;
@@ -54,7 +53,6 @@ const ThemeProvider = ({ children }: { children: JSX.Element }) => {
   }, [setThemeMode]);
 
   const state = {
-    theme,
     themeMode,
 
     switchThemeMode,
@@ -65,7 +63,11 @@ const ThemeProvider = ({ children }: { children: JSX.Element }) => {
 
   return (
     <themeContext.Provider value={state}>
-      <MUIThemeProvider theme={theme}>{children}</MUIThemeProvider>
+      <SafeThemeProvider mode={themeMode}>
+        {(safeTheme: Theme) => (
+          <MUIThemeProvider theme={safeTheme}>{children}</MUIThemeProvider>
+        )}
+      </SafeThemeProvider>
     </themeContext.Provider>
   );
 };

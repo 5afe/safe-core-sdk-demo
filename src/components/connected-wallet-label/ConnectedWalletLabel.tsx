@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 
 import AddressLabel from "src/components/address-label/AddressLabel";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
-import { LIGHT_THEME } from "src/theme/theme";
+import { LIGHT_THEME } from "src/store/themeContext";
 import authLogo from "src/assets/web3Auth_logo.png";
 
 
