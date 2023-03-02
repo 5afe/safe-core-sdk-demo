@@ -1,8 +1,8 @@
-# Demo App
+# Account Abstraction demo app
 
-[The Safe {Core} Account abstraction SDK](https://github.com/safe-global/account-abstraction-sdk) allows builders to add account abstraction functionality into their apps. This demo is a sample of the use of our different packages (Auth Kit, OnRamp Kit & relayer Kit).
+[The Safe{Core} Account Abstraction SDK](https://github.com/safe-global/account-abstraction-sdk) allows builders to add account abstraction functionality into their apps. This demo is an example on how to use our different packages (Auth Kit, OnRamp Kit & Relay Kit).
 
-See our [Safe {Core} Account abstraction SDK Docs](https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk) for more details.
+See the [Safe{Core} Account Abstraction SDK Docs](https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk) for more details.
 
 ## Installation
 
