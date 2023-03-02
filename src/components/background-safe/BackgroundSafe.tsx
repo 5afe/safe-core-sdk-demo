@@ -5,7 +5,12 @@ import safeParticles from "src/assets/safe-particles.svg";
 const BackgroundSafe = () => {
   return (
     <Wrapper>
-      <img id="safe-background" src={safeParticles} alt="background logo" height="500px" />
+      <img
+        id="safe-background"
+        src={safeParticles}
+        alt="background logo"
+        height="500px"
+      />
     </Wrapper>
   );
 };
@@ -13,7 +18,7 @@ const BackgroundSafe = () => {
 export default BackgroundSafe;
 
 const Wrapper = styled("div")`
-  position: fixed;
+  position: absolute;
 
   left: 50%;
   margin-left: -250px; /* Negative half of width. */

@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import { CodeBlock, atomOneDark } from "react-code-blocks";
 import WalletIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 
 import SafeInfo from "src/components/safe-info/SafeInfo";
@@ -36,21 +37,6 @@ const AuthKitDemo = () => {
           Auth Kit documentation
         </Link>{" "}
         for more details!
-      </Typography>
-
-      <Typography textAlign="center" variant="h5" component="h2">
-        How to use it
-      </Typography>
-
-      <Typography textAlign="center">
-        This implementation is defined in our{" "}
-        <Link
-          href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.ts#L94"
-          target="_blank"
-        >
-          <code>accountAbstractionContext.tsx</code>
-        </Link>{" "}
-        file.
       </Typography>
 
       {/* Connect Owner button */}
@@ -90,8 +76,58 @@ const AuthKitDemo = () => {
           Connect
         </Button>
       )}
+
+      <Typography textAlign="center" variant="h5" component="h2">
+        How to use it
+      </Typography>
+
+      <Typography textAlign="center">
+        This implementation is defined in our{" "}
+        <Link
+          href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.ts#L94"
+          target="_blank"
+        >
+          <code>accountAbstractionContext.tsx</code>
+        </Link>{" "}
+        file.
+      </Typography>
+
+      <CodeBlock
+        text={code}
+        language={"javascript"}
+        showLineNumbers
+        startingLineNumber={96}
+        theme={atomOneDark}
+      />
     </Box>
   );
 };
 
 export default AuthKitDemo;
+
+const code = `try {
+  const safeAuth = await SafeAuthKit.init(SafeAuthProviderType.Web3Auth, {
+    chainId: chain.id,
+    txServiceUrl: chain.transactionServiceUrl,
+    authProviderConfig: {
+      rpcTarget: chain.rpcUrl,
+      clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID || "",
+      network: "testnet",
+      theme: "dark",
+    },
+  });
+
+  if (safeAuth) {
+    const { safes, eoa } = await safeAuth.signIn();
+    const provider =
+      safeAuth.getProvider() as ethers.providers.ExternalProvider;
+
+    // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
+    setChainId(chain.id);
+    setOwnerAddress(eoa);
+    setSafes(safes || []);
+    setWeb3Provider(new ethers.providers.Web3Provider(provider));
+  }
+} catch (error) {
+  console.log("error: ", error);
+}`;

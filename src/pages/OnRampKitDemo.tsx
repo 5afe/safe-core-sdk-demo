@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import { CodeBlock, atomOneDark } from "react-code-blocks";
 import WalletIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 
 import SafeInfo from "src/components/safe-info/SafeInfo";
@@ -68,6 +69,9 @@ const OnRampKitDemo = () => {
         </Button>
       </Box>
 
+      {/* Stripe root widget */}
+      <div id="stripe-root"></div>
+
       <Typography textAlign="center" variant="h5" component="h2">
         How to use it
       </Typography>
@@ -83,10 +87,44 @@ const OnRampKitDemo = () => {
         file.
       </Typography>
 
-      {/* Stripe root widget */}
-      <div id="stripe-root"></div>
+      <CodeBlock
+        text={code}
+        language={"javascript"}
+        showLineNumbers
+        startingLineNumber={190}
+        theme={atomOneDark}
+      />
     </Box>
   );
 };
 
 export default OnRampKitDemo;
+
+// TODO: update this
+const code = `const onRampClient = await SafeOnRampKit.init(
+  SafeOnRampProviderType.Stripe,
+  {
+    onRampProviderConfig: {
+      stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY || "",
+      onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL || "",
+    },
+  }
+);
+
+const sessionData = await onRampClient?.open({
+  // sessionId: sessionId, optional parameter
+  walletAddress: safeSelected,
+  networks: ["ethereum", "polygon"],
+  element: "#stripe-root",
+  events: {
+    onLoaded: () => console.log("onLoaded()"),
+    onPaymentSuccessful: (eventData: SafeOnRampEvent) =>
+      console.log("onPaymentSuccessful(): ", eventData),
+    onPaymentProcessing: (eventData: SafeOnRampEvent) =>
+      console.log("onPaymentProcessing(): ", eventData),
+    onPaymentError: (eventData: SafeOnRampEvent) =>
+      console.log("onPaymentError(): ", eventData),
+  },
+});
+
+console.log("Stripe sessionData: ", sessionData);`;

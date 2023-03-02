@@ -3,6 +3,7 @@ import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import { CodeBlock, atomOneDark } from "react-code-blocks";
 import SendIcon from "@mui/icons-material/SendRounded";
 
 import SafeInfo from "src/components/safe-info/SafeInfo";
@@ -104,8 +105,42 @@ const RelayerKitDemo = () => {
         </Link>{" "}
         file.
       </Typography>
+
+      <CodeBlock
+        text={code}
+        language={"javascript"}
+        showLineNumbers
+        startingLineNumber={160}
+        theme={atomOneDark}
+      />
     </Box>
   );
 };
 
 export default RelayerKitDemo;
+
+const code = `const signer = web3Provider.getSigner();
+const relayAdapter = new GelatoRelayAdapter();
+const safeAccountAbstraction = new AccountAbstraction(signer);
+
+await safeAccountAbstraction.init({ relayAdapter });
+
+// we use a dump safe transfer as a demo transaction
+const dumpSafeTransafer: MetaTransactionData = {
+  to: safeSelected,
+  data: "0x",
+  value: BigNumber.from(utils.parseUnits("0.01", "ether").toString()),
+  operation: 0, // OperationType.Call,
+};
+
+const options: MetaTransactionOptions = {
+  isSponsored: false,
+  gasLimit: BigNumber.from("600000"), // in this alfa version we need to manually set the gas limit :<
+  gasToken: ethers.constants.AddressZero, // native token ???
+};
+
+const gelatoTaskId = await safeAccountAbstraction.relayTransaction(
+  dumpSafeTransafer,
+  options
+);
+ `;
