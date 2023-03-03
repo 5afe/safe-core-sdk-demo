@@ -51,7 +51,7 @@ const OnRampKitDemo = () => {
           Click on "Buy USDC" to on-ramp funds to your Safe using Stripe
           widget! This widget is on `testmode`, you will need to use{" "}
           <Link
-              href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk/onramp-kit#considerations-and-limitations"
+              href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/onramp-kit#considerations-and-limitations"
               target="_blank"
             >
                fake data
