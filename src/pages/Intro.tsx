@@ -26,17 +26,17 @@ const Intro = () => {
             href="https://github.com/safe-global/account-abstraction-sdk"
             target="_blank"
           >
-            The Safe&#123;Core&#125; Account abstraction SDK{" "}
+            The Safe&#123;Core&#125; Account Abstraction SDK{" "}
           </Link>{" "}
           allows builders to add account abstraction functionality into their
-          apps. This demo is a sample of the use of our different packages (Auth
-          Kit, OnRamp Kit & relayer Kit)
+          apps. This demo is an example on how to use our different packages (Auth
+          Kit, OnRamp Kit & Relay Kit)
         </Typography>
 
         <Typography textAlign="center">
           Check our{" "}
           <Link
-            href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk"
+            href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk"
             target="_blank"
           >
             Safe&#123;Core&#125; Account abstraction SDK documentation

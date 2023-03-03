@@ -41,7 +41,7 @@ const AuthKitDemo = () => {
           authenticates a blockchain account using an email address, social
           media account, or traditional crypto wallets like Metamask. Check our{" "}
           <Link
-            href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk/auth-kit"
+            href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/auth-kit"
             target="_blank"
           >
             Auth Kit documentation

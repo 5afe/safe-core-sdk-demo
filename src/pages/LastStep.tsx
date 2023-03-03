@@ -21,7 +21,7 @@ const LastStep = () => {
       <Typography textAlign="center">
         Check our{" "}
         <Link
-          href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk"
+          href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk"
           target="_blank"
         >
           Safe&#123;Core&#125; Account abstraction SDK documentation

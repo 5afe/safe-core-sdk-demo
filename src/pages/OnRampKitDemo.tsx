@@ -31,7 +31,7 @@ const OnRampKitDemo = () => {
         <Typography textAlign="center">
           The{" "}
           <Link
-            href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/onRamp-kit"
+            href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/onramp-kit"
             target="_blank"
           >
             Onramp kit
@@ -39,7 +39,7 @@ const OnRampKitDemo = () => {
           allows users to buy cryptocurrencies using a credit card and other
           payment options. Check our{" "}
           <Link
-            href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk/onramp-kit"
+            href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/onramp-kit"
             target="_blank"
           >
             Onramp kit documentation
@@ -48,9 +48,15 @@ const OnRampKitDemo = () => {
         </Typography>
 
         <Typography textAlign="center">
-          Click on "Buy USDC" to on-ramping funds to your Safe using Stripe
-          Widget! (if you are not from US please use a VPN to be able to
-          complete the payment)
+          Click on "Buy USDC" to on-ramp funds to your Safe using Stripe
+          widget! This widget is on `testmode`, you will need to use{" "}
+          <Link
+              href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk/onramp-kit#considerations-and-limitations"
+              target="_blank"
+            >
+               fake data
+          </Link>{" "}
+          in order to simulate the process. Also if you are not connecting from the United States it won't allow you to use it.
         </Typography>
 
         {safeSelected && (

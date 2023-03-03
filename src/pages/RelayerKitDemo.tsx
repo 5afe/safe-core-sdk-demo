@@ -53,7 +53,7 @@ const RelayerKitDemo = () => {
           allows users to pay transaction fees (gas fees) using any ERC-20
           tokens in your Safe!. Check our{" "}
           <Link
-            href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk/relay-kit"
+            href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/relay-kit"
             target="_blank"
           >
             Relay Kit documentation
