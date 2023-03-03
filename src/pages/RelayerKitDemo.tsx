@@ -3,6 +3,7 @@ import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 import SendIcon from "@mui/icons-material/SendRounded";
 
@@ -32,29 +33,39 @@ const RelayerKitDemo = () => {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-      <Typography textAlign="center">
-        The{" "}
-        <Link
-          href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/auth-kit"
-          target="_blank"
-        >
-          Relay kit
-        </Link>{" "}
-        allows users to pay transaction fees (gas fees) using any ERC-20 tokens
-        in your Safe!. Check our{" "}
-        <Link
-          href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk/relay-kit"
-          target="_blank"
-        >
-          Relay Kit documentation
-        </Link>{" "}
-        for more details!
-      </Typography>
+      <Box
+        component={Paper}
+        sx={{ border: "1px solid #fff" }}
+        padding="18px"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={2}
+      >
+        <Typography textAlign="center">
+          The{" "}
+          <Link
+            href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/auth-kit"
+            target="_blank"
+          >
+            Relay kit
+          </Link>{" "}
+          allows users to pay transaction fees (gas fees) using any ERC-20
+          tokens in your Safe!. Check our{" "}
+          <Link
+            href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk/relay-kit"
+            target="_blank"
+          >
+            Relay Kit documentation
+          </Link>{" "}
+          for more details!
+        </Typography>
 
-      {/* Safe selected info */}
-      {safeSelected && (
-        <SafeInfo safeAddress={safeSelected} chainId={chainId} />
-      )}
+        {/* Safe selected info */}
+        {safeSelected && (
+          <SafeInfo safeAddress={safeSelected} chainId={chainId} />
+        )}
+      </Box>
 
       {/* send fake transaction to Gelato relayer */}
       {!isRelayerLoading && !gelatoTaskId && (
@@ -91,28 +102,38 @@ const RelayerKitDemo = () => {
         </Button>
       )}
 
-      <Typography textAlign="center" variant="h5" component="h2">
-        How to use it
-      </Typography>
+      <Box
+        component={Paper}
+        sx={{ border: "1px solid #fff" }}
+        padding="18px"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={2}
+      >
+        <Typography textAlign="center" variant="h5" component="h2">
+          How to use it
+        </Typography>
 
-      <Typography textAlign="center">
-        This implementation is defined in our{" "}
-        <Link
-          href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.ts#L154"
-          target="_blank"
-        >
-          <code>accountAbstractionContext.tsx</code>
-        </Link>{" "}
-        file.
-      </Typography>
+        <Typography textAlign="center">
+          This implementation is defined in our{" "}
+          <Link
+            href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.ts#L154"
+            target="_blank"
+          >
+            <code>accountAbstractionContext.tsx</code>
+          </Link>{" "}
+          file.
+        </Typography>
 
-      <CodeBlock
-        text={code}
-        language={"javascript"}
-        showLineNumbers
-        startingLineNumber={160}
-        theme={atomOneDark}
-      />
+        <CodeBlock
+          text={code}
+          language={"javascript"}
+          showLineNumbers
+          startingLineNumber={160}
+          theme={atomOneDark}
+        />
+      </Box>
     </Box>
   );
 };

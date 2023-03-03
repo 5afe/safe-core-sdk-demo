@@ -23,6 +23,7 @@ type SafeInfoProps = {
 };
 
 // TODO: ADD USDC LABEL
+// TODO: ADD CHAIN LABEL
 
 function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
   const { web3Provider, chain, safeBalance } = useAccountAbstraction();
@@ -118,11 +119,21 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
 
 export default SafeInfo;
 
-const SafeInfoContainer = styled(Box)`
+const SafeInfoContainer = styled(Box)<{
+  theme?: Theme;
+}>(
+  ({ theme }) => `
   max-width: 800px;
   margin: 0 auto;
-  padding: 16px;
-`;
+  padding: 12px;
+
+  background-color: ${
+    theme.palette.mode === LIGHT_THEME
+      ? theme.palette.grey["300"]
+      : theme.palette.grey["800"]
+  };
+`
+);
 
 const SafeSettingsLabel = styled("span")<{
   theme?: Theme;
@@ -163,7 +174,7 @@ const AmountContainer = styled("div")<{
   background-color: ${
     theme.palette.mode === LIGHT_THEME
       ? theme.palette.grey["200"]
-      : theme.palette.grey["800"]
+      : theme.palette.grey["700"]
   };
 
   color: ${theme.palette.getContrastText(theme.palette.background.paper)};

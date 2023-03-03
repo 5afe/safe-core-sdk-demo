@@ -58,6 +58,7 @@ const GelatoTaskStatusLabel = ({
   return (
     <Container
       component={Paper}
+      sx={{ border: "1px solid #fff" }}
       display="flex"
       flexDirection="column"
       alignItems="center"

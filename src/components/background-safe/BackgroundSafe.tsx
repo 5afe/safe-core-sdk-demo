@@ -23,7 +23,7 @@ const Wrapper = styled("div")`
   left: 50%;
   margin-left: -250px; /* Negative half of width. */
 
-  margin-top: 50px;
+  margin-top: 12px;
 
   z-index: -1;
 

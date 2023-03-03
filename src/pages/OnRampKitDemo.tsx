@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 import WalletIcon from "@mui/icons-material/AccountBalanceWalletRounded";
@@ -18,34 +19,44 @@ const OnRampKitDemo = () => {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-      <Typography textAlign="center">
-        The{" "}
-        <Link
-          href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/onRamp-kit"
-          target="_blank"
-        >
-          Onramp kit
-        </Link>{" "}
-        allows users to buy cryptocurrencies using a credit card and other
-        payment options. Check our{" "}
-        <Link
-          href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk/onramp-kit"
-          target="_blank"
-        >
-          Onramp kit documentation
-        </Link>{" "}
-        for more details!
-      </Typography>
+      <Box
+        component={Paper}
+        sx={{ border: "1px solid #fff" }}
+        padding="18px"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={2}
+      >
+        <Typography textAlign="center">
+          The{" "}
+          <Link
+            href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/onRamp-kit"
+            target="_blank"
+          >
+            Onramp kit
+          </Link>{" "}
+          allows users to buy cryptocurrencies using a credit card and other
+          payment options. Check our{" "}
+          <Link
+            href="https://docs.gnosis-safe.io/learn/safe-core-account-abstraction-sdk/onramp-kit"
+            target="_blank"
+          >
+            Onramp kit documentation
+          </Link>{" "}
+          for more details!
+        </Typography>
 
-      <Typography textAlign="center">
-        Click on "Buy USDC" to on-ramping funds to your Safe using Stripe
-        Widget! (if you are not from US please use a VPN to be able to complete
-        the payment)
-      </Typography>
+        <Typography textAlign="center">
+          Click on "Buy USDC" to on-ramping funds to your Safe using Stripe
+          Widget! (if you are not from US please use a VPN to be able to
+          complete the payment)
+        </Typography>
 
-      {safeSelected && (
-        <SafeInfo safeAddress={safeSelected} chainId={chainId} />
-      )}
+        {safeSelected && (
+          <SafeInfo safeAddress={safeSelected} chainId={chainId} />
+        )}
+      </Box>
 
       <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
         <Tooltip
@@ -72,28 +83,38 @@ const OnRampKitDemo = () => {
       {/* Stripe root widget */}
       <div id="stripe-root"></div>
 
-      <Typography textAlign="center" variant="h5" component="h2">
-        How to use it
-      </Typography>
+      <Box
+        component={Paper}
+        sx={{ border: "1px solid #fff" }}
+        padding="18px"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={2}
+      >
+        <Typography textAlign="center" variant="h5" component="h2">
+          How to use it
+        </Typography>
 
-      <Typography textAlign="center">
-        This implementation is defined in our{" "}
-        <Link
-          href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.ts#L190"
-          target="_blank"
-        >
-          <code>accountAbstractionContext.tsx</code>
-        </Link>{" "}
-        file.
-      </Typography>
+        <Typography textAlign="center">
+          This implementation is defined in our{" "}
+          <Link
+            href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.ts#L190"
+            target="_blank"
+          >
+            <code>accountAbstractionContext.tsx</code>
+          </Link>{" "}
+          file.
+        </Typography>
 
-      <CodeBlock
-        text={code}
-        language={"javascript"}
-        showLineNumbers
-        startingLineNumber={190}
-        theme={atomOneDark}
-      />
+        <CodeBlock
+          text={code}
+          language={"javascript"}
+          showLineNumbers
+          startingLineNumber={190}
+          theme={atomOneDark}
+        />
+      </Box>
     </Box>
   );
 };

@@ -1,6 +1,7 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import styled from "@emotion/styled";
+import '@safe-global/safe-react-components/dist/fonts.css'
 
 import Intro from "src/pages/Intro";
 import AuthKitDemo from "src/pages/AuthKitDemo";
