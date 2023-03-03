@@ -1,45 +1,29 @@
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
-import { useWallets } from "@web3-onboard/react";
-import QuestionMarkRoundedIcon from "@mui/icons-material/QuestionMarkRounded";
 
 import AddressLabel from "src/components/address-label/AddressLabel";
-import metamaskLogo from "src/assets/Metamask_logo.svg";
-import walletConnectLogo from "src/assets/WalletConnect_logo.png";
-import { LIGHT_THEME } from "src/theme/theme";
+import { useAccountAbstraction } from "src/store/accountAbstractionContext";
+import { LIGHT_THEME } from "src/store/themeContext";
+import authLogo from "src/assets/web3Auth_logo.png";
 
-const logos: Record<string, string> = {
-  WalletConnect: walletConnectLogo,
-  MetaMask: metamaskLogo,
-};
-
+// TODO: rename this to connected owner?
 function ConnectedWalletLabel() {
-  const [connectedWallet] = useWallets();
+  const { isOwnerConnected, ownerAddress } = useAccountAbstraction();
 
-  if (!connectedWallet) {
+  if (!isOwnerConnected) {
     // TODO: ADD NO CONNECTED WALLET LABEL
     return null;
   }
 
-  const walletLogo = logos[connectedWallet?.label];
-  const walletAddress = connectedWallet?.accounts?.[0]?.address;
-
   return (
     <Container>
       <Stack direction="row" alignItems="center" spacing={0.5} component="span">
-        {walletLogo ? (
-          <img src={walletLogo} alt="connected Wallet logo" height={24} />
-        ) : (
-          <Tooltip title="Unknown connected Wallet">
-            <QuestionMarkRoundedIcon />
-          </Tooltip>
-        )}
+        <img src={authLogo} alt="connected Wallet logo" height={24} />
 
         <Typography variant="body2">
-          {walletAddress && (
-            <AddressLabel address={walletAddress} showBlockExplorerLink />
+          {ownerAddress && (
+            <AddressLabel address={ownerAddress} showBlockExplorerLink />
           )}
         </Typography>
       </Stack>
@@ -53,11 +37,11 @@ const Container = styled("div")(
   ({ theme }) => `
     margin-right: 8px;
     border-radius: 4px;
-    padding: 4px 12px;
+    padding: 6px 12px;
   
     background-color: ${
       theme.palette.mode === LIGHT_THEME
-        ? theme.palette.background.paper
+        ? theme.palette.grey["200"]
         : theme.palette.grey["800"]
     };
   

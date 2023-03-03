@@ -7,7 +7,8 @@ type Chain = {
   color?: string;
   icon?: string;
   blockExplorerUrl: string;
-  transactionServiceUrl: string;
+  transactionServiceUrl?: string;
+  isStripePaymentsEnabled: boolean; // only available in Mumbai chain
 };
 
 export default Chain;

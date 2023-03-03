@@ -1,30 +1,33 @@
-# Getting Started with Create React App
+# Account Abstraction demo app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[The Safe{Core} Account Abstraction SDK](https://github.com/safe-global/account-abstraction-sdk) allows builders to add account abstraction functionality into their apps. This demo is an example on how to use our different packages (Auth Kit, OnRamp Kit & Relay Kit).
 
-## Available Scripts
+See the [Safe{Core} Account Abstraction SDK Docs](https://docs.safe.global/learn/safe-core-account-abstraction-sdk) for more details.
 
-In the project directory, you can run:
+## Installation
 
-### `npm start`
+To run this project locally:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Install deps:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```bash
+yarn install
+```
 
-### `npm test`
+Create a `.env` file (see `example.env`)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+# see https://web3auth.io/docs/developer-dashboard/get-client-id
+REACT_APP_WEB3AUTH_CLIENT_ID=
 
-### `npm run build`
+REACT_APP_STRIPE_BACKEND_BASE_URL=https://aa-stripe.safe.global
 
-Builds the app for production to the `build` folder.
+REACT_APP_STRIPE_PUBLIC_KEY=pk_test_51MZbmZKSn9ArdBimSyl5i8DqfcnlhyhJHD8bF2wKrGkpvNWyPvBAYtE211oHda0X3Ea1n4e9J9nh2JkpC7Sxm5a200Ug9ijfoO
 
-## Learn More
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Run the demo App:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+yarn start
+```

@@ -1,7 +1,7 @@
 import axios, { RawAxiosRequestConfig } from "axios";
 import { utils } from "ethers";
 
-import chains from "src/chains/chains";
+import getChain from "src/utils/getChain";
 
 export type SafeInfoType = {
   address: string;
@@ -15,8 +15,7 @@ const getSafeInfo = async (
   connectedChainId: string,
   options?: RawAxiosRequestConfig
 ): Promise<SafeInfoType> => {
-    // TODO: create get chain fn
-  const chain = chains.find(({ id }) => id === connectedChainId);
+  const chain = getChain(connectedChainId);
 
   const address = utils.getAddress(safeAddress);
 

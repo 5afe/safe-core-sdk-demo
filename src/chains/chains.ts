@@ -9,6 +9,7 @@ export const gnosisChain: Chain = {
   blockExplorerUrl: "https://gnosisscan.io/",
   color: "#3e6957",
   transactionServiceUrl: "https://safe-transaction-gnosis-chain.safe.global",
+  isStripePaymentsEnabled: false,
 };
 
 export const goerliChain: Chain = {
@@ -20,6 +21,7 @@ export const goerliChain: Chain = {
   blockExplorerUrl: "https://goerli.etherscan.io",
   color: "#fbc02d",
   transactionServiceUrl: "https://safe-transaction-goerli.safe.global",
+  isStripePaymentsEnabled: false,
 };
 
 export const mainnetChain: Chain = {
@@ -31,6 +33,7 @@ export const mainnetChain: Chain = {
   blockExplorerUrl: "https://etherscan.io/",
   color: "#DDDDDD",
   transactionServiceUrl: "https://safe-transaction-mainnet.safe.global",
+  isStripePaymentsEnabled: false,
 };
 
 export const polygonChain: Chain = {
@@ -42,10 +45,28 @@ export const polygonChain: Chain = {
   blockExplorerUrl: "https://polygonscan.com/",
   color: "#8248E5",
   transactionServiceUrl: "https://safe-transaction-polygon.safe.global",
+  isStripePaymentsEnabled: false,
 };
 
-const chains: Chain[] = [gnosisChain, goerliChain, mainnetChain, polygonChain];
+export const mumbaiChain: Chain = {
+  id: "0x13881",
+  token: "matic",
+  shortName: "matic",
+  label: "Mumbai",
+  rpcUrl: "https://rpc-mumbai.maticvigil.com/",
+  blockExplorerUrl: "https://mumbai.polygonscan.com",
+  color: "#8248E5",
+  isStripePaymentsEnabled: true,
+};
 
-export const initialChain = goerliChain;
+const chains: Chain[] = [
+  gnosisChain,
+  goerliChain,
+  mainnetChain,
+  mumbaiChain,
+  polygonChain,
+];
+
+export const initialChain = mumbaiChain;
 
 export default chains;

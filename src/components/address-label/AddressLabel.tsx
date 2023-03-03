@@ -1,13 +1,12 @@
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
-import { useWallets } from "@web3-onboard/react";
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import { styled } from "@mui/material/styles";
 
 import useMemoizedAddressLabel from "src/hooks/useMemoizedAddressLabel";
-import chains from "src/chains/chains";
+import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
 type AddressLabelProps = {
   address: string;
@@ -20,12 +19,7 @@ const AddressLabel = ({
   showBlockExplorerLink,
   showCopyIntoClipboardButton,
 }: AddressLabelProps) => {
-  const [connectedWallet] = useWallets();
-
-  // TODO: create get chain fn
-  const chain = chains.find(
-    (chain) => chain.id === connectedWallet?.chains?.[0]?.id
-  );
+  const { chain } = useAccountAbstraction();
 
   const addressLabel = useMemoizedAddressLabel(address);
 

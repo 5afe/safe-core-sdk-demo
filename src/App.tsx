@@ -1,27 +1,69 @@
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from "@mui/material/styles";
-import Header from "src/components/header/Header";
+import Typography from "@mui/material/Typography";
+import styled from "@emotion/styled";
+import '@safe-global/safe-react-components/dist/fonts.css'
 
-import WalletProviders from "src/components/providers/WalletProviders";
-import useTheme from "src/hooks/useTheme";
-import GelatoRelayer from "src/pages/GelatoRelayer";
+import Intro from "src/pages/Intro";
+import AuthKitDemo from "src/pages/AuthKitDemo";
+import OnRampKitDemo from "src/pages/OnRampKitDemo";
+import RelayerKitDemo from "src/pages/RelayerKitDemo";
+import LastStep from "src/pages/LastStep";
+import Header from "src/components/header/Header";
+import Providers from "src/components/providers/Providers";
+import Stepper from "src/components/stepper/Stepper";
 
 function App() {
-  const { theme, switchThemeMode, isDarkTheme } = useTheme();
-
   return (
-    <ThemeProvider theme={theme}>
-      <WalletProviders>
+    <Providers>
+      <>
         <CssBaseline />
 
         {/* App header */}
-        <Header isDarkTheme={isDarkTheme} switchThemeMode={switchThemeMode} />
+        <Header />
 
-        {/* App Routes */}
-        <GelatoRelayer />
-      </WalletProviders>
-    </ThemeProvider>
+        {/* App Title */}
+        <StyledAppTitle variant="h4" component="h1">
+          Safe Account Abstraction Demo
+        </StyledAppTitle>
+
+        {/* Stepper */}
+        <Stepper
+          labels={["Intro", "Auth kit", "Onramp kit", "Relay kit", "Thanks!"]}
+        >
+          {/* Intro Step */}
+          <Intro />
+
+          {/* Auth kit Step */}
+          <AuthKitDemo />
+
+          {/* Onramp kit Step */}
+          <OnRampKitDemo />
+
+          {/* Relay kit Step */}
+          <RelayerKitDemo />
+
+          {/* Final Screen */}
+          <LastStep />
+        </Stepper>
+      </>
+    </Providers>
   );
 }
 
 export default App;
+
+const StyledAppTitle = styled(Typography)<{
+  variant: string;
+  component: string;
+}>`
+  margin-top: 64px !important;
+
+  text-align: center;
+  font-family: monospace;
+  margin: 0 12px;
+  letter-spacing: 0.3rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
