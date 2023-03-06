@@ -89,7 +89,16 @@ const AccountAbstractionProvider = ({
   const isOwnerConnected = !!ownerAddress && !!chainId;
   const chain = getChain(chainId) || initialChain;
 
-  // TODO: add here safe address ???
+  // reset React state when you switch the chain
+  useEffect(() => {
+    setOwnerAddress("");
+    setSafes([]);
+    setOwnerAddress("");
+    setOwnerAddress("");
+    setChainId(chain.id);
+    setWeb3Provider(undefined);
+    setSafeSelected("")
+  }, [chain]);
 
   // auth-kit implementation
   const connectWeb2Login = useCallback(async () => {
@@ -216,7 +225,6 @@ const AccountAbstractionProvider = ({
 
     console.log("Stripe sessionData: ", sessionData);
   };
-
 
   // we can pay Gelato tx relayer fees with native token & USDC
   // TODO: ADD native Safe Balance polling
