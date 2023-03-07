@@ -7,10 +7,10 @@
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.7",
-    "@safe-global/account-abstraction-kit-poc": "^0.1.0-alpha.0",
-    "@safe-global/auth-kit": "0.1.0-alpha.1",
-    "@safe-global/onramp-kit": "0.1.0-alpha.1",
-    "@safe-global/relay-kit": "0.1.0-alpha.1",
+    "@safe-global/account-abstraction-kit-poc": "^0.1.0-alpha.1",
+    "@safe-global/auth-kit": "0.1.0-alpha.2",
+    "@safe-global/onramp-kit": "0.1.0-alpha.2",
+    "@safe-global/relay-kit": "0.1.0-alpha.2",
     "@safe-global/safe-react-components": "^2.0.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -28,8 +28,10 @@
     "react-code-blocks": "^0.0.9-0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "typescript": "^4.9.5"
+  },
+  "resolutions": {
+    "@ethereumjs/tx": "4.0.2"
   },
   "devDependencies": {
     "assert": "^2.0.0",
@@ -58,9 +60,11 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "chrome >= 67",
+      "edge >= 79",
+      "firefox >= 68",
+      "opera >= 54",
+      "safari >= 14"
     ],
     "development": [
       "last 1 chrome version",

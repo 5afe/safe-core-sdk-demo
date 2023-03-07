@@ -118,7 +118,7 @@ const RelayerKitDemo = () => {
         <Typography textAlign="center">
           This implementation is defined in our{" "}
           <Link
-            href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.ts#L154"
+            href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.tsx#L154"
             target="_blank"
           >
             <code>accountAbstractionContext.tsx</code>
