@@ -105,7 +105,7 @@ const OnRampKitDemo = () => {
         <Typography textAlign="center">
           This implementation is defined in our{" "}
           <Link
-            href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.ts#L190"
+            href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.tsx#L190"
             target="_blank"
           >
             <code>accountAbstractionContext.tsx</code>

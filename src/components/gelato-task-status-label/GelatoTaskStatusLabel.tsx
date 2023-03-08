@@ -12,9 +12,9 @@ import SuccessIcon from "@mui/icons-material/CheckCircleRounded";
 import { GelatoRelayAdapter } from "@safe-global/relay-kit";
 
 import useApi from "src/hooks/useApi";
-import { GelatoTask } from "src/models/gelatoTask";
 import AddressLabel from "src/components/address-label/AddressLabel";
 import getChain from "src/utils/getChain";
+import { TransactionStatusResponse } from "@gelatonetwork/relay-sdk";
 
 type GelatoTaskStatusLabelProps = {
   gelatoTaskId: string;
@@ -33,13 +33,11 @@ const GelatoTaskStatusLabel = ({
   setTransactionHash,
 }: GelatoTaskStatusLabelProps) => {
   const fetchGelatoTaskInfo = useCallback(
-    async () => await new GelatoRelayAdapter().checkTask(gelatoTaskId),
+    async () => await new GelatoRelayAdapter().getTaskStatus(gelatoTaskId),
     [gelatoTaskId]
   );
 
-  const { data } = useApi(fetchGelatoTaskInfo, pollingTime);
-
-  const gelatoTaskInfo = data?.task;
+  const { data: gelatoTaskInfo } = useApi(fetchGelatoTaskInfo, pollingTime);
 
   console.log("gelatoTaskInfo: ", gelatoTaskInfo);
 
@@ -135,7 +133,7 @@ const Container = styled(Box)`
 
 const StatusContainer = styled("div")<{
   theme?: Theme;
-  taskStatus: GelatoTask["taskState"];
+  taskStatus: TransactionStatusResponse["taskState"];
 }>(
   ({ theme, taskStatus }) => `
     margin-right: 8px;
@@ -149,27 +147,35 @@ const StatusContainer = styled("div")<{
 );
 
 const getGelatoTaskStatusColor = (
-  taskStatus: GelatoTask["taskState"],
+  taskStatus: TransactionStatusResponse["taskState"],
   theme: Theme
 ) => {
-  const colors: Record<GelatoTask["taskState"], string> = {
+  const colors: Record<TransactionStatusResponse["taskState"], string> = {
     CheckPending: theme.palette.warning.light,
     WaitingForConfirmation: theme.palette.info.light,
     ExecPending: theme.palette.info.light,
     ExecSuccess: theme.palette.success.light,
     Cancelled: theme.palette.error.light,
+    ExecReverted: theme.palette.error.light,
+    Blacklisted: theme.palette.error.light,
+    NotFound: theme.palette.error.light,
   };
 
   return colors[taskStatus];
 };
 
-const getGelatoTaskStatusLabel = (taskStatus: GelatoTask["taskState"]) => {
-  const label: Record<GelatoTask["taskState"], string> = {
+const getGelatoTaskStatusLabel = (
+  taskStatus: TransactionStatusResponse["taskState"]
+) => {
+  const label: Record<TransactionStatusResponse["taskState"], string> = {
     CheckPending: "Pending",
     WaitingForConfirmation: "Waiting confirmations",
     ExecPending: "Executing",
     ExecSuccess: "Success",
     Cancelled: "Cancelled",
+    ExecReverted: "Reverted",
+    Blacklisted: "Blacklisted",
+    NotFound: "Not Found",
   };
 
   return label[taskStatus];
