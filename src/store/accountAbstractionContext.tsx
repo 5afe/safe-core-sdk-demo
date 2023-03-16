@@ -28,7 +28,7 @@ type accountAbstractionContextValue = {
   chainId: string;
   safes: string[];
   chain?: Chain;
-  isOwnerConnected: boolean;
+  isAuthenticated: boolean;
   web3Provider?: ethers.providers.Web3Provider;
   connectWeb2Login: () => void;
   setChainId: (chainId: string) => void;
@@ -42,7 +42,7 @@ type accountAbstractionContextValue = {
 };
 
 const initialState = {
-  isOwnerConnected: false,
+  isAuthenticated: false,
   connectWeb2Login: () => {},
   relayTransaction: async () => {},
   setChainId: () => {},
@@ -86,7 +86,7 @@ const AccountAbstractionProvider = ({
   const [web3Provider, setWeb3Provider] =
     useState<ethers.providers.Web3Provider>();
 
-  const isOwnerConnected = !!ownerAddress && !!chainId;
+  const isAuthenticated = !!ownerAddress && !!chainId;
   const chain = getChain(chainId) || initialChain;
 
   // reset React state when you switch the chain
@@ -97,7 +97,7 @@ const AccountAbstractionProvider = ({
     setOwnerAddress("");
     setChainId(chain.id);
     setWeb3Provider(undefined);
-    setSafeSelected("")
+    setSafeSelected("");
   }, [chain]);
 
   // auth-kit implementation
@@ -245,7 +245,7 @@ const AccountAbstractionProvider = ({
     chain,
     safes,
 
-    isOwnerConnected,
+    isAuthenticated,
 
     web3Provider,
 

@@ -7,19 +7,19 @@ import IconButton from "@mui/material/IconButton";
 import DarkThemeIcon from "@mui/icons-material/Brightness4";
 import LightThemeIcon from "@mui/icons-material/Brightness7";
 
-import ConnectedWalletLabel from "src/components/connected-wallet-label/ConnectedWalletLabel";
 import ChainLabel from "src/components/chain-label/ChainLabel";
 import safeHeaderLogo from "src/assets/safe-header-logo.svg";
 import { useTheme } from "src/store/themeContext";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
-import { useStepper } from "src/store/stepperContext";
 
-function Header() {
+type HeaderProps = {
+  setStep: (newStep: number) => void;
+};
+
+function Header({ setStep }: HeaderProps) {
   const { switchThemeMode, isDarkTheme } = useTheme();
 
   const { chain } = useAccountAbstraction();
-
-  const { setStep } = useStepper();
 
   return (
     <AppBar position="static">
@@ -43,9 +43,6 @@ function Header() {
           >
             {/* chain label */}
             {chain && <ChainLabel chain={chain} />}
-
-            {/* connected Wallet */}
-            <ConnectedWalletLabel />
 
             {/* Switch Theme mode button */}
             <Tooltip title="Switch Theme mode">

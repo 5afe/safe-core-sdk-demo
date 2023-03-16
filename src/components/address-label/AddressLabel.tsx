@@ -60,7 +60,7 @@ const AddressLabel = ({
             size={"small"}
             color="inherit"
           >
-            <OpenInNew sx={{ fontSize: "14px" }} color="inherit" />
+            <OpenInNew sx={{ fontSize: "14px" }} color="primary" />
           </IconButton>
         </Tooltip>
       )}

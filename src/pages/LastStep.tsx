@@ -1,33 +1,41 @@
-import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import Link from "@mui/material/Link";
+import Box from "@mui/material/Box";
 
-const LastStep = () => {
+import safeLogo from "src/assets/safe-logo.svg";
+
+type LastStepProps = {
+  previousStep: () => void;
+};
+
+const LastStep = ({ previousStep }: LastStepProps) => {
   return (
     <Box
       display="flex"
       flexDirection="column"
-      alignItems="center"
-      gap={2}
-      component={Paper}
-      sx={{ border: "1px solid #fff" }}
-      padding="18px"
+      alignItems="flex-start"
+      paddingTop="72px"
+      paddingLeft="100px"
     >
-      <Typography textAlign="center" variant="h2" component="h2">
-        Thanks!
+      <img src={safeLogo} alt="safe logo" height="30px" />
+
+      <Typography variant="h1" fontSize="64px" lineHeight="76px">
+        Come MAArch with us in our Account Abstraction hackathon.
       </Typography>
 
-      <Typography textAlign="center">
-        Check our{" "}
-        <Link
-          href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk"
+      <Box display="flex" gap={2} marginTop="32px">
+        <Button variant="outlined" onClick={previousStep}>
+          Back to Demo
+        </Button>
+
+        <Button
+          variant="contained"
+          href="https://dorahacks.io/hackathon/safe"
           target="_blank"
         >
-          Safe&#123;Core&#125; Account abstraction SDK documentation
-        </Link>{" "}
-        for more details!
-      </Typography>
+          Join the Hackaton
+        </Button>
+      </Box>
     </Box>
   );
 };
