@@ -9,10 +9,10 @@ import safeLogo from "src/assets/safe-logo.svg";
 import ChainSelector from "src/components/chain-selector/ChainSelector";
 
 type IntroProps = {
-  nextStep: () => void;
+  setStep: (newStep: number) => void;
 };
 
-const Intro = ({ nextStep }: IntroProps) => {
+const Intro = ({ setStep }: IntroProps) => {
   return (
     <Box
       display="flex"
@@ -70,10 +70,10 @@ const Intro = ({ nextStep }: IntroProps) => {
 
       <Typography>“Condition under which networks is used in demo”.</Typography>
 
-      <Box display="flex" gap={2} marginTop="32px">
+      <Box display="flex" gap={2} marginTop="32px" alignItems="center">
         <ChainSelector />
 
-        <Button variant="contained" onClick={nextStep}>
+        <Button variant="contained" onClick={() => setStep(1)}>
           Start Demo
         </Button>
       </Box>

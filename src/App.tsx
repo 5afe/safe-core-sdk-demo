@@ -1,6 +1,9 @@
 import { useCallback, useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import "@safe-global/safe-react-components/dist/fonts.css";
 
 import Intro from "src/pages/Intro";
@@ -36,6 +39,9 @@ function App() {
 
   const showSafeCoreVideo = isFirstStep || isLastStep;
 
+  const ActiveStepComponent = steps[activeStep].component;
+  const nextLabel = steps[activeStep].nextLabel;
+
   return (
     <Providers>
       <>
@@ -57,28 +63,39 @@ function App() {
             <NavMenu setStep={setStep} activeStep={activeStep} />
           )}
 
-          {/* TODO: create Array of steps */}
           <main style={{ flexGrow: 1 }}>
-            {/* Intro Step */}
-            {isFirstStep && <Intro nextStep={nextStep} />}
+            {/* Active Step Component */}
+            <ActiveStepComponent setStep={setStep} />
 
-            {/* Auth kit Step */}
-            {activeStep === 1 && (
-              <AuthKitDemo previousStep={previousStep} nextStep={nextStep} />
+            {/* next & back Buttons */}
+            {!isFirstStep && !isLastStep && (
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={2}
+                marginTop="32px"
+              >
+                <Button onClick={previousStep} variant="outlined">
+                  Back
+                </Button>
+
+                {nextLabel && (
+                  <Typography
+                    variant="h3"
+                    component="h2"
+                    fontWeight="700"
+                    flexGrow="1"
+                    textAlign="right"
+                  >
+                    {nextLabel}
+                  </Typography>
+                )}
+
+                <Button onClick={nextStep} variant="contained">
+                  Next
+                </Button>
+              </Stack>
             )}
-
-            {/* Onramp kit Step */}
-            {activeStep === 2 && (
-              <OnRampKitDemo previousStep={previousStep} nextStep={nextStep} />
-            )}
-
-            {/* Relay kit Step */}
-            {activeStep === 3 && (
-              <RelayerKitDemo previousStep={previousStep} nextStep={nextStep} />
-            )}
-
-            {/* Final Screen */}
-            {isLastStep && <LastStep previousStep={previousStep} />}
           </main>
         </Box>
       </>
@@ -87,3 +104,29 @@ function App() {
 }
 
 export default App;
+
+const steps = [
+  {
+    // Intro step
+    component: Intro,
+  },
+  {
+    // Auth Kit step
+    component: AuthKitDemo,
+    nextLabel: "to Onramp Kit",
+  },
+  {
+    // Onramp Kit step
+    component: OnRampKitDemo,
+    nextLabel: "to Relay Kit",
+  },
+  {
+    // Relay Kit step
+    component: RelayerKitDemo,
+    nextLabel: "Final",
+  },
+  {
+    // Final step
+    component: LastStep,
+  },
+];

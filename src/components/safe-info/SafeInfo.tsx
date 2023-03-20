@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import { Theme } from "@mui/material";
+import { Skeleton, Theme } from "@mui/material";
 import styled from "@emotion/styled";
 import { providers, utils } from "ethers";
 
@@ -26,12 +26,14 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
   const { web3Provider, chain, safeBalance } = useAccountAbstraction();
 
   const [isDeployed, setIsDeployed] = useState<boolean>(false);
+  const [isDeployLoading, setIsDeployLoading] = useState<boolean>(true);
 
   // detect if the safe is deployed with polling
   const detectSafeIsDeployed = useCallback(async () => {
     const isDeployed = await isContractAddress(safeAddress, web3Provider);
 
     setIsDeployed(isDeployed);
+    setIsDeployLoading(false);
   }, [web3Provider, safeAddress]);
 
   usePolling(detectSafeIsDeployed);
@@ -42,18 +44,21 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
     [safeAddress, chainId]
   );
 
-  const { data: safeInfo } = useApi(fetchInfo);
+  const { data: safeInfo, isLoading: isGetSafeInfoLoading } = useApi(fetchInfo);
 
   const owners = safeInfo?.owners.length || 1;
   const threshold = safeInfo?.threshold || 1;
-
-  console.log("balanes: ", safeBalance);
+  const isLoading = isDeployLoading || isGetSafeInfoLoading;
 
   return (
     <Stack direction="row" spacing={2}>
       <div style={{ position: "relative" }}>
         {/* Safe Logo */}
-        <img src={safeLogo} alt="connected Wallet logo" height="50px" />
+        {isLoading ? (
+          <Skeleton variant="circular" width={50} height={50} />
+        ) : (
+          <img src={safeLogo} alt="connected Wallet logo" height="50px" />
+        )}
 
         {/* Threshold & owners label */}
         {isDeployed && (
@@ -76,7 +81,9 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
           <AddressLabel address={safeAddress} showBlockExplorerLink />
         </Typography>
 
-        {!isDeployed ? (
+        {isLoading && <Skeleton variant="text" width={110} height={20} />}
+
+        {!isDeployed && !isDeployLoading && (
           <CreationPendingLabel>
             <Tooltip title="This Safe is not deployed yet, it will be deployed when you execute the first transaction">
               <Typography fontWeight="700" fontSize="12px" color="inherit">
@@ -84,7 +91,9 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
               </Typography>
             </Tooltip>
           </CreationPendingLabel>
-        ) : (
+        )}
+
+        {!isLoading && (
           <AmountContainer>
             {/* Safe Balance */}
             <Typography fontWeight="700">
@@ -138,6 +147,7 @@ const AmountContainer = styled("div")<{
   `
 );
 
+// TODO: create a util for this?
 const isContractAddress = async (
   address: string,
   provider?: providers.Web3Provider

@@ -5,23 +5,27 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
 import styled from "@emotion/styled";
 import { Theme } from "@mui/material";
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 import WalletIcon from "@mui/icons-material/AccountBalanceWalletRounded";
+import CloseIcon from "@mui/icons-material/CloseRounded";
 
 import SafeInfo from "src/components/safe-info/SafeInfo";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 import { useState } from "react";
 
-type OnRampKitDemoProps = {
-  previousStep: () => void;
-  nextStep: () => void;
-};
-
-const OnRampKitDemo = ({ previousStep, nextStep }: OnRampKitDemoProps) => {
-  const { onRampWithStripe, safeSelected, chain, chainId } =
-    useAccountAbstraction();
+const OnRampKitDemo = () => {
+  const {
+    openStripeWidget,
+    closeStripeWidget,
+    safeSelected,
+    chain,
+    chainId,
+    isAuthenticated,
+    connectWeb2Login,
+  } = useAccountAbstraction();
 
   const [showStripeWidget, setShowStripeWidget] = useState<boolean>(false);
 
@@ -69,65 +73,99 @@ const OnRampKitDemo = ({ previousStep, nextStep }: OnRampKitDemoProps) => {
         Interactive demo
       </Typography>
 
-      <Box display="flex" gap={3}>
-        {/* safe Account */}
-        <ConnectedContainer>
-          <Typography fontWeight="700">Safe Account</Typography>
-
-          <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-            Your Safe account (Smart Contract) holds and protects your assets.
-          </Typography>
-
-          {/* Safe Info */}
-          {safeSelected && (
-            <SafeInfo safeAddress={safeSelected} chainId={chainId} />
-          )}
+      {!isAuthenticated ? (
+        <ConnectedContainer
+          display="flex"
+          gap={3}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Button variant="contained" onClick={connectWeb2Login}>
+            Connect
+          </Button>
         </ConnectedContainer>
+      ) : (
+        <Box display="flex" gap={3} alignItems="flex-start">
+          {/* safe Account */}
+          <ConnectedContainer>
+            <Typography fontWeight="700">Safe Account</Typography>
 
-        {/* Stripe widget */}
-        <ConnectedContainer>
-          <Typography fontWeight="700">Stripe widget</Typography>
+            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
+              Your Safe account (Smart Contract) holds and protects your assets.
+            </Typography>
 
-          <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-            This widget is on testmode, you will need to use{" "}
-            <Link
-              href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/onramp-kit#considerations-and-limitations"
-              target="_blank"
-            >
-              fake data
-            </Link>{" "}
-            in order to simulate the process. Available only in the United
-            States.
-          </Typography>
+            {/* Safe Info */}
+            {safeSelected && (
+              <SafeInfo safeAddress={safeSelected} chainId={chainId} />
+            )}
+          </ConnectedContainer>
 
-          {!showStripeWidget && (
-            <Tooltip
-              title={
-                "buy USDC to your Safe address using Stripe payment provider"
-              }
-            >
-              {/* Buy USDC with our OnRamp kit */}
-              <Button
-                startIcon={<WalletIcon />}
-                variant="contained"
-                onClick={() => {
-                  onRampWithStripe();
-                  setShowStripeWidget(true);
-                }}
-                disabled={!chain?.isStripePaymentsEnabled}
+          {/* Stripe widget */}
+          <ConnectedContainer>
+            <Typography fontWeight="700">Stripe widget</Typography>
+
+            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
+              This widget is on testmode, you will need to use{" "}
+              <Link
+                href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/onramp-kit#considerations-and-limitations"
+                target="_blank"
               >
-                Buy USDC
-                {!chain?.isStripePaymentsEnabled
-                  ? " (only in Mumbai chain)"
-                  : ""}
-              </Button>
-            </Tooltip>
-          )}
+                fake data
+              </Link>{" "}
+              in order to simulate the process. Available only in the United
+              States.
+            </Typography>
 
-          {/* Stripe root widget */}
-          <div id="stripe-root"></div>
-        </ConnectedContainer>
-      </Box>
+            {!showStripeWidget ? (
+              <Tooltip
+                title={
+                  "buy USDC to your Safe address using Stripe payment provider"
+                }
+              >
+                {/* Buy USDC with our OnRamp kit */}
+                <Button
+                  startIcon={<WalletIcon />}
+                  variant="contained"
+                  onClick={async () => {
+                    setShowStripeWidget(true);
+                    await openStripeWidget();
+                  }}
+                  disabled={!chain?.isStripePaymentsEnabled}
+                >
+                  Buy USDC
+                  {!chain?.isStripePaymentsEnabled
+                    ? " (only in Mumbai chain)"
+                    : ""}
+                </Button>
+              </Tooltip>
+            ) : (
+              <Stack
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                gap={1}
+              >
+                <Tooltip title={"close Stripe Widget"}>
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    sx={{ alignSelf: "flex-end" }}
+                    onClick={async () => {
+                      setShowStripeWidget(false);
+                      await closeStripeWidget();
+                    }}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+
+                {/* Stripe root widget */}
+                <div id="stripe-root"></div>
+              </Stack>
+            )}
+          </ConnectedContainer>
+        </Box>
+      )}
 
       <Divider style={{ margin: "40px 0 30px 0" }} />
 
@@ -150,28 +188,6 @@ const OnRampKitDemo = ({ previousStep, nextStep }: OnRampKitDemoProps) => {
           theme={atomOneDark}
         />
       </CodeContainer>
-
-      {/* TODO: Move this to App.tsx */}
-      {/* next & back Buttons */}
-      <Stack direction="row" alignItems="center" spacing={2} marginTop="32px">
-        <Button onClick={previousStep} variant="outlined">
-          Back
-        </Button>
-
-        <Typography
-          variant="h3"
-          component="h2"
-          fontWeight="700"
-          flexGrow="1"
-          textAlign="right"
-        >
-          to Onramp Kit
-        </Typography>
-
-        <Button onClick={nextStep} variant="contained">
-          Next
-        </Button>
-      </Stack>
     </>
   );
 };
@@ -208,6 +224,8 @@ const ConnectedContainer = styled(Box)<{
   border-radius: 10px;
   border: 1px solid ${theme.palette.border.light};
   padding: 40px 32px;
+
+  min-height: 265px;
 `
 );
 

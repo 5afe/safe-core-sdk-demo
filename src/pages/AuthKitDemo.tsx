@@ -7,18 +7,12 @@ import Divider from "@mui/material/Divider";
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 import styled from "@emotion/styled";
 import { Theme } from "@mui/material";
-import WalletIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 
 import SafeInfo from "src/components/safe-info/SafeInfo";
 import ConnectedWalletLabel from "src/components/connected-wallet-label/ConnectedWalletLabel";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
-type AuthKitDemoProps = {
-  previousStep: () => void;
-  nextStep: () => void;
-};
-
-const AuthKitDemo = ({ previousStep, nextStep }: AuthKitDemoProps) => {
+const AuthKitDemo = () => {
   const { connectWeb2Login, isAuthenticated, safeSelected, chainId } =
     useAccountAbstraction();
 
@@ -103,15 +97,12 @@ const AuthKitDemo = ({ previousStep, nextStep }: AuthKitDemoProps) => {
             Create a safe using Auth
           </Typography>
 
-          <Typography marginBottom="24px">
-            TODO: “Expected behaviour explanation”
+          <Typography marginBottom="24px" textAlign="center">
+            Authenticates a blockchain account using an email address, social
+            media account, or traditional crypto wallets
           </Typography>
 
-          <Button
-            startIcon={<WalletIcon />}
-            variant="contained"
-            onClick={connectWeb2Login}
-          >
+          <Button variant="contained" onClick={connectWeb2Login}>
             Connect
           </Button>
         </ConnectContainer>
@@ -138,28 +129,6 @@ const AuthKitDemo = ({ previousStep, nextStep }: AuthKitDemoProps) => {
           theme={atomOneDark}
         />
       </CodeContainer>
-
-      {/* TODO: Move this to App.tsx */}
-      {/* next & back Buttons */}
-      <Stack direction="row" alignItems="center" spacing={2} marginTop="32px">
-        <Button onClick={previousStep} variant="outlined">
-          Back
-        </Button>
-
-        <Typography
-          variant="h3"
-          component="h2"
-          fontWeight="700"
-          flexGrow="1"
-          textAlign="right"
-        >
-          to Onramp Kit
-        </Typography>
-
-        <Button onClick={nextStep} variant="contained">
-          Next
-        </Button>
-      </Stack>
     </>
   );
 };

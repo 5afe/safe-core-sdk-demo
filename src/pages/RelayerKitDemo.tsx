@@ -1,7 +1,6 @@
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
-import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
@@ -15,12 +14,7 @@ import GelatoTaskStatusLabel from "src/components/gelato-task-status-label/Gelat
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 import { useState } from "react";
 
-type RelayerKitDemoProps = {
-  previousStep: () => void;
-  nextStep: () => void;
-};
-
-const RelayerKitDemo = ({ previousStep, nextStep }: RelayerKitDemoProps) => {
+const RelayerKitDemo = () => {
   const {
     chainId,
 
@@ -100,8 +94,6 @@ const RelayerKitDemo = ({ previousStep, nextStep }: RelayerKitDemoProps) => {
         <ConnectedContainer>
           <Typography fontWeight="700">Relayed transaction</Typography>
 
-          {isRelayerLoading && <LinearProgress />}
-
           {/* Gelato status label */}
           {gelatoTaskId && (
             <GelatoTaskStatusLabel
@@ -153,28 +145,6 @@ const RelayerKitDemo = ({ previousStep, nextStep }: RelayerKitDemoProps) => {
           theme={atomOneDark}
         />
       </CodeContainer>
-
-      {/* TODO: Move this to App.tsx */}
-      {/* next & back Buttons */}
-      <Stack direction="row" alignItems="center" spacing={2} marginTop="32px">
-        <Button onClick={previousStep} variant="outlined">
-          Back
-        </Button>
-
-        <Typography
-          variant="h3"
-          component="h2"
-          fontWeight="700"
-          flexGrow="1"
-          textAlign="right"
-        >
-          Final
-        </Typography>
-
-        <Button onClick={nextStep} variant="contained">
-          Next
-        </Button>
-      </Stack>
     </>
   );
 };

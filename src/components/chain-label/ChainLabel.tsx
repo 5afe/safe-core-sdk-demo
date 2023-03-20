@@ -16,12 +16,12 @@ export default ChainLabel;
 const Label = styled("span")(
   ({ theme, color }) => `
     border-radius: 4px;
-    padding: 4px 12px;
-
+    font-size: 12px;
+    padding: 0px 12px;
     border: 1px solid #fff;
-  
     background-color: ${color};
-  
-    color: ${theme.palette.getContrastText(color as string)};  
+    color: ${theme.palette.getContrastText(color as string)};
+    text-align: center;
+    width: 100%;
     `
 );

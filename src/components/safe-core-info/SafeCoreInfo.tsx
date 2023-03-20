@@ -9,7 +9,7 @@ const SafeCoreInfo = () => {
   return (
     <div>
       {/* video loop */}
-      <video autoPlay loop muted height="500px">
+      <video autoPlay loop muted height="500px" width="500px">
         <source src={introVideo} />
         <img src={introImage} alt="safe core img" />
       </video>

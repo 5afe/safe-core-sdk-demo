@@ -38,7 +38,8 @@ type accountAbstractionContextValue = {
   isRelayerLoading: boolean;
   relayTransaction: () => Promise<void>;
   gelatoTaskId?: string;
-  onRampWithStripe: () => Promise<void>;
+  openStripeWidget: () => Promise<void>;
+  closeStripeWidget: () => Promise<void>;
 };
 
 const initialState = {
@@ -51,6 +52,8 @@ const initialState = {
   safes: [],
   chainId: initialChain.id,
   isRelayerLoading: true,
+  openStripeWidget: async () => {},
+  closeStripeWidget: async () => {},
 };
 
 const accountAbstractionContext =
@@ -99,6 +102,9 @@ const AccountAbstractionProvider = ({
     setWeb3Provider(undefined);
     setSafeSelected("");
   }, [chain]);
+
+  // onRampClient
+  const [onRampClient, setOnRampClient] = useState<SafeOnRampKit>();
 
   // auth-kit implementation
   const connectWeb2Login = useCallback(async () => {
@@ -197,7 +203,7 @@ const AccountAbstractionProvider = ({
   };
 
   // onramp-kit implementation
-  const onRampWithStripe = async () => {
+  const openStripeWidget = async () => {
     const onRampClient = await SafeOnRampKit.init(
       SafeOnRampProviderType.Stripe,
       {
@@ -223,7 +229,13 @@ const AccountAbstractionProvider = ({
       },
     });
 
+    setOnRampClient(onRampClient);
+
     console.log("Stripe sessionData: ", sessionData);
+  };
+
+  const closeStripeWidget = async () => {
+    onRampClient?.close();
   };
 
   // we can pay Gelato tx relayer fees with native token & USDC
@@ -260,7 +272,8 @@ const AccountAbstractionProvider = ({
     relayTransaction,
     gelatoTaskId,
 
-    onRampWithStripe,
+    openStripeWidget,
+    closeStripeWidget,
   };
 
   return (

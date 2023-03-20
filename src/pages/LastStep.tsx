@@ -5,10 +5,10 @@ import Box from "@mui/material/Box";
 import safeLogo from "src/assets/safe-logo.svg";
 
 type LastStepProps = {
-  previousStep: () => void;
+  setStep: (newStep: number) => void;
 };
 
-const LastStep = ({ previousStep }: LastStepProps) => {
+const LastStep = ({ setStep }: LastStepProps) => {
   return (
     <Box
       display="flex"
@@ -24,7 +24,7 @@ const LastStep = ({ previousStep }: LastStepProps) => {
       </Typography>
 
       <Box display="flex" gap={2} marginTop="32px">
-        <Button variant="outlined" onClick={previousStep}>
+        <Button variant="outlined" onClick={() => setStep(0)}>
           Back to Demo
         </Button>
 

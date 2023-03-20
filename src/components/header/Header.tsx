@@ -42,7 +42,11 @@ function Header({ setStep }: HeaderProps) {
             gap={1}
           >
             {/* chain label */}
-            {chain && <ChainLabel chain={chain} />}
+            {chain && (
+              <Box display="flex" justifyContent="flex-end" alignItems="center">
+                <ChainLabel chain={chain} />
+              </Box>
+            )}
 
             {/* Switch Theme mode button */}
             <Tooltip title="Switch Theme mode">
