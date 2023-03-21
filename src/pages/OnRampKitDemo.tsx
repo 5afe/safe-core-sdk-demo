@@ -24,7 +24,7 @@ const OnRampKitDemo = () => {
     chain,
     chainId,
     isAuthenticated,
-    connectWeb2Login,
+    loginWeb3Auth,
   } = useAccountAbstraction();
 
   const [showStripeWidget, setShowStripeWidget] = useState<boolean>(false);
@@ -80,7 +80,7 @@ const OnRampKitDemo = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <Button variant="contained" onClick={connectWeb2Login}>
+          <Button variant="contained" onClick={loginWeb3Auth}>
             Connect
           </Button>
         </ConnectedContainer>

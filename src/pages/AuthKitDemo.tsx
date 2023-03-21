@@ -13,7 +13,7 @@ import ConnectedWalletLabel from "src/components/connected-wallet-label/Connecte
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
 const AuthKitDemo = () => {
-  const { connectWeb2Login, isAuthenticated, safeSelected, chainId } =
+  const { loginWeb3Auth, isAuthenticated, safeSelected, chainId } =
     useAccountAbstraction();
 
   return (
@@ -102,7 +102,7 @@ const AuthKitDemo = () => {
             media account, or traditional crypto wallets
           </Typography>
 
-          <Button variant="contained" onClick={connectWeb2Login}>
+          <Button variant="contained" onClick={loginWeb3Auth}>
             Connect
           </Button>
         </ConnectContainer>

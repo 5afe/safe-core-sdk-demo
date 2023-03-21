@@ -30,7 +30,8 @@ type accountAbstractionContextValue = {
   chain?: Chain;
   isAuthenticated: boolean;
   web3Provider?: ethers.providers.Web3Provider;
-  connectWeb2Login: () => void;
+  loginWeb3Auth: () => void;
+  logoutWeb3Auth: () => void;
   setChainId: (chainId: string) => void;
   safeSelected?: string;
   safeBalance?: string;
@@ -44,7 +45,8 @@ type accountAbstractionContextValue = {
 
 const initialState = {
   isAuthenticated: false,
-  connectWeb2Login: () => {},
+  loginWeb3Auth: () => {},
+  logoutWeb3Auth: () => {},
   relayTransaction: async () => {},
   setChainId: () => {},
   setSafeSelected: () => {},
@@ -96,18 +98,20 @@ const AccountAbstractionProvider = ({
   useEffect(() => {
     setOwnerAddress("");
     setSafes([]);
-    setOwnerAddress("");
-    setOwnerAddress("");
     setChainId(chain.id);
     setWeb3Provider(undefined);
     setSafeSelected("");
+    setAuthClient(undefined);
   }, [chain]);
+
+  // authClient
+  const [authClient, setAuthClient] = useState<SafeAuthKit>();
 
   // onRampClient
   const [onRampClient, setOnRampClient] = useState<SafeOnRampKit>();
 
   // auth-kit implementation
-  const connectWeb2Login = useCallback(async () => {
+  const loginWeb3Auth = useCallback(async () => {
     try {
       const safeAuth = await SafeAuthKit.init(SafeAuthProviderType.Web3Auth, {
         chainId: chain.id,
@@ -130,11 +134,22 @@ const AccountAbstractionProvider = ({
         setOwnerAddress(eoa);
         setSafes(safes || []);
         setWeb3Provider(new ethers.providers.Web3Provider(provider));
+        setAuthClient(safeAuth);
       }
     } catch (error) {
       console.log("error: ", error);
     }
   }, [chain]);
+
+  const logoutWeb3Auth = () => {
+    authClient?.signOut();
+    setOwnerAddress("");
+    setSafes([]);
+    setChainId(chain.id);
+    setWeb3Provider(undefined);
+    setSafeSelected("");
+    setAuthClient(undefined);
+  };
 
   // TODO: add disconnect owner wallet logic ?
 
@@ -261,7 +276,9 @@ const AccountAbstractionProvider = ({
 
     web3Provider,
 
-    connectWeb2Login,
+    loginWeb3Auth,
+    logoutWeb3Auth,
+
     setChainId,
 
     safeSelected,
