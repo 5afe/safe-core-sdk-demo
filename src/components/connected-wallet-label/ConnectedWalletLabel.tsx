@@ -34,7 +34,7 @@ function ConnectedWalletLabel() {
 
       {/* logout button */}
       <Tooltip title="Logout">
-        <LogoutIconButton color="secondary" onClick={logoutWeb3Auth}>
+        <LogoutIconButton onClick={logoutWeb3Auth}>
           <LogoutIcon fontSize="small" />
         </LogoutIconButton>
       </Tooltip>

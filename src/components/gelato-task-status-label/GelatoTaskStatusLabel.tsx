@@ -93,6 +93,7 @@ const GelatoTaskStatusLabel = ({
                 address={transactionHash}
                 showBlockExplorerLink
                 isTransactionAddress
+                showCopyIntoClipboardButton={false}
               />
             </Link>
           ) : (

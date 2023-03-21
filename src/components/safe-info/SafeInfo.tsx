@@ -10,9 +10,11 @@ import AddressLabel from "src/components/address-label/AddressLabel";
 import AmountLabel from "src/components/amount-label/AmountLabel";
 import getSafeInfo from "src/api/getSafeInfo";
 import useApi from "src/hooks/useApi";
-import safeLogo from "src/assets/safe-info-logo.svg";
+import safeLogoLight from "src/assets/safe-info-logo-light.svg";
+import safeLogoDark from "src/assets/safe-info-logo-dark.svg";
 import usePolling from "src/hooks/usePolling";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
+import { useTheme } from "src/store/themeContext";
 
 type SafeInfoProps = {
   safeAddress: string;
@@ -27,6 +29,8 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
 
   const [isDeployed, setIsDeployed] = useState<boolean>(false);
   const [isDeployLoading, setIsDeployLoading] = useState<boolean>(true);
+
+  const { isDarkTheme } = useTheme();
 
   // detect if the safe is deployed with polling
   const detectSafeIsDeployed = useCallback(async () => {
@@ -57,7 +61,11 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
         {isLoading ? (
           <Skeleton variant="circular" width={50} height={50} />
         ) : (
-          <img src={safeLogo} alt="connected Wallet logo" height="50px" />
+          <img
+            src={isDarkTheme ? safeLogoDark : safeLogoLight}
+            alt="connected Safe account logo"
+            height="50px"
+          />
         )}
 
         {/* Threshold & owners label */}
