@@ -25,6 +25,9 @@ const RelayerKitDemo = () => {
     isRelayerLoading,
     relayTransaction,
     gelatoTaskId,
+
+    isAuthenticated,
+    loginWeb3Auth,
   } = useAccountAbstraction();
 
   const [transactionHash, setTransactionHash] = useState<string>("");
@@ -76,61 +79,81 @@ const RelayerKitDemo = () => {
         Interactive demo
       </Typography>
 
-      <Box display="flex" gap={3}>
-        {/* safe Account */}
-        <ConnectedContainer>
-          <Typography fontWeight="700">Safe Account</Typography>
-
-          <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-            Your Safe account (Smart Contract) holds and protects your assets.
-          </Typography>
-
-          {/* Safe Info */}
-          {safeSelected && (
-            <SafeInfo safeAddress={safeSelected} chainId={chainId} />
-          )}
-        </ConnectedContainer>
-
-        {/* Relay Transaction */}
+      {!isAuthenticated ? (
         <ConnectedContainer
           display="flex"
           flexDirection="column"
-          gap={2}
-          alignItems="flex-start"
+          justifyContent="center"
+          alignItems="center"
+          gap={3}
         >
-          <Typography fontWeight="700">Relayed transaction</Typography>
+          <Typography variant="h4" component="h3" fontWeight="700">
+            To be able to use the Relay Kit you need to be authenticated
+          </Typography>
 
-          {/* Gelato status label */}
-          {gelatoTaskId && (
-            <GelatoTaskStatusLabel
-              gelatoTaskId={gelatoTaskId}
-              chainId={chainId}
-              setTransactionHash={setTransactionHash}
-              transactionHash={transactionHash}
-            />
-          )}
-
-          {isRelayerLoading && <LinearProgress sx={{ alignSelf: "stretch" }} />}
-
-          {!isRelayerLoading && !gelatoTaskId && (
-            <>
-              <Typography fontSize="14px">
-                Find out about the status of your relayed transaction.
-              </Typography>
-
-              {/* send fake transaction to Gelato relayer */}
-              <Button
-                startIcon={<SendIcon />}
-                variant="contained"
-                disabled={!safeBalance}
-                onClick={relayTransaction}
-              >
-                Send Transaction
-              </Button>
-            </>
-          )}
+          <Button variant="contained" onClick={loginWeb3Auth}>
+            Connect
+          </Button>
         </ConnectedContainer>
-      </Box>
+      ) : (
+        <Box display="flex" gap={3}>
+          {/* safe Account */}
+          <ConnectedContainer>
+            <Typography fontWeight="700">Safe Account</Typography>
+
+            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
+              Your Safe account (Smart Contract) holds and protects your assets.
+            </Typography>
+
+            {/* Safe Info */}
+            {safeSelected && (
+              <SafeInfo safeAddress={safeSelected} chainId={chainId} />
+            )}
+          </ConnectedContainer>
+
+          {/* Relay Transaction */}
+          <ConnectedContainer
+            display="flex"
+            flexDirection="column"
+            gap={2}
+            alignItems="flex-start"
+          >
+            <Typography fontWeight="700">Relayed transaction</Typography>
+
+            {/* Gelato status label */}
+            {gelatoTaskId && (
+              <GelatoTaskStatusLabel
+                gelatoTaskId={gelatoTaskId}
+                chainId={chainId}
+                setTransactionHash={setTransactionHash}
+                transactionHash={transactionHash}
+              />
+            )}
+
+            {isRelayerLoading && (
+              <LinearProgress sx={{ alignSelf: "stretch" }} />
+            )}
+
+            {!isRelayerLoading && !gelatoTaskId && (
+              <>
+                <Typography fontSize="14px">
+                  Find out about the status of your relayed transaction.
+                </Typography>
+
+                {/* send fake transaction to Gelato relayer */}
+                <Button
+                  startIcon={<SendIcon />}
+                  variant="contained"
+                  disabled={!safeBalance}
+                  onClick={relayTransaction}
+                >
+                  Send Transaction
+                </Button>
+              </>
+            )}
+          </ConnectedContainer>
+        </Box>
+      )}
 
       <Divider style={{ margin: "40px 0 30px 0" }} />
 

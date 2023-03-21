@@ -76,10 +76,15 @@ const OnRampKitDemo = () => {
       {!isAuthenticated ? (
         <ConnectedContainer
           display="flex"
-          gap={3}
+          flexDirection="column"
           justifyContent="center"
           alignItems="center"
+          gap={3}
         >
+          <Typography variant="h4" component="h3" fontWeight="700">
+            To be able to use the OnRamp Kit you need to be authenticated
+          </Typography>
+
           <Button variant="contained" onClick={loginWeb3Auth}>
             Connect
           </Button>

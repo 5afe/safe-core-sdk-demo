@@ -92,14 +92,10 @@ const AuthKitDemo = () => {
           display="flex"
           flexDirection="column"
           alignItems="center"
+          gap={2}
         >
           <Typography variant="h4" component="h3" fontWeight="700">
-            Create a safe using Auth
-          </Typography>
-
-          <Typography marginBottom="24px" textAlign="center">
-            Authenticates a blockchain account using an email address, social
-            media account, or traditional crypto wallets
+            Create a safe using the Auth Kit
           </Typography>
 
           <Button variant="contained" onClick={loginWeb3Auth}>
