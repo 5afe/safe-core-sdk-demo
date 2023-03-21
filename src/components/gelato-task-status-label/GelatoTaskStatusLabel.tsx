@@ -89,7 +89,11 @@ const GelatoTaskStatusLabel = ({
               href={`${chain?.blockExplorerUrl}/tx/${transactionHash}`}
               target="_blank"
             >
-              <AddressLabel address={transactionHash} showBlockExplorerLink />
+              <AddressLabel
+                address={transactionHash}
+                showBlockExplorerLink
+                isTransactionAddress
+              />
             </Link>
           ) : (
             <Skeleton variant="text" width={150} height={20} />

@@ -1,6 +1,7 @@
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
+import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
@@ -91,7 +92,12 @@ const RelayerKitDemo = () => {
         </ConnectedContainer>
 
         {/* Relay Transaction */}
-        <ConnectedContainer>
+        <ConnectedContainer
+          display="flex"
+          flexDirection="column"
+          gap={2}
+          alignItems="flex-start"
+        >
           <Typography fontWeight="700">Relayed transaction</Typography>
 
           {/* Gelato status label */}
@@ -104,9 +110,11 @@ const RelayerKitDemo = () => {
             />
           )}
 
+          {isRelayerLoading && <LinearProgress sx={{ alignSelf: "stretch" }} />}
+
           {!isRelayerLoading && !gelatoTaskId && (
             <>
-              <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
+              <Typography fontSize="14px">
                 Find out about the status of your relayed transaction.
               </Typography>
 

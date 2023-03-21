@@ -3,27 +3,30 @@ import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
-import { styled } from "@mui/material/styles";
 
 import useMemoizedAddressLabel from "src/hooks/useMemoizedAddressLabel";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
 type AddressLabelProps = {
   address: string;
+  isTransactionAddress?: boolean;
   showBlockExplorerLink?: boolean;
   showCopyIntoClipboardButton?: boolean;
 };
 
 const AddressLabel = ({
   address,
+  isTransactionAddress,
   showBlockExplorerLink,
-  showCopyIntoClipboardButton,
+  showCopyIntoClipboardButton = true,
 }: AddressLabelProps) => {
   const { chain } = useAccountAbstraction();
 
   const addressLabel = useMemoizedAddressLabel(address);
 
-  const blockExplorerLink = `${chain?.blockExplorerUrl}/address/${address}`;
+  const blockExplorerLink = `${chain?.blockExplorerUrl}/${
+    isTransactionAddress ? "tx" : "address"
+  }/${address}`;
 
   return (
     <Stack
@@ -38,20 +41,24 @@ const AddressLabel = ({
 
       {/* Button to copy into clipboard */}
       {showCopyIntoClipboardButton && (
-        <Tooltip title={"Copy address into clipboard"}>
-          <StyledIconButton
+        <Tooltip
+          title={`Copy this ${
+            isTransactionAddress ? "transaction hash" : "address"
+          } into your clipboard`}
+        >
+          <IconButton
             onClick={() => navigator?.clipboard?.writeText?.(address)}
             size={"small"}
             color="inherit"
           >
-            <FileCopyOutlinedIcon sx={{ fontSize: "14px" }} color="inherit" />
-          </StyledIconButton>
+            <FileCopyOutlinedIcon sx={{ fontSize: "14px" }} color="primary" />
+          </IconButton>
         </Tooltip>
       )}
 
       {/* Button to etherscan */}
       {showBlockExplorerLink && blockExplorerLink && (
-        <Tooltip title={"view details on block Explorer"}>
+        <Tooltip title={"View details on block explorer"}>
           <IconButton
             component="a"
             href={blockExplorerLink}
@@ -69,7 +76,3 @@ const AddressLabel = ({
 };
 
 export default AddressLabel;
-
-const StyledIconButton = styled(IconButton)`
-  margin-left: 0px;
-`;
