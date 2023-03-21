@@ -82,7 +82,7 @@ const OnRampKitDemo = () => {
           gap={3}
         >
           <Typography variant="h4" component="h3" fontWeight="700">
-            To be able to use the OnRamp Kit you need to be authenticated
+            To use the Onramp Kit you need to be authenticated
           </Typography>
 
           <Button variant="contained" onClick={loginWeb3Auth}>

@@ -88,7 +88,7 @@ const RelayerKitDemo = () => {
           gap={3}
         >
           <Typography variant="h4" component="h3" fontWeight="700">
-            To be able to use the Relay Kit you need to be authenticated
+            To use the Relay Kit you need to be authenticated
           </Typography>
 
           <Button variant="contained" onClick={loginWeb3Auth}>
