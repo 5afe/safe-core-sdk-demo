@@ -39,6 +39,10 @@ const SafeCoreInfo = () => {
         >
           Documentation
         </Link>
+
+        <Link href="https://chat.safe.global" target="_blank">
+          Discord
+        </Link>
       </Stack>
     </div>
   );
