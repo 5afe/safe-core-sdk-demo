@@ -9,11 +9,14 @@ import styled from "@emotion/styled";
 import { Theme } from "@mui/material";
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 import SendIcon from "@mui/icons-material/SendRounded";
+import { utils } from "ethers";
 
 import SafeInfo from "src/components/safe-info/SafeInfo";
 import GelatoTaskStatusLabel from "src/components/gelato-task-status-label/GelatoTaskStatusLabel";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 import { useState } from "react";
+
+const transferAmount = 0.01;
 
 const RelayerKitDemo = () => {
   const {
@@ -33,6 +36,9 @@ const RelayerKitDemo = () => {
   const [transactionHash, setTransactionHash] = useState<string>("");
 
   // TODO: ADD PAY FEES USING USDC TOKEN
+
+  const hasFunds =
+    Number(utils.formatEther(safeBalance || "0")) > transferAmount;
 
   return (
     <>
@@ -144,7 +150,7 @@ const RelayerKitDemo = () => {
                 <Button
                   startIcon={<SendIcon />}
                   variant="contained"
-                  disabled={!safeBalance}
+                  disabled={!safeBalance || !hasFunds}
                   onClick={relayTransaction}
                 >
                   Send Transaction
