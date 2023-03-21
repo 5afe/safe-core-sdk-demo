@@ -16,9 +16,6 @@ import Providers from "src/components/providers/Providers";
 import SafeCoreInfo from "./components/safe-core-info/SafeCoreInfo";
 import NavMenu from "./components/nav-menu/NavMenu";
 
-const FIRST_STEP = 0;
-const LAST_STEP = 4;
-
 function App() {
   const [activeStep, setActiveStep] = useState(0);
 
@@ -34,8 +31,8 @@ function App() {
     setActiveStep(newStep);
   }, []);
 
-  const isFirstStep = activeStep === FIRST_STEP;
-  const isLastStep = activeStep === LAST_STEP;
+  const isFirstStep = activeStep === 0;
+  const isLastStep = activeStep === steps.length - 1;
 
   const showSafeCoreVideo = isFirstStep || isLastStep;
 
@@ -86,6 +83,7 @@ function App() {
                     fontWeight="700"
                     flexGrow="1"
                     textAlign="right"
+                    fontSize="20px"
                   >
                     {nextLabel}
                   </Typography>
