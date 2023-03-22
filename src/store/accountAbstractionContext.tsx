@@ -28,9 +28,10 @@ type accountAbstractionContextValue = {
   chainId: string;
   safes: string[];
   chain?: Chain;
-  isOwnerConnected: boolean;
+  isAuthenticated: boolean;
   web3Provider?: ethers.providers.Web3Provider;
-  connectWeb2Login: () => void;
+  loginWeb3Auth: () => void;
+  logoutWeb3Auth: () => void;
   setChainId: (chainId: string) => void;
   safeSelected?: string;
   safeBalance?: string;
@@ -38,12 +39,14 @@ type accountAbstractionContextValue = {
   isRelayerLoading: boolean;
   relayTransaction: () => Promise<void>;
   gelatoTaskId?: string;
-  onRampWithStripe: () => Promise<void>;
+  openStripeWidget: () => Promise<void>;
+  closeStripeWidget: () => Promise<void>;
 };
 
 const initialState = {
-  isOwnerConnected: false,
-  connectWeb2Login: () => {},
+  isAuthenticated: false,
+  loginWeb3Auth: () => {},
+  logoutWeb3Auth: () => {},
   relayTransaction: async () => {},
   setChainId: () => {},
   setSafeSelected: () => {},
@@ -51,6 +54,8 @@ const initialState = {
   safes: [],
   chainId: initialChain.id,
   isRelayerLoading: true,
+  openStripeWidget: async () => {},
+  closeStripeWidget: async () => {},
 };
 
 const accountAbstractionContext =
@@ -86,22 +91,27 @@ const AccountAbstractionProvider = ({
   const [web3Provider, setWeb3Provider] =
     useState<ethers.providers.Web3Provider>();
 
-  const isOwnerConnected = !!ownerAddress && !!chainId;
+  const isAuthenticated = !!ownerAddress && !!chainId;
   const chain = getChain(chainId) || initialChain;
 
   // reset React state when you switch the chain
   useEffect(() => {
     setOwnerAddress("");
     setSafes([]);
-    setOwnerAddress("");
-    setOwnerAddress("");
     setChainId(chain.id);
     setWeb3Provider(undefined);
-    setSafeSelected("")
+    setSafeSelected("");
+    setAuthClient(undefined);
   }, [chain]);
 
+  // authClient
+  const [authClient, setAuthClient] = useState<SafeAuthKit>();
+
+  // onRampClient
+  const [onRampClient, setOnRampClient] = useState<SafeOnRampKit>();
+
   // auth-kit implementation
-  const connectWeb2Login = useCallback(async () => {
+  const loginWeb3Auth = useCallback(async () => {
     try {
       const safeAuth = await SafeAuthKit.init(SafeAuthProviderType.Web3Auth, {
         chainId: chain.id,
@@ -124,11 +134,22 @@ const AccountAbstractionProvider = ({
         setOwnerAddress(eoa);
         setSafes(safes || []);
         setWeb3Provider(new ethers.providers.Web3Provider(provider));
+        setAuthClient(safeAuth);
       }
     } catch (error) {
       console.log("error: ", error);
     }
   }, [chain]);
+
+  const logoutWeb3Auth = () => {
+    authClient?.signOut();
+    setOwnerAddress("");
+    setSafes([]);
+    setChainId(chain.id);
+    setWeb3Provider(undefined);
+    setSafeSelected("");
+    setAuthClient(undefined);
+  };
 
   // TODO: add disconnect owner wallet logic ?
 
@@ -197,7 +218,7 @@ const AccountAbstractionProvider = ({
   };
 
   // onramp-kit implementation
-  const onRampWithStripe = async () => {
+  const openStripeWidget = async () => {
     const onRampClient = await SafeOnRampKit.init(
       SafeOnRampProviderType.Stripe,
       {
@@ -223,7 +244,13 @@ const AccountAbstractionProvider = ({
       },
     });
 
+    setOnRampClient(onRampClient);
+
     console.log("Stripe sessionData: ", sessionData);
+  };
+
+  const closeStripeWidget = async () => {
+    onRampClient?.close();
   };
 
   // we can pay Gelato tx relayer fees with native token & USDC
@@ -245,11 +272,13 @@ const AccountAbstractionProvider = ({
     chain,
     safes,
 
-    isOwnerConnected,
+    isAuthenticated,
 
     web3Provider,
 
-    connectWeb2Login,
+    loginWeb3Auth,
+    logoutWeb3Auth,
+
     setChainId,
 
     safeSelected,
@@ -260,7 +289,8 @@ const AccountAbstractionProvider = ({
     relayTransaction,
     gelatoTaskId,
 
-    onRampWithStripe,
+    openStripeWidget,
+    closeStripeWidget,
   };
 
   return (

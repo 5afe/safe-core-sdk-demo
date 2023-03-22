@@ -1,61 +1,95 @@
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Link from "@mui/material/Link";
+import Divider from "@mui/material/Divider";
+import styled from "@emotion/styled";
+import { Theme } from "@mui/material";
 
-import { useStepper } from "src/store/stepperContext";
+import safeLogo from "src/assets/safe-logo.svg";
 import ChainSelector from "src/components/chain-selector/ChainSelector";
 
-const Intro = () => {
-  const { nextStep } = useStepper();
+type IntroProps = {
+  setStep: (newStep: number) => void;
+};
 
+const Intro = ({ setStep }: IntroProps) => {
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
-      <Box
-        component={Paper}
-        sx={{ border: "1px solid #fff"}}
-        padding="18px"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
-      >
-        <Typography textAlign="center">
-          <Link
-            href="https://github.com/safe-global/account-abstraction-sdk"
-            target="_blank"
-          >
-            The Safe&#123;Core&#125; Account Abstraction SDK{" "}
-          </Link>{" "}
-          allows builders to add account abstraction functionality into their
-          apps. This demo is an example on how to use our different packages (Auth
-          Kit, OnRamp Kit & Relay Kit)
-        </Typography>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="flex-start"
+      paddingTop="72px"
+      paddingLeft="100px"
+    >
+      <img src={safeLogo} alt="safe logo" height="30px" />
 
-        <Typography textAlign="center">
-          Check our{" "}
-          <Link
-            href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk"
-            target="_blank"
-          >
-            Safe&#123;Core&#125; Account abstraction SDK documentation
-          </Link>{" "}
-          for more details!
-        </Typography>
+      <Typography variant="h1" fontSize="64px" lineHeight="76px">
+        Account Abstraction SDK
+      </Typography>
 
-        <Typography textAlign="center">
-          Select your chain and start this journey!
-        </Typography>
+      <Typography variant="body1">
+        Add account abstraction functionality into your apps. Here you can find
+        examples on how to use our different kits:
+      </Typography>
+
+      {/* Kit list */}
+      <Box display="flex" gap={2} marginTop="36px">
+        <Box display="flex" gap={1}>
+          <OrderLabel fontSize="10px" fontWeight="700">
+            01
+          </OrderLabel>
+          <Typography fontWeight="700" fontSize="20px">
+            Auth Kit
+          </Typography>
+        </Box>
+
+        <Box display="flex" gap={1}>
+          <OrderLabel fontSize="10px" fontWeight="700">
+            02
+          </OrderLabel>
+          <Typography fontWeight="700" fontSize="20px">
+            Onramp Kit
+          </Typography>
+        </Box>
+
+        <Box display="flex" gap={1}>
+          <OrderLabel fontSize="10px" fontWeight="700">
+            03
+          </OrderLabel>
+          <Typography fontWeight="700" fontSize="20px">
+            Relay Kit
+          </Typography>
+        </Box>
       </Box>
 
-      <ChainSelector />
+      <Divider style={{ alignSelf: "stretch", margin: "42px 0" }} />
 
-      <Button variant="contained" onClick={nextStep}>
-        Start!
-      </Button>
+      <Typography variant="h2" fontWeight="700" fontSize="20px">
+        To start using interactive demo select a network:
+      </Typography>
+
+      <Typography>“Condition under which networks is used in demo”.</Typography>
+
+      <Box display="flex" gap={2} marginTop="32px" alignItems="center">
+        <ChainSelector />
+
+        <Button variant="contained" onClick={() => setStep(1)}>
+          Start Demo
+        </Button>
+      </Box>
     </Box>
   );
 };
 
 export default Intro;
+
+const OrderLabel = styled(Typography)<{
+  theme?: Theme;
+}>(
+  ({ theme }) => `
+  border: 1px solid ${theme.palette.text.primary};
+  border-radius: 4px;
+  padding: 4px 6px;
+  line-height: 12px;
+`
+);

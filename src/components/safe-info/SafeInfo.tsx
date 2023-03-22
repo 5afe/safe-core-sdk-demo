@@ -1,10 +1,8 @@
 import { useCallback, useState } from "react";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import { Theme } from "@mui/material";
+import { Skeleton, Theme } from "@mui/material";
 import styled from "@emotion/styled";
 import { providers, utils } from "ethers";
 
@@ -12,10 +10,11 @@ import AddressLabel from "src/components/address-label/AddressLabel";
 import AmountLabel from "src/components/amount-label/AmountLabel";
 import getSafeInfo from "src/api/getSafeInfo";
 import useApi from "src/hooks/useApi";
-import safeLogo from "src/assets/safe-logo.svg";
+import safeLogoLight from "src/assets/safe-info-logo-light.svg";
+import safeLogoDark from "src/assets/safe-info-logo-dark.svg";
 import usePolling from "src/hooks/usePolling";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
-import { DARK_THEME, LIGHT_THEME } from "src/store/themeContext";
+import { useTheme } from "src/store/themeContext";
 
 type SafeInfoProps = {
   safeAddress: string;
@@ -29,12 +28,16 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
   const { web3Provider, chain, safeBalance } = useAccountAbstraction();
 
   const [isDeployed, setIsDeployed] = useState<boolean>(false);
+  const [isDeployLoading, setIsDeployLoading] = useState<boolean>(true);
+
+  const { isDarkTheme } = useTheme();
 
   // detect if the safe is deployed with polling
   const detectSafeIsDeployed = useCallback(async () => {
     const isDeployed = await isContractAddress(safeAddress, web3Provider);
 
     setIsDeployed(isDeployed);
+    setIsDeployLoading(false);
   }, [web3Provider, safeAddress]);
 
   usePolling(detectSafeIsDeployed);
@@ -45,143 +48,114 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
     [safeAddress, chainId]
   );
 
-  const { data: safeInfo } = useApi(fetchInfo);
+  const { data: safeInfo, isLoading: isGetSafeInfoLoading } = useApi(fetchInfo);
 
   const owners = safeInfo?.owners.length || 1;
   const threshold = safeInfo?.threshold || 1;
-
-  console.log("balanes: ", safeBalance);
+  const isLoading = isDeployLoading || isGetSafeInfoLoading;
 
   return (
-    <SafeInfoContainer
-      component={Paper}
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      gap={2}
-    >
-      {/* Safe address */}
-      <Stack direction="row" alignItems="center" spacing={1} component="span">
+    <Stack direction="row" spacing={2}>
+      <div style={{ position: "relative" }}>
         {/* Safe Logo */}
-        <img src={safeLogo} alt="connected Wallet logo" height={42} />
-
-        <Stack
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-          component="span"
-        >
-          {/* Safe address label */}
-          <Typography variant="body2">
-            <AddressLabel address={safeAddress} showBlockExplorerLink />
-          </Typography>
-
-          <Stack
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="flex-start"
-            component="span"
-            gap={1}
-          >
-            {/* Threshold & owners label */}
-            {isDeployed && (
-              <Typography variant="body2" mb="8px">
-                <SafeSettingsLabel>
-                  {threshold}/{owners}
-                </SafeSettingsLabel>
-              </Typography>
-            )}
-
-            {/* Safe not deployed label */}
-            {!isDeployed && (
-              <Tooltip title="This Safe is not deployed yet, it will be deployed when you execute the first transaction">
-                <Typography variant="body2" mb="8px">
-                  <SafeStatusLabel>Creation pending</SafeStatusLabel>
-                </Typography>
-              </Tooltip>
-            )}
-          </Stack>
-        </Stack>
-      </Stack>
-
-      {/* Safe Balance */}
-      <AmountContainer>
-        <Typography variant="body2">
-          <AmountLabel
-            amount={utils.formatEther(safeBalance || "0")}
-            tokenSymbol={chain?.token || ""}
+        {isLoading ? (
+          <Skeleton variant="circular" width={50} height={50} />
+        ) : (
+          <img
+            src={isDarkTheme ? safeLogoDark : safeLogoLight}
+            alt="connected Safe account logo"
+            height="50px"
           />
+        )}
+
+        {/* Threshold & owners label */}
+        {isDeployed && (
+          <SafeSettingsLabel>
+            <Typography
+              fontSize="12px"
+              fontWeight="700"
+              color="inherit"
+              lineHeight="initial"
+            >
+              {threshold}/{owners}
+            </Typography>
+          </SafeSettingsLabel>
+        )}
+      </div>
+
+      <Stack direction="column" spacing={0.5} alignItems="flex-start">
+        {/* Safe address label */}
+        <Typography variant="body2">
+          <AddressLabel address={safeAddress} showBlockExplorerLink />
         </Typography>
-      </AmountContainer>
-    </SafeInfoContainer>
+
+        {isLoading && <Skeleton variant="text" width={110} height={20} />}
+
+        {!isDeployed && !isDeployLoading && (
+          <CreationPendingLabel>
+            <Tooltip title="This Safe is not deployed yet, it will be deployed when you execute the first transaction">
+              <Typography fontWeight="700" fontSize="12px" color="inherit">
+                Creation pending
+              </Typography>
+            </Tooltip>
+          </CreationPendingLabel>
+        )}
+
+        {!isLoading && (
+          <AmountContainer>
+            {/* Safe Balance */}
+            <Typography fontWeight="700">
+              <AmountLabel
+                amount={utils.formatEther(safeBalance || "0")}
+                tokenSymbol={chain?.token || ""}
+              />
+            </Typography>
+          </AmountContainer>
+        )}
+      </Stack>
+    </Stack>
   );
 }
 
 export default SafeInfo;
 
-const SafeInfoContainer = styled(Box)<{
+const SafeSettingsLabel = styled("div")<{
   theme?: Theme;
 }>(
   ({ theme }) => `
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 12px;
-
-  background-color: ${
-    theme.palette.mode === LIGHT_THEME
-      ? theme.palette.grey["300"]
-      : theme.palette.grey["800"]
-  };
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  border-radius: 50%;
+  background-color: ${theme.palette.secondary.light};
+  color: ${theme.palette.getContrastText(theme.palette.secondary.light)};
+  padding: 5px 6px;
 `
 );
 
-const SafeSettingsLabel = styled("span")<{
+const CreationPendingLabel = styled("div")<{
   theme?: Theme;
-}>`
+}>(
+  ({ theme }) => `
   border-radius: 4px;
-  background-color: ${(props) =>
-    props.theme.palette.mode === DARK_THEME ? "darkorange" : "orange"};
-  padding: 2px 3px;
-  letter-spacing: 2px;
-  font-size: 12px;
-  border: 1px solid
-    ${(props) => (props.theme.palette.mode === DARK_THEME ? "#fff" : "#000000")};
-`;
-
-const SafeStatusLabel = styled("span")<{
-  theme?: Theme;
-}>`
-  border-radius: 4px;
-  background-color: ${(props) =>
-    props.theme.palette.mode === DARK_THEME ? "darkorange" : "orange"};
-  padding: 2px 3px;
-  font-size: 12px;
-  border: 1px solid
-    ${(props) => (props.theme.palette.mode === DARK_THEME ? "#fff" : "#000000")};
-`;
+  background-color: ${theme.palette.info.light};
+  color: ${theme.palette.getContrastText(theme.palette.secondary.light)}; 
+  padding: 0px 10px;
+`
+);
 
 const AmountContainer = styled("div")<{
   theme?: Theme;
 }>(
   ({ theme, onClick }) => `
-  
-  margin-right: 8px;
-  border-radius: 4px;
-  padding: 4px 12px;
-
+  border-radius: 6px;
+  background-color: ${theme.palette.background.light};
+  padding: 0px 8px;
   cursor: ${!!onClick ? "pointer" : "initial"};
-
-  background-color: ${
-    theme.palette.mode === LIGHT_THEME
-      ? theme.palette.grey["200"]
-      : theme.palette.grey["700"]
-  };
-
-  color: ${theme.palette.getContrastText(theme.palette.background.paper)};
-  
   `
 );
 
+// TODO: create a util for this?
 const isContractAddress = async (
   address: string,
   provider?: providers.Web3Provider

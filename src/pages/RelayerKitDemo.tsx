@@ -1,17 +1,22 @@
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import styled from "@emotion/styled";
+import { Theme } from "@mui/material";
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 import SendIcon from "@mui/icons-material/SendRounded";
+import { utils } from "ethers";
 
 import SafeInfo from "src/components/safe-info/SafeInfo";
 import GelatoTaskStatusLabel from "src/components/gelato-task-status-label/GelatoTaskStatusLabel";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
-import { useStepper } from "src/store/stepperContext";
 import { useState } from "react";
+
+const transferAmount = 0.01;
 
 const RelayerKitDemo = () => {
   const {
@@ -23,118 +28,161 @@ const RelayerKitDemo = () => {
     isRelayerLoading,
     relayTransaction,
     gelatoTaskId,
-  } = useAccountAbstraction();
 
-  const { nextStep } = useStepper();
+    isAuthenticated,
+    loginWeb3Auth,
+  } = useAccountAbstraction();
 
   const [transactionHash, setTransactionHash] = useState<string>("");
 
   // TODO: ADD PAY FEES USING USDC TOKEN
 
+  const hasFunds =
+    Number(utils.formatEther(safeBalance || "0")) > transferAmount;
+
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-      <Box
-        component={Paper}
-        sx={{ border: "1px solid #fff" }}
-        padding="18px"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
-      >
-        <Typography textAlign="center">
-          The{" "}
-          <Link
-            href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/auth-kit"
-            target="_blank"
-          >
-            Relay kit
-          </Link>{" "}
-          allows users to pay transaction fees (gas fees) using any ERC-20
-          tokens in your Safe!. Check our{" "}
-          <Link
-            href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/relay-kit"
-            target="_blank"
-          >
-            Relay Kit documentation
-          </Link>{" "}
-          for more details!
-        </Typography>
+    <>
+      <Typography variant="h2" component="h1">
+        The Relay Kit
+      </Typography>
 
-        {/* Safe selected info */}
-        {safeSelected && (
-          <SafeInfo safeAddress={safeSelected} chainId={chainId} />
-        )}
-      </Box>
+      <Typography marginTop="16px">
+        Allow users to pay using any ERC-20 tokens, without having to manage
+        gas. Sponsor transactions on behalf of your users. On your first relayed
+        transaction, a Safe Account will be automatically deployed and your
+        address will be assigned as the Safe owner.
+      </Typography>
 
-      {/* send fake transaction to Gelato relayer */}
-      {!isRelayerLoading && !gelatoTaskId && (
-        <Button
-          startIcon={<SendIcon />}
-          variant="contained"
-          disabled={!safeBalance}
-          onClick={relayTransaction}
+      <Typography marginTop="24px" marginBottom="8px">
+        Find more info at:
+      </Typography>
+
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <Link
+          href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/relay-kit"
+          target="_blank"
         >
-          Send Relayed Tx
-        </Button>
-      )}
+          Github
+        </Link>
 
-      {isRelayerLoading && <CircularProgress />}
-
-      {/* Gelato status label */}
-      {gelatoTaskId && (
-        <GelatoTaskStatusLabel
-          gelatoTaskId={gelatoTaskId}
-          chainId={chainId}
-          setTransactionHash={setTransactionHash}
-          transactionHash={transactionHash}
-        />
-      )}
-
-      {/* Next Step */}
-      {gelatoTaskId && (
-        <Button
-          variant="contained"
-          onClick={nextStep}
-          disabled={!transactionHash}
+        <Link
+          href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/relay-kit"
+          target="_blank"
         >
-          Next
-        </Button>
+          Documentation
+        </Link>
+      </Stack>
+
+      <Divider style={{ margin: "32px 0 28px 0" }} />
+
+      {/* Relay Demo */}
+      <Typography
+        variant="h3"
+        component="h2"
+        fontWeight="700"
+        marginBottom="16px"
+      >
+        Interactive demo
+      </Typography>
+
+      {!isAuthenticated ? (
+        <ConnectedContainer
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          gap={3}
+        >
+          <Typography variant="h4" component="h3" fontWeight="700">
+            To use the Relay Kit you need to be authenticated
+          </Typography>
+
+          <Button variant="contained" onClick={loginWeb3Auth}>
+            Connect
+          </Button>
+        </ConnectedContainer>
+      ) : (
+        <Box display="flex" gap={3}>
+          {/* safe Account */}
+          <ConnectedContainer>
+            <Typography fontWeight="700">Safe Account</Typography>
+
+            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
+              Your Safe account (Smart Contract) holds and protects your assets.
+            </Typography>
+
+            {/* Safe Info */}
+            {safeSelected && (
+              <SafeInfo safeAddress={safeSelected} chainId={chainId} />
+            )}
+          </ConnectedContainer>
+
+          {/* Relay Transaction */}
+          <ConnectedContainer
+            display="flex"
+            flexDirection="column"
+            gap={2}
+            alignItems="flex-start"
+          >
+            <Typography fontWeight="700">Relayed transaction</Typography>
+
+            {/* Gelato status label */}
+            {gelatoTaskId && (
+              <GelatoTaskStatusLabel
+                gelatoTaskId={gelatoTaskId}
+                chainId={chainId}
+                setTransactionHash={setTransactionHash}
+                transactionHash={transactionHash}
+              />
+            )}
+
+            {isRelayerLoading && (
+              <LinearProgress sx={{ alignSelf: "stretch" }} />
+            )}
+
+            {!isRelayerLoading && !gelatoTaskId && (
+              <>
+                <Typography fontSize="14px">
+                  Find out about the status of your relayed transaction.
+                </Typography>
+
+                {/* send fake transaction to Gelato relayer */}
+                <Button
+                  startIcon={<SendIcon />}
+                  variant="contained"
+                  disabled={!safeBalance || !hasFunds}
+                  onClick={relayTransaction}
+                >
+                  Send Transaction
+                </Button>
+              </>
+            )}
+          </ConnectedContainer>
+        </Box>
       )}
 
-      <Box
-        component={Paper}
-        sx={{ border: "1px solid #fff" }}
-        padding="18px"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
+      <Divider style={{ margin: "40px 0 30px 0" }} />
+
+      <Typography
+        variant="h3"
+        component="h2"
+        fontWeight="700"
+        marginBottom="16px"
       >
-        <Typography textAlign="center" variant="h5" component="h2">
-          How to use it
-        </Typography>
+        How to use it
+      </Typography>
 
-        <Typography textAlign="center">
-          This implementation is defined in our{" "}
-          <Link
-            href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.tsx#L154"
-            target="_blank"
-          >
-            <code>accountAbstractionContext.tsx</code>
-          </Link>{" "}
-          file.
-        </Typography>
-
+      {/* TODO: create a component for this? */}
+      <CodeContainer>
         <CodeBlock
           text={code}
           language={"javascript"}
           showLineNumbers
-          startingLineNumber={160}
+          startingLineNumber={96}
           theme={atomOneDark}
         />
-      </Box>
-    </Box>
+      </CodeContainer>
+    </>
   );
 };
 
@@ -149,3 +197,24 @@ relayAdapter.relayTransaction({
   encodedTransaction: '0x...', // Encoded Safe transaction data
   chainId: 5
 })`;
+
+const ConnectedContainer = styled(Box)<{
+  theme?: Theme;
+}>(
+  ({ theme }) => `
+  
+  border-radius: 10px;
+  border: 1px solid ${theme.palette.border.light};
+  padding: 40px 32px;
+`
+);
+
+const CodeContainer = styled(Box)<{
+  theme?: Theme;
+}>(
+  ({ theme }) => `
+  border-radius: 10px;
+  border: 1px solid ${theme.palette.border.light};
+  padding: 16px;
+`
+);

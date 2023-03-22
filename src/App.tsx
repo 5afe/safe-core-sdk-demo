@@ -1,7 +1,10 @@
+import { useCallback, useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import styled from "@emotion/styled";
-import '@safe-global/safe-react-components/dist/fonts.css'
+import "@safe-global/safe-react-components/dist/fonts.css";
 
 import Intro from "src/pages/Intro";
 import AuthKitDemo from "src/pages/AuthKitDemo";
@@ -10,41 +13,89 @@ import RelayerKitDemo from "src/pages/RelayerKitDemo";
 import LastStep from "src/pages/LastStep";
 import Header from "src/components/header/Header";
 import Providers from "src/components/providers/Providers";
-import Stepper from "src/components/stepper/Stepper";
+import SafeCoreInfo from "./components/safe-core-info/SafeCoreInfo";
+import NavMenu from "./components/nav-menu/NavMenu";
 
 function App() {
+  const [activeStep, setActiveStep] = useState(0);
+
+  const nextStep = useCallback(() => {
+    setActiveStep((activeStep) => activeStep + 1);
+  }, []);
+
+  const previousStep = useCallback(() => {
+    setActiveStep((activeStep) => activeStep - 1);
+  }, []);
+
+  const setStep = useCallback((newStep: number) => {
+    setActiveStep(newStep);
+  }, []);
+
+  const isFirstStep = activeStep === 0;
+  const isLastStep = activeStep === steps.length - 1;
+
+  const showSafeCoreVideo = isFirstStep || isLastStep;
+
+  const ActiveStepComponent = steps[activeStep].component;
+  const nextLabel = steps[activeStep].nextLabel;
+
   return (
     <Providers>
       <>
         <CssBaseline />
 
         {/* App header */}
-        <Header />
+        <Header setStep={setStep} />
 
-        {/* App Title */}
-        <StyledAppTitle variant="h4" component="h1">
-          Safe Account Abstraction Demo
-        </StyledAppTitle>
-
-        {/* Stepper */}
-        <Stepper
-          labels={["Intro", "Auth kit", "Onramp kit", "Relay kit", "Thanks!"]}
+        <Box
+          display="flex"
+          gap={3}
+          alignItems="flex-start"
+          maxWidth="1200px"
+          margin="120px auto 42px auto"
         >
-          {/* Intro Step */}
-          <Intro />
+          {showSafeCoreVideo ? (
+            <SafeCoreInfo />
+          ) : (
+            <NavMenu setStep={setStep} activeStep={activeStep} />
+          )}
 
-          {/* Auth kit Step */}
-          <AuthKitDemo />
+          <main style={{ flexGrow: 1 }}>
+            {/* Active Step Component */}
+            <ActiveStepComponent setStep={setStep} />
 
-          {/* Onramp kit Step */}
-          <OnRampKitDemo />
+            {/* next & back Buttons */}
+            {!isFirstStep && !isLastStep && (
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={2}
+                marginTop="32px"
+              >
+                <Button onClick={previousStep} variant="outlined">
+                  Back
+                </Button>
 
-          {/* Relay kit Step */}
-          <RelayerKitDemo />
+                {nextLabel && (
+                  <Typography
+                    variant="h3"
+                    component="h2"
+                    fontWeight="700"
+                    flexGrow="1"
+                    textAlign="right"
+                    fontSize="20px"
+                  >
+                    {nextLabel}
+                  </Typography>
+                )}
 
-          {/* Final Screen */}
-          <LastStep />
-        </Stepper>
+                <Button onClick={nextStep} variant="contained">
+                  Next
+                </Button>
+              </Stack>
+            )}
+          </main>
+        </Box>
       </>
     </Providers>
   );
@@ -52,18 +103,28 @@ function App() {
 
 export default App;
 
-const StyledAppTitle = styled(Typography)<{
-  variant: string;
-  component: string;
-}>`
-  margin-top: 64px !important;
-
-  text-align: center;
-  font-family: monospace;
-  margin: 0 12px;
-  letter-spacing: 0.3rem;
-  font-weight: 700;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
+const steps = [
+  {
+    // Intro step
+    component: Intro,
+  },
+  {
+    // Auth Kit step
+    component: AuthKitDemo,
+    nextLabel: "to Onramp Kit",
+  },
+  {
+    // Onramp Kit step
+    component: OnRampKitDemo,
+    nextLabel: "to Relay Kit",
+  },
+  {
+    // Relay Kit step
+    component: RelayerKitDemo,
+    nextLabel: "Final",
+  },
+  {
+    // Final step
+    component: LastStep,
+  },
+];

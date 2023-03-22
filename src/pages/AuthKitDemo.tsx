@@ -2,151 +2,121 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
 import { CodeBlock, atomOneDark } from "react-code-blocks";
-import WalletIcon from "@mui/icons-material/AccountBalanceWalletRounded";
+import styled from "@emotion/styled";
+import { Theme } from "@mui/material";
 
 import SafeInfo from "src/components/safe-info/SafeInfo";
 import ConnectedWalletLabel from "src/components/connected-wallet-label/ConnectedWalletLabel";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
-import { useStepper } from "src/store/stepperContext";
-
-// TODO: ADD Deployed / Non deployed safe labels
 
 const AuthKitDemo = () => {
-  const { connectWeb2Login, isOwnerConnected, safeSelected, chainId } =
+  const { loginWeb3Auth, isAuthenticated, safeSelected, chainId } =
     useAccountAbstraction();
 
-  const { nextStep } = useStepper();
-
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-      <Box
-        component={Paper}
-        sx={{ border: "1px solid #fff" }}
-        padding="18px"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
-      >
-        <Typography textAlign="center">
-          The{" "}
-          <Link
-            href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/auth-kit"
-            target="_blank"
-          >
-            Auth kit
-          </Link>{" "}
-          authenticates a blockchain account using an email address, social
-          media account, or traditional crypto wallets like Metamask. Check our{" "}
-          <Link
-            href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/auth-kit"
-            target="_blank"
-          >
-            Auth Kit documentation
-          </Link>{" "}
-          for more details!
-        </Typography>
-      </Box>
+    <>
+      <Typography variant="h2" component="h1">
+        The Auth Kit
+      </Typography>
 
-      {/* Connect Owner button */}
-      {isOwnerConnected ? (
-        <>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            gap={3}
-            component={Paper}
-            sx={{ border: "1px solid #fff" }}
-            padding="18px 8px"
-          >
-            <Typography textAlign="center" variant="h4" component="h2">
-              Now you are authenticated!
+      <Typography marginTop="16px">
+        Generate or authenticate a blockchain account using an email address,
+        social media account, or traditional crypto wallets like Metamask.
+      </Typography>
+
+      <Typography marginTop="24px" marginBottom="8px">
+        Find more info at:
+      </Typography>
+
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <Link
+          href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/auth-kit"
+          target="_blank"
+        >
+          Github
+        </Link>
+
+        <Link
+          href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/auth-kit"
+          target="_blank"
+        >
+          Documentation
+        </Link>
+      </Stack>
+
+      <Divider style={{ margin: "32px 0 28px 0" }} />
+
+      {/* Auth Demo */}
+      <Typography
+        variant="h3"
+        component="h2"
+        fontWeight="700"
+        marginBottom="16px"
+      >
+        Interactive demo
+      </Typography>
+
+      {isAuthenticated ? (
+        <Box display="flex" gap={3}>
+          {/* safe Account */}
+          <ConnectedContainer>
+            <Typography fontWeight="700">Safe Account</Typography>
+
+            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
+              Your Safe account (Smart Contract) holds and protects your assets.
             </Typography>
 
-            <Box display="flex" flexDirection="row" gap={3}>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                gap={2}
-                flexBasis={"50%"}
-              >
-                <Typography textAlign="center" variant="h6" component="h3">
-                  Safe Account
-                </Typography>
+            {/* Safe Info */}
+            {safeSelected && (
+              <SafeInfo safeAddress={safeSelected} chainId={chainId} />
+            )}
+          </ConnectedContainer>
 
-                <Typography textAlign="center">
-                  Your Safe account (Smart Contract) hold and protect your
-                  assets
-                </Typography>
+          {/* owner ID */}
+          <ConnectedContainer>
+            <Typography fontWeight="700">Owner ID</Typography>
 
-                {/* Safe Info */}
-                {safeSelected && (
-                  <SafeInfo safeAddress={safeSelected} chainId={chainId} />
-                )}
-              </Box>
+            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
+              Your Owner account signs transactions to unlock your assets.
+            </Typography>
 
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                gap={2}
-                flexBasis={"50%"}
-              >
-                <Typography textAlign="center" variant="h6" component="h3">
-                  Owner Account
-                </Typography>
-                <Typography textAlign="center">
-                  Your Owner account signs transactions to unlock your assets
-                </Typography>
-                {/* Owner Info */}
-                <ConnectedWalletLabel />
-              </Box>
-            </Box>
-
-            {/* Next Step */}
-            <Button variant="contained" onClick={nextStep}>
-              Go to OnRamp Demo
-            </Button>
-          </Box>
-        </>
+            {/* Owner details */}
+            <ConnectedWalletLabel />
+          </ConnectedContainer>
+        </Box>
       ) : (
-        <Button
-          startIcon={<WalletIcon />}
-          variant="contained"
-          onClick={connectWeb2Login}
+        <ConnectContainer
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          gap={2}
         >
-          Connect
-        </Button>
+          <Typography variant="h4" component="h3" fontWeight="700">
+            Create a safe using the Auth Kit
+          </Typography>
+
+          <Button variant="contained" onClick={loginWeb3Auth}>
+            Connect
+          </Button>
+        </ConnectContainer>
       )}
 
-      <Box
-        component={Paper}
-        sx={{ border: "1px solid #fff" }}
-        padding="18px"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
+      <Divider style={{ margin: "40px 0 30px 0" }} />
+
+      <Typography
+        variant="h3"
+        component="h2"
+        fontWeight="700"
+        marginBottom="16px"
       >
-        <Typography textAlign="center" variant="h5" component="h2">
-          How to use it
-        </Typography>
+        How to use it
+      </Typography>
 
-        <Typography textAlign="center">
-          This implementation is defined in our{" "}
-          <Link
-            href="https://github.com/5afe/account-abstraction-demo-ui/blob/main/src/store/accountAbstractionContext.tsx#L94"
-            target="_blank"
-          >
-            <code>accountAbstractionContext.tsx</code>
-          </Link>{" "}
-          file.
-        </Typography>
-
+      {/* TODO: create a component for this? */}
+      <CodeContainer>
         <CodeBlock
           text={code}
           language={"javascript"}
@@ -154,8 +124,8 @@ const AuthKitDemo = () => {
           startingLineNumber={96}
           theme={atomOneDark}
         />
-      </Box>
-    </Box>
+      </CodeContainer>
+    </>
   );
 };
 
@@ -183,3 +153,35 @@ safeAuthKit.signOut()
 safeAuthKit.getProvider()
 
 `;
+
+const ConnectContainer = styled(Box)<{
+  theme?: Theme;
+}>(
+  ({ theme }) => `
+  
+  border-radius: 10px;
+  border: 1px solid ${theme.palette.border.light};
+  padding: 50px;
+`
+);
+
+const CodeContainer = styled(Box)<{
+  theme?: Theme;
+}>(
+  ({ theme }) => `
+  border-radius: 10px;
+  border: 1px solid ${theme.palette.border.light};
+  padding: 16px;
+`
+);
+
+const ConnectedContainer = styled(Box)<{
+  theme?: Theme;
+}>(
+  ({ theme }) => `
+  
+  border-radius: 10px;
+  border: 1px solid ${theme.palette.border.light};
+  padding: 40px 32px;
+`
+);

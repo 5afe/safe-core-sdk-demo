@@ -1,14 +1,12 @@
 import { useCallback, useEffect } from "react";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Skeleton from "@mui/material/Skeleton";
+import LinearProgress from "@mui/material/LinearProgress";
 import Stack from "@mui/material/Stack";
 import Link from "@mui/material/Link";
-import { CircularProgress, Theme } from "@mui/material";
 import styled from "@emotion/styled";
-import CancelledIcon from "@mui/icons-material/HighlightOffRounded";
-import SuccessIcon from "@mui/icons-material/CheckCircleRounded";
+import { Theme } from "@mui/material";
 import { GelatoRelayAdapter } from "@safe-global/relay-kit";
 
 import useApi from "src/hooks/useApi";
@@ -55,16 +53,15 @@ const GelatoTaskStatusLabel = ({
 
   return (
     <Container
-      component={Paper}
-      sx={{ border: "1px solid #fff" }}
       display="flex"
       flexDirection="column"
-      alignItems="center"
       gap={2}
+      alignItems="flex-start"
     >
-      <Typography variant="h6" component="h2">
-        Gelato Task details
-      </Typography>
+      <Typography>Gelato Task details</Typography>
+
+      {isLoading && <LinearProgress sx={{ alignSelf: "stretch" }} />}
+
       {/* Status label */}
       {gelatoTaskInfo?.taskState ? (
         <StatusContainer taskStatus={gelatoTaskInfo.taskState}>
@@ -75,18 +72,6 @@ const GelatoTaskStatusLabel = ({
       ) : (
         <Skeleton variant="text" width={100} height={20} />
       )}
-
-      {/* Status indicator */}
-      <Stack display="flex" justifyContent="center">
-        {/* Cancelled Icon */}
-        {isCancelled && <CancelledIcon color="error" fontSize="large" />}
-
-        {/* Success Icon */}
-        {isSuccess && <SuccessIcon color="success" fontSize="large" />}
-
-        {/* Loading Icon */}
-        {isLoading && <CircularProgress />}
-      </Stack>
 
       {/* Transaction hash */}
       {!isCancelled && (
@@ -104,7 +89,12 @@ const GelatoTaskStatusLabel = ({
               href={`${chain?.blockExplorerUrl}/tx/${transactionHash}`}
               target="_blank"
             >
-              <AddressLabel address={transactionHash} />
+              <AddressLabel
+                address={transactionHash}
+                showBlockExplorerLink
+                isTransactionAddress
+                showCopyIntoClipboardButton={false}
+              />
             </Link>
           ) : (
             <Skeleton variant="text" width={150} height={20} />
@@ -127,8 +117,7 @@ export default GelatoTaskStatusLabel;
 const Container = styled(Box)`
   max-width: 800px;
   margin: 0 auto;
-  margin-top: 24px;
-  padding: 16px;
+  margin-top: 12px;
 `;
 
 const StatusContainer = styled("div")<{
