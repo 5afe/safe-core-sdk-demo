@@ -182,6 +182,12 @@ const AccountAbstractionProvider = ({
   const [isRelayerLoading, setIsRelayerLoading] = useState<boolean>(false);
   const [gelatoTaskId, setGelatoTaskId] = useState<string>();
 
+  // refresh the Gelato task id
+  useEffect(() => {
+    setIsRelayerLoading(false);
+    setGelatoTaskId(undefined);
+  }, [chainId]);
+
   // relay-kit implementation using Gelato
   const relayTransaction = async () => {
     if (web3Provider) {

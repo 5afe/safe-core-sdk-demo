@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
@@ -9,18 +10,20 @@ import styled from "@emotion/styled";
 import { Theme } from "@mui/material";
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 import SendIcon from "@mui/icons-material/SendRounded";
+import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import { utils } from "ethers";
 
+import AddressLabel from "src/components/address-label/AddressLabel";
 import SafeInfo from "src/components/safe-info/SafeInfo";
 import GelatoTaskStatusLabel from "src/components/gelato-task-status-label/GelatoTaskStatusLabel";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
-import { useState } from "react";
 
 const transferAmount = 0.01;
 
 const RelayerKitDemo = () => {
   const {
     chainId,
+    chain,
 
     safeSelected,
     safeBalance,
@@ -37,7 +40,8 @@ const RelayerKitDemo = () => {
 
   // TODO: ADD PAY FEES USING USDC TOKEN
 
-  const hasFunds =
+  const hasNativeFunds =
+    !!safeBalance &&
     Number(utils.formatEther(safeBalance || "0")) > transferAmount;
 
   return (
@@ -47,10 +51,10 @@ const RelayerKitDemo = () => {
       </Typography>
 
       <Typography marginTop="16px">
-        Allow users to pay using any ERC-20 tokens, without having to manage
-        gas. Sponsor transactions on behalf of your users. On your first relayed
-        transaction, a Safe Account will be automatically deployed and your
-        address will be assigned as the Safe owner.
+        Allow users to pay fees using any ERC-20 tokens, without having to
+        manage gas. Sponsor transactions on behalf of your users. On your first
+        relayed transaction, a Safe Account will be automatically deployed and
+        your address will be assigned as the Safe owner.
       </Typography>
 
       <Typography marginTop="24px" marginBottom="8px">
@@ -73,11 +77,11 @@ const RelayerKitDemo = () => {
         </Link>
       </Stack>
 
-      <Divider style={{ margin: "32px 0 28px 0" }} />
+      <Divider sx={{ margin: "32px 0 28px 0" }} />
 
       {/* Relay Demo */}
       <Typography
-        variant="h3"
+        variant="h4"
         component="h2"
         fontWeight="700"
         marginBottom="16px"
@@ -123,6 +127,7 @@ const RelayerKitDemo = () => {
             flexDirection="column"
             gap={2}
             alignItems="flex-start"
+            flexShrink={0}
           >
             <Typography fontWeight="700">Relayed transaction</Typography>
 
@@ -143,20 +148,49 @@ const RelayerKitDemo = () => {
             {!isRelayerLoading && !gelatoTaskId && (
               <>
                 <Typography fontSize="14px">
-                  Find out about the status of your relayed transaction.
+                  Check the status of your relayed transaction.
                 </Typography>
 
                 {/* send fake transaction to Gelato relayer */}
                 <Button
                   startIcon={<SendIcon />}
                   variant="contained"
-                  disabled={!safeBalance || !hasFunds}
+                  disabled={!hasNativeFunds}
                   onClick={relayTransaction}
                 >
                   Send Transaction
                 </Button>
+
+                {!hasNativeFunds && chain?.faucetUrl && (
+                  <Link href={chain.faucetUrl} target="_blank">
+                    Request 0.5 {chain.token}.
+                  </Link>
+                )}
               </>
             )}
+
+            {/* Transaction details */}
+            <Stack gap={0.5} display="flex" flexDirection="column">
+              <Typography>
+                Transfer {transferAmount} {chain?.token}
+              </Typography>
+
+              {safeSelected && (
+                <Stack gap={0.5} display="flex" flexDirection="row">
+                  <AddressLabel
+                    address={safeSelected}
+                    showCopyIntoClipboardButton={false}
+                  />
+
+                  <ArrowRightAltRoundedIcon />
+
+                  <AddressLabel
+                    address={safeSelected}
+                    showCopyIntoClipboardButton={false}
+                  />
+                </Stack>
+              )}
+            </Stack>
           </ConnectedContainer>
         </Box>
       )}
