@@ -37,8 +37,8 @@ const OnRampKitDemo = () => {
 
       <Typography marginTop="16px">
         Allow users to buy cryptocurrencies using a credit card and other
-        payment options directly within your app." Click on "Buy USDC" to
-        on-ramp funds to your Safe using the Stripe widget!
+        payment options directly within your app. Click on "Buy USDC" to on-ramp
+        funds to your Safe using the Stripe widget!
       </Typography>
 
       <Typography marginTop="24px" marginBottom="8px">
@@ -65,7 +65,7 @@ const OnRampKitDemo = () => {
 
       {/* OnRamp Demo */}
       <Typography
-        variant="h3"
+        variant="h4"
         component="h2"
         fontWeight="700"
         marginBottom="16px"

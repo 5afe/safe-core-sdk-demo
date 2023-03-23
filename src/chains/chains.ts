@@ -57,6 +57,7 @@ export const mumbaiChain: Chain = {
   blockExplorerUrl: "https://mumbai.polygonscan.com",
   color: "#8248E5",
   isStripePaymentsEnabled: true,
+  faucetUrl: "https://mumbaifaucet.com/"
 };
 
 const chains: Chain[] = [

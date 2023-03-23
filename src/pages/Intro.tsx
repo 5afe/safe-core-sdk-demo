@@ -68,7 +68,10 @@ const Intro = ({ setStep }: IntroProps) => {
         To start using interactive demo select a network:
       </Typography>
 
-      <Typography>“Condition under which networks is used in demo”.</Typography>
+      <Typography>
+        Consider that the Onramp kit will only work on Mumbai test chain and US
+        based connection.
+      </Typography>
 
       <Box display="flex" gap={2} marginTop="32px" alignItems="center">
         <ChainSelector />

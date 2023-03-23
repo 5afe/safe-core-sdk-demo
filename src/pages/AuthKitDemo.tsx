@@ -51,7 +51,7 @@ const AuthKitDemo = () => {
 
       {/* Auth Demo */}
       <Typography
-        variant="h3"
+        variant="h4"
         component="h2"
         fontWeight="700"
         marginBottom="16px"

@@ -9,6 +9,7 @@ type Chain = {
   blockExplorerUrl: string;
   transactionServiceUrl?: string;
   isStripePaymentsEnabled: boolean; // only available in Mumbai chain
+  faucetUrl?: string;
 };
 
 export default Chain;
