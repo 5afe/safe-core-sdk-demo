@@ -1,9 +1,9 @@
-import Box from "@mui/material/Box";
-import MenuList from "@mui/material/MenuList";
-import MenuItem from "@mui/material/MenuItem";
-import Typography from "@mui/material/Typography";
 import styled from "@emotion/styled";
 import { Theme } from "@mui/material";
+import Box from "@mui/material/Box";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
+import Typography from "@mui/material/Typography";
 
 type NavMenuProps = {
   setStep: (newStep: number) => void;
@@ -50,12 +50,6 @@ const NavMenu = ({ setStep, activeStep }: NavMenuProps) => {
           </OrderLabel>
           <Typography fontWeight="700" fontSize="20px" marginLeft="12px">
             Relay Kit
-          </Typography>
-        </NavItem>
-
-        <NavItem onClick={() => setStep(4)} active={activeStep === 4}>
-          <Typography fontWeight="700" fontSize="20px">
-            Final
           </Typography>
         </NavItem>
       </MenuList>

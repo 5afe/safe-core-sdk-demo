@@ -1,20 +1,19 @@
-import { useCallback, useState } from "react";
-import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import "@safe-global/safe-react-components/dist/fonts.css";
+import { useCallback, useState } from "react";
 
-import Intro from "src/pages/Intro";
-import AuthKitDemo from "src/pages/AuthKitDemo";
-import OnRampKitDemo from "src/pages/OnRampKitDemo";
-import RelayerKitDemo from "src/pages/RelayerKitDemo";
-import LastStep from "src/pages/LastStep";
 import Header from "src/components/header/Header";
 import Providers from "src/components/providers/Providers";
-import SafeCoreInfo from "./components/safe-core-info/SafeCoreInfo";
+import AuthKitDemo from "src/pages/AuthKitDemo";
+import Intro from "src/pages/Intro";
+import OnRampKitDemo from "src/pages/OnRampKitDemo";
+import RelayerKitDemo from "src/pages/RelayerKitDemo";
 import NavMenu from "./components/nav-menu/NavMenu";
+import SafeCoreInfo from "./components/safe-core-info/SafeCoreInfo";
 
 function App() {
   const [activeStep, setActiveStep] = useState(0);
@@ -34,7 +33,7 @@ function App() {
   const isFirstStep = activeStep === 0;
   const isLastStep = activeStep === steps.length - 1;
 
-  const showSafeCoreVideo = isFirstStep || isLastStep;
+  const showSafeCoreVideo = isFirstStep;
 
   const ActiveStepComponent = steps[activeStep].component;
   const nextLabel = steps[activeStep].nextLabel;
@@ -65,7 +64,7 @@ function App() {
             <ActiveStepComponent setStep={setStep} />
 
             {/* next & back Buttons */}
-            {!isFirstStep && !isLastStep && (
+            {!isFirstStep && (
               <Stack
                 direction="row"
                 alignItems="center"
@@ -76,22 +75,26 @@ function App() {
                   Back
                 </Button>
 
-                {nextLabel && (
-                  <Typography
-                    variant="h3"
-                    component="h2"
-                    fontWeight="700"
-                    flexGrow="1"
-                    textAlign="right"
-                    fontSize="20px"
-                  >
-                    {nextLabel}
-                  </Typography>
-                )}
+                {!isLastStep && (
+                  <>
+                    {nextLabel && (
+                      <Typography
+                        variant="h3"
+                        component="h2"
+                        fontWeight="700"
+                        flexGrow="1"
+                        textAlign="right"
+                        fontSize="20px"
+                      >
+                        {nextLabel}
+                      </Typography>
+                    )}
 
-                <Button onClick={nextStep} variant="contained">
-                  Next
-                </Button>
+                    <Button onClick={nextStep} variant="contained">
+                      Next
+                    </Button>
+                  </>
+                )}
               </Stack>
             )}
           </main>
@@ -121,10 +124,5 @@ const steps = [
   {
     // Relay Kit step
     component: RelayerKitDemo,
-    nextLabel: "Final",
-  },
-  {
-    // Final step
-    component: LastStep,
-  },
+  }
 ];
