@@ -1,15 +1,15 @@
 type Chain = {
-  id: string;
-  token: string;
-  rpcUrl: string;
-  shortName: string;
-  label: string;
-  color?: string;
-  icon?: string;
-  blockExplorerUrl: string;
-  transactionServiceUrl?: string;
-  isStripePaymentsEnabled: boolean; // only available in Mumbai chain
-  faucetUrl?: string;
-};
+  id: string
+  token: string
+  rpcUrl: string
+  shortName: string
+  label: string
+  color?: string
+  icon?: string
+  blockExplorerUrl: string
+  transactionServiceUrl?: string
+  isStripePaymentsEnabled: boolean // only available in Mumbai chain
+  faucetUrl?: string
+}
 
-export default Chain;
+export default Chain
