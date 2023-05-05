@@ -1,34 +1,34 @@
-import axios, { RawAxiosRequestConfig } from "axios";
-import { utils } from "ethers";
+import axios, { RawAxiosRequestConfig } from 'axios'
+import { utils } from 'ethers'
 
-import getChain from "src/utils/getChain";
+import getChain from 'src/utils/getChain'
 
 export type SafeInfoType = {
-  address: string;
-  nonce: number;
-  threshold: number;
-  owners: string[];
-};
+  address: string
+  nonce: number
+  threshold: number
+  owners: string[]
+}
 
 const getSafeInfo = async (
   safeAddress: string,
   connectedChainId: string,
   options?: RawAxiosRequestConfig
 ): Promise<SafeInfoType> => {
-  const chain = getChain(connectedChainId);
+  const chain = getChain(connectedChainId)
 
-  const address = utils.getAddress(safeAddress);
+  const address = utils.getAddress(safeAddress)
 
   // Mumbai has no transaction service because it is not part of our official UI https://app.safe.global/
   if (!chain?.transactionServiceUrl) {
-    throw new Error(`No transaction service for ${chain?.label} chain`);
+    throw new Error(`No transaction service for ${chain?.label} chain`)
   }
 
-  const url = `${chain?.transactionServiceUrl}/api/v1/safes/${address}/`;
+  const url = `${chain?.transactionServiceUrl}/api/v1/safes/${address}/`
 
-  const { data: safeInfo } = await axios.get(url, options);
+  const { data: safeInfo } = await axios.get(url, options)
 
-  return safeInfo;
-};
+  return safeInfo
+}
 
-export default getSafeInfo;
+export default getSafeInfo

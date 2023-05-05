@@ -1,12 +1,12 @@
-import { useMemo } from "react";
+import { useMemo } from 'react'
 
-const DEFAULT_DECIMALS_DISPLAYED = 4;
+const DEFAULT_DECIMALS_DISPLAYED = 4
 
 type useMemoizedAmountLabelType = (
   amount: string,
   tokenSymbol: string,
   decimalsDisplayed?: number
-) => string;
+) => string
 
 const useMemoizedAmountLabel: useMemoizedAmountLabelType = (
   amount,
@@ -15,20 +15,18 @@ const useMemoizedAmountLabel: useMemoizedAmountLabelType = (
 ) => {
   const amountLabel = useMemo(() => {
     if (amount) {
-      const [integerPart, decimalPart] = amount.split(".");
+      const [integerPart, decimalPart] = amount.split('.')
 
-      const hasDecimal = !!decimalPart;
-      const decimalLabel = hasDecimal
-        ? `.${decimalPart.slice(0, decimalsDisplayed)}`
-        : "";
+      const hasDecimal = !!decimalPart
+      const decimalLabel = hasDecimal ? `.${decimalPart.slice(0, decimalsDisplayed)}` : ''
 
-      return `${integerPart}${decimalLabel} ${tokenSymbol}`;
+      return `${integerPart}${decimalLabel} ${tokenSymbol}`
     }
 
-    return `0 ${tokenSymbol}`;
-  }, [amount, tokenSymbol, decimalsDisplayed]);
+    return `0 ${tokenSymbol}`
+  }, [amount, tokenSymbol, decimalsDisplayed])
 
-  return amountLabel;
-};
+  return amountLabel
+}
 
-export default useMemoizedAmountLabel;
+export default useMemoizedAmountLabel
