@@ -53,8 +53,8 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "format:check": "prettier --check \"*/**/*.{js,json,md,ts}\"",
-    "format": "prettier --write \"*/**/*.{js,json,md,ts}\""
+    "format:check": "prettier --check \"*/**/*.{js,jsx,json,md,tsx}\"",
+    "format": "prettier --write \"*/**/*.{js,jsx,json,md,ts,tsx}\""
   },
   "eslintConfig": {
     "extends": [
