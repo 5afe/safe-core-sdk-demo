@@ -1,3 +1,15 @@
+import AccountAbstraction from "@safe-global/account-abstraction-kit-poc";
+import { SafeAuthKit, Web3AuthModalPack } from "@safe-global/auth-kit";
+import {
+  SafeOnRampKit,
+  StripePack
+} from "@safe-global/onramp-kit";
+import { GelatoRelayPack } from "@safe-global/relay-kit";
+import {
+  MetaTransactionData,
+  MetaTransactionOptions
+} from '@safe-global/safe-core-sdk-types';
+import { ethers, utils } from "ethers";
 import {
   createContext,
   useCallback,
@@ -5,23 +17,15 @@ import {
   useEffect,
   useState,
 } from "react";
-import { utils, ethers, BigNumber } from "ethers";
-import { SafeAuthKit, SafeAuthProviderType } from "@safe-global/auth-kit";
-import AccountAbstraction, {
-  MetaTransactionData,
-  MetaTransactionOptions,
-} from "@safe-global/account-abstraction-kit-poc";
-import { GelatoRelayAdapter } from "@safe-global/relay-kit";
-import {
-  SafeOnRampKit,
-  SafeOnRampEvent,
-  SafeOnRampProviderType,
-} from "@safe-global/onramp-kit";
 
-import getChain from "src/utils/getChain";
-import Chain from "src/models/chain";
+import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from "@web3auth/base";
+import { Web3AuthOptions } from "@web3auth/modal";
+import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { initialChain } from "src/chains/chains";
 import usePolling from "src/hooks/usePolling";
+import Chain from "src/models/chain";
+import getChain from "src/utils/getChain";
+
 
 type accountAbstractionContextValue = {
   ownerAddress?: string;
@@ -105,24 +109,55 @@ const AccountAbstractionProvider = ({
   }, [chain]);
 
   // authClient
-  const [authClient, setAuthClient] = useState<SafeAuthKit>();
+  const [authClient, setAuthClient] = useState<SafeAuthKit<Web3AuthModalPack>>();
 
   // onRampClient
-  const [onRampClient, setOnRampClient] = useState<SafeOnRampKit>();
+  const [onRampClient, setOnRampClient] = useState<SafeOnRampKit<StripePack>>();
 
   // auth-kit implementation
   const loginWeb3Auth = useCallback(async () => {
     try {
-      const safeAuth = await SafeAuthKit.init(SafeAuthProviderType.Web3Auth, {
-        chainId: chain.id,
-        txServiceUrl: chain.transactionServiceUrl,
-        authProviderConfig: {
-          rpcTarget: chain.rpcUrl,
-          clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID || "",
-          network: "testnet",
-          theme: "dark",
+      const options: Web3AuthOptions = {
+        clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID || '',
+        web3AuthNetwork: 'testnet',
+        chainConfig: {
+          chainNamespace: CHAIN_NAMESPACES.EIP155,
+          chainId: '0x1',
+          rpcTarget: `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
         },
-      });
+        uiConfig: {
+          theme: 'dark',
+          loginMethodsOrder: ['google', 'facebook']
+        }
+      }
+
+      const modalConfig = {
+        [WALLET_ADAPTERS.TORUS_EVM]: {
+          label: 'torus',
+          showOnModal: false
+        },
+        [WALLET_ADAPTERS.METAMASK]: {
+          label: 'metamask',
+          showOnDesktop: true,
+          showOnMobile: false
+        }
+      }
+
+      const openloginAdapter = new OpenloginAdapter({
+        loginSettings: {
+          mfaLevel: 'mandatory'
+        },
+        adapterSettings: {
+          uxMode: 'popup',
+          whiteLabel: {
+            name: 'Safe'
+          }
+        }
+      })
+
+      const web3AuthModalPack = new Web3AuthModalPack(options, [openloginAdapter], modalConfig)
+      
+      const safeAuth = await SafeAuthKit.init(web3AuthModalPack);
 
       if (safeAuth) {
         const { safes, eoa } = await safeAuth.signIn();
@@ -161,10 +196,10 @@ const AccountAbstractionProvider = ({
     const getSafeAddress = async () => {
       if (web3Provider) {
         const signer = web3Provider.getSigner();
-        const relayAdapter = new GelatoRelayAdapter();
+        const relayPack = new GelatoRelayPack();
         const safeAccountAbstraction = new AccountAbstraction(signer);
 
-        await safeAccountAbstraction.init({ relayAdapter });
+        await safeAccountAbstraction.init({ relayPack });
 
         const hasSafes = safes.length > 0;
 
@@ -194,22 +229,22 @@ const AccountAbstractionProvider = ({
       setIsRelayerLoading(true);
 
       const signer = web3Provider.getSigner();
-      const relayAdapter = new GelatoRelayAdapter();
+      const relayPack = new GelatoRelayPack();
       const safeAccountAbstraction = new AccountAbstraction(signer);
 
-      await safeAccountAbstraction.init({ relayAdapter });
+      await safeAccountAbstraction.init({ relayPack });
 
       // we use a dump safe transfer as a demo transaction
-      const dumpSafeTransafer: MetaTransactionData = {
+      const dumpSafeTransafer: MetaTransactionData[] = [{
         to: safeSelected,
         data: "0x",
-        value: BigNumber.from(utils.parseUnits("0.01", "ether").toString()),
+        value: utils.parseUnits("0.01", "ether").toString(),
         operation: 0, // OperationType.Call,
-      };
+      }];
 
       const options: MetaTransactionOptions = {
         isSponsored: false,
-        gasLimit: BigNumber.from("600000"), // in this alfa version we need to manually set the gas limit :<
+        gasLimit: "600000", // in this alfa version we need to manually set the gas limit
         gasToken: ethers.constants.AddressZero, // native token ???
       };
 
@@ -226,30 +261,27 @@ const AccountAbstractionProvider = ({
   // onramp-kit implementation
   const openStripeWidget = async () => {
     const onRampClient = await SafeOnRampKit.init(
-      SafeOnRampProviderType.Stripe,
-      {
-        onRampProviderConfig: {
-          stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY || "",
-          onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL || "",
-        },
-      }
+      new StripePack({
+        stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY || "",
+        onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL || "",
+      })
     );
     const sessionData = await onRampClient?.open({
       // sessionId: sessionId, optional parameter
-      walletAddress: safeSelected,
-      networks: ["ethereum", "polygon"],
       element: "#stripe-root",
-      events: {
-        onLoaded: () => console.log("onLoaded()"),
-        onPaymentSuccessful: (eventData: SafeOnRampEvent) =>
-          console.log("onPaymentSuccessful(): ", eventData),
-        onPaymentProcessing: (eventData: SafeOnRampEvent) =>
-          console.log("onPaymentProcessing(): ", eventData),
-        onPaymentError: (eventData: SafeOnRampEvent) =>
-          console.log("onPaymentError(): ", eventData),
-      },
+      defaultOptions: {
+        transaction_details: {
+          wallet_address: safeSelected,
+          supported_destination_networks: ['ethereum', 'polygon'],
+          supported_destination_currencies: ['usdc'],
+          lock_wallet_address: true
+        },
+        customer_information: {
+          email: process.env.REACT_APP_ONRAMP_USER_EMAIL
+        }
+      }
     });
-
+    
     setOnRampClient(onRampClient);
 
     console.log("Stripe sessionData: ", sessionData);
@@ -307,3 +339,4 @@ const AccountAbstractionProvider = ({
 };
 
 export { useAccountAbstraction, AccountAbstractionProvider };
+

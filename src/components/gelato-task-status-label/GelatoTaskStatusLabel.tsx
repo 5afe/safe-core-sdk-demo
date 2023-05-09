@@ -1,18 +1,18 @@
-import { useCallback, useEffect } from "react";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Skeleton from "@mui/material/Skeleton";
-import LinearProgress from "@mui/material/LinearProgress";
-import Stack from "@mui/material/Stack";
-import Link from "@mui/material/Link";
 import styled from "@emotion/styled";
 import { Theme } from "@mui/material";
-import { GelatoRelayAdapter } from "@safe-global/relay-kit";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
+import Link from "@mui/material/Link";
+import Skeleton from "@mui/material/Skeleton";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { GelatoRelayPack } from "@safe-global/relay-kit";
+import { useCallback, useEffect } from "react";
 
-import useApi from "src/hooks/useApi";
-import AddressLabel from "src/components/address-label/AddressLabel";
-import getChain from "src/utils/getChain";
 import { TransactionStatusResponse } from "@gelatonetwork/relay-sdk";
+import AddressLabel from "src/components/address-label/AddressLabel";
+import useApi from "src/hooks/useApi";
+import getChain from "src/utils/getChain";
 
 type GelatoTaskStatusLabelProps = {
   gelatoTaskId: string;
@@ -31,7 +31,7 @@ const GelatoTaskStatusLabel = ({
   setTransactionHash,
 }: GelatoTaskStatusLabelProps) => {
   const fetchGelatoTaskInfo = useCallback(
-    async () => await new GelatoRelayAdapter().getTaskStatus(gelatoTaskId),
+    async () => await new GelatoRelayPack().getTaskStatus(gelatoTaskId),
     [gelatoTaskId]
   );
 
