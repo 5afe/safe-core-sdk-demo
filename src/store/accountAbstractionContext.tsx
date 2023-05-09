@@ -1,51 +1,38 @@
-import AccountAbstraction from "@safe-global/account-abstraction-kit-poc";
-import { SafeAuthKit, Web3AuthModalPack } from "@safe-global/auth-kit";
-import {
-  SafeOnRampKit,
-  StripePack
-} from "@safe-global/onramp-kit";
-import { GelatoRelayPack } from "@safe-global/relay-kit";
-import {
-  MetaTransactionData,
-  MetaTransactionOptions
-} from '@safe-global/safe-core-sdk-types';
-import { ethers, utils } from "ethers";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
+import { SafeAuthKit, Web3AuthModalPack } from '@safe-global/auth-kit'
+import { SafeOnRampKit, StripePack } from '@safe-global/onramp-kit'
+import { GelatoRelayPack } from '@safe-global/relay-kit'
+import { MetaTransactionData, MetaTransactionOptions } from '@safe-global/safe-core-sdk-types'
+import { ethers, utils } from 'ethers'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
-import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from "@web3auth/base";
-import { Web3AuthOptions } from "@web3auth/modal";
-import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
-import { initialChain } from "src/chains/chains";
-import usePolling from "src/hooks/usePolling";
-import Chain from "src/models/chain";
-import getChain from "src/utils/getChain";
-
+import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from '@web3auth/base'
+import { Web3AuthOptions } from '@web3auth/modal'
+import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
+import { initialChain } from 'src/chains/chains'
+import usePolling from 'src/hooks/usePolling'
+import Chain from 'src/models/chain'
+import getChain from 'src/utils/getChain'
 
 type accountAbstractionContextValue = {
-  ownerAddress?: string;
-  chainId: string;
-  safes: string[];
-  chain?: Chain;
-  isAuthenticated: boolean;
-  web3Provider?: ethers.providers.Web3Provider;
-  loginWeb3Auth: () => void;
-  logoutWeb3Auth: () => void;
-  setChainId: (chainId: string) => void;
-  safeSelected?: string;
-  safeBalance?: string;
-  setSafeSelected: React.Dispatch<React.SetStateAction<string>>;
-  isRelayerLoading: boolean;
-  relayTransaction: () => Promise<void>;
-  gelatoTaskId?: string;
-  openStripeWidget: () => Promise<void>;
-  closeStripeWidget: () => Promise<void>;
-};
+  ownerAddress?: string
+  chainId: string
+  safes: string[]
+  chain?: Chain
+  isAuthenticated: boolean
+  web3Provider?: ethers.providers.Web3Provider
+  loginWeb3Auth: () => void
+  logoutWeb3Auth: () => void
+  setChainId: (chainId: string) => void
+  safeSelected?: string
+  safeBalance?: string
+  setSafeSelected: React.Dispatch<React.SetStateAction<string>>
+  isRelayerLoading: boolean
+  relayTransaction: () => Promise<void>
+  gelatoTaskId?: string
+  openStripeWidget: () => Promise<void>
+  closeStripeWidget: () => Promise<void>
+}
 
 const initialState = {
   isAuthenticated: false,
@@ -59,60 +46,52 @@ const initialState = {
   chainId: initialChain.id,
   isRelayerLoading: true,
   openStripeWidget: async () => {},
-  closeStripeWidget: async () => {},
-};
+  closeStripeWidget: async () => {}
+}
 
-const accountAbstractionContext =
-  createContext<accountAbstractionContextValue>(initialState);
+const accountAbstractionContext = createContext<accountAbstractionContextValue>(initialState)
 
 const useAccountAbstraction = () => {
-  const context = useContext(accountAbstractionContext);
+  const context = useContext(accountAbstractionContext)
 
   if (!context) {
-    throw new Error(
-      "useAccountAbstraction should be used within a AccountAbstraction Provider"
-    );
+    throw new Error('useAccountAbstraction should be used within a AccountAbstraction Provider')
   }
 
-  return context;
-};
+  return context
+}
 
-const AccountAbstractionProvider = ({
-  children,
-}: {
-  children: JSX.Element;
-}) => {
+const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => {
   // owner address from the email  (provided by web3Auth)
-  const [ownerAddress, setOwnerAddress] = useState<string>("");
+  const [ownerAddress, setOwnerAddress] = useState<string>('')
 
   // safes owned by the user
-  const [safes, setSafes] = useState<string[]>([]);
+  const [safes, setSafes] = useState<string[]>([])
 
   // chain selected
-  const [chainId, setChainId] = useState<string>(initialChain.id);
+  const [chainId, setChainId] = useState<string>(initialChain.id)
 
   // web3 provider to perform signatures
-  const [web3Provider, setWeb3Provider] =
-    useState<ethers.providers.Web3Provider>();
+  const [web3Provider, setWeb3Provider] = useState<ethers.providers.Web3Provider>()
 
-  const isAuthenticated = !!ownerAddress && !!chainId;
-  const chain = getChain(chainId) || initialChain;
+  const isAuthenticated = !!ownerAddress && !!chainId
+  const chain = getChain(chainId) || initialChain
 
   // reset React state when you switch the chain
   useEffect(() => {
-    setOwnerAddress("");
-    setSafes([]);
-    setChainId(chain.id);
-    setWeb3Provider(undefined);
-    setSafeSelected("");
-    setAuthClient(undefined);
-  }, [chain]);
+    setOwnerAddress('')
+    setSafes([])
+    setChainId(chain.id)
+    setWeb3Provider(undefined)
+    setSafeSelected('')
+    setAuthClient(undefined)
+  }, [chain])
 
   // authClient
-  const [authClient, setAuthClient] = useState<SafeAuthKit<Web3AuthModalPack>>();
+  const [authClient, setAuthClient] = useState<SafeAuthKit<Web3AuthModalPack>>()
 
   // onRampClient
-  const [onRampClient, setOnRampClient] = useState<SafeOnRampKit<StripePack>>();
+  const [onRampClient, setOnRampClient] = useState<SafeOnRampKit<StripePack>>()
 
   // auth-kit implementation
   const loginWeb3Auth = useCallback(async () => {
@@ -156,119 +135,115 @@ const AccountAbstractionProvider = ({
       })
 
       const web3AuthModalPack = new Web3AuthModalPack(options, [openloginAdapter], modalConfig)
-      
-      const safeAuth = await SafeAuthKit.init(web3AuthModalPack);
+
+      const safeAuth = await SafeAuthKit.init(web3AuthModalPack)
 
       if (safeAuth) {
-        const { safes, eoa } = await safeAuth.signIn();
-        const provider =
-          safeAuth.getProvider() as ethers.providers.ExternalProvider;
+        const { safes, eoa } = await safeAuth.signIn()
+        const provider = safeAuth.getProvider() as ethers.providers.ExternalProvider
 
         // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
-        setChainId(chain.id);
-        setOwnerAddress(eoa);
-        setSafes(safes || []);
-        setWeb3Provider(new ethers.providers.Web3Provider(provider));
-        setAuthClient(safeAuth);
+        setChainId(chain.id)
+        setOwnerAddress(eoa)
+        setSafes(safes || [])
+        setWeb3Provider(new ethers.providers.Web3Provider(provider))
+        setAuthClient(safeAuth)
       }
     } catch (error) {
-      console.log("error: ", error);
+      console.log('error: ', error)
     }
-  }, [chain]);
+  }, [chain])
 
   const logoutWeb3Auth = () => {
-    authClient?.signOut();
-    setOwnerAddress("");
-    setSafes([]);
-    setChainId(chain.id);
-    setWeb3Provider(undefined);
-    setSafeSelected("");
-    setAuthClient(undefined);
-  };
+    authClient?.signOut()
+    setOwnerAddress('')
+    setSafes([])
+    setChainId(chain.id)
+    setWeb3Provider(undefined)
+    setSafeSelected('')
+    setAuthClient(undefined)
+  }
 
   // TODO: add disconnect owner wallet logic ?
 
   // current safe selected by the user
-  const [safeSelected, setSafeSelected] = useState<string>("");
+  const [safeSelected, setSafeSelected] = useState<string>('')
 
   // conterfactual safe Address if its not deployed yet
   useEffect(() => {
     const getSafeAddress = async () => {
       if (web3Provider) {
-        const signer = web3Provider.getSigner();
-        const relayPack = new GelatoRelayPack();
-        const safeAccountAbstraction = new AccountAbstraction(signer);
+        const signer = web3Provider.getSigner()
+        const relayPack = new GelatoRelayPack()
+        const safeAccountAbstraction = new AccountAbstraction(signer)
 
-        await safeAccountAbstraction.init({ relayPack });
+        await safeAccountAbstraction.init({ relayPack })
 
-        const hasSafes = safes.length > 0;
+        const hasSafes = safes.length > 0
 
-        const safeSelected = hasSafes
-          ? safes[0]
-          : safeAccountAbstraction.getSafeAddress();
+        const safeSelected = hasSafes ? safes[0] : safeAccountAbstraction.getSafeAddress()
 
-        setSafeSelected(safeSelected);
+        setSafeSelected(safeSelected)
       }
-    };
+    }
 
-    getSafeAddress();
-  }, [safes, web3Provider]);
+    getSafeAddress()
+  }, [safes, web3Provider])
 
-  const [isRelayerLoading, setIsRelayerLoading] = useState<boolean>(false);
-  const [gelatoTaskId, setGelatoTaskId] = useState<string>();
+  const [isRelayerLoading, setIsRelayerLoading] = useState<boolean>(false)
+  const [gelatoTaskId, setGelatoTaskId] = useState<string>()
 
   // refresh the Gelato task id
   useEffect(() => {
-    setIsRelayerLoading(false);
-    setGelatoTaskId(undefined);
-  }, [chainId]);
+    setIsRelayerLoading(false)
+    setGelatoTaskId(undefined)
+  }, [chainId])
 
   // relay-kit implementation using Gelato
   const relayTransaction = async () => {
     if (web3Provider) {
-      setIsRelayerLoading(true);
+      setIsRelayerLoading(true)
 
-      const signer = web3Provider.getSigner();
-      const relayPack = new GelatoRelayPack();
-      const safeAccountAbstraction = new AccountAbstraction(signer);
+      const signer = web3Provider.getSigner()
+      const relayPack = new GelatoRelayPack()
+      const safeAccountAbstraction = new AccountAbstraction(signer)
 
-      await safeAccountAbstraction.init({ relayPack });
+      await safeAccountAbstraction.init({ relayPack })
 
       // we use a dump safe transfer as a demo transaction
-      const dumpSafeTransafer: MetaTransactionData[] = [{
-        to: safeSelected,
-        data: "0x",
-        value: utils.parseUnits("0.01", "ether").toString(),
-        operation: 0, // OperationType.Call,
-      }];
+      const dumpSafeTransafer: MetaTransactionData[] = [
+        {
+          to: safeSelected,
+          data: '0x',
+          value: utils.parseUnits('0.01', 'ether').toString(),
+          operation: 0 // OperationType.Call,
+        }
+      ]
 
       const options: MetaTransactionOptions = {
         isSponsored: false,
-        gasLimit: "600000", // in this alfa version we need to manually set the gas limit
-        gasToken: ethers.constants.AddressZero, // native token ???
-      };
+        gasLimit: '600000', // in this alfa version we need to manually set the gas limit
+        gasToken: ethers.constants.AddressZero // native token ???
+      }
 
-      const gelatoTaskId = await safeAccountAbstraction.relayTransaction(
-        dumpSafeTransafer,
-        options
-      );
+      const gelatoTaskId = await safeAccountAbstraction.relayTransaction(dumpSafeTransafer, options)
 
-      setIsRelayerLoading(false);
-      setGelatoTaskId(gelatoTaskId);
+      setIsRelayerLoading(false)
+      setGelatoTaskId(gelatoTaskId)
     }
-  };
+  }
 
   // onramp-kit implementation
   const openStripeWidget = async () => {
     const onRampClient = await SafeOnRampKit.init(
       new StripePack({
-        stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY || "",
-        onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL || "",
+        stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY || '',
+        onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL || ''
       })
-    );
+    )
     const sessionData = await onRampClient?.open({
       // sessionId: sessionId, optional parameter
-      element: "#stripe-root",
+      element: '#stripe-root',
       defaultOptions: {
         transaction_details: {
           wallet_address: safeSelected,
@@ -280,16 +255,16 @@ const AccountAbstractionProvider = ({
           email: process.env.REACT_APP_ONRAMP_USER_EMAIL
         }
       }
-    });
-    
-    setOnRampClient(onRampClient);
+    })
 
-    console.log("Stripe sessionData: ", sessionData);
-  };
+    setOnRampClient(onRampClient)
+
+    console.log('Stripe sessionData: ', sessionData)
+  }
 
   const closeStripeWidget = async () => {
-    onRampClient?.close();
-  };
+    onRampClient?.close()
+  }
 
   // we can pay Gelato tx relayer fees with native token & USDC
   // TODO: ADD native Safe Balance polling
@@ -297,12 +272,12 @@ const AccountAbstractionProvider = ({
 
   // fetch safe address balance with polling
   const fetchSafeBalance = useCallback(async () => {
-    const balance = await web3Provider?.getBalance(safeSelected);
+    const balance = await web3Provider?.getBalance(safeSelected)
 
-    return balance?.toString();
-  }, [web3Provider, safeSelected]);
+    return balance?.toString()
+  }, [web3Provider, safeSelected])
 
-  const safeBalance = usePolling(fetchSafeBalance);
+  const safeBalance = usePolling(fetchSafeBalance)
 
   const state = {
     ownerAddress,
@@ -328,15 +303,14 @@ const AccountAbstractionProvider = ({
     gelatoTaskId,
 
     openStripeWidget,
-    closeStripeWidget,
-  };
+    closeStripeWidget
+  }
 
   return (
     <accountAbstractionContext.Provider value={state}>
       {children}
     </accountAbstractionContext.Provider>
-  );
-};
+  )
+}
 
-export { useAccountAbstraction, AccountAbstractionProvider };
-
+export { useAccountAbstraction, AccountAbstractionProvider }
