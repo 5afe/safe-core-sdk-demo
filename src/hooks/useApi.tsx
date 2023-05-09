@@ -1,54 +1,51 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
-type apiCallParam<T> = (signal: AbortSignal) => Promise<T>;
+type apiCallParam<T> = (signal: AbortSignal) => Promise<T>
 
 type useApiHookReturnValue<T> = {
-  isLoading: boolean;
-  data?: T;
-};
+  isLoading: boolean
+  data?: T
+}
 
-function useApi<T>(
-  apiCall: apiCallParam<T>,
-  pollingTime?: number
-): useApiHookReturnValue<T> {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [data, setData] = useState<T>();
+function useApi<T>(apiCall: apiCallParam<T>, pollingTime?: number): useApiHookReturnValue<T> {
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [data, setData] = useState<T>()
 
   useEffect(() => {
-    const abortController = new AbortController();
+    const abortController = new AbortController()
 
     async function performApiCall() {
       try {
-        setIsLoading(true);
-        const data = await apiCall(abortController.signal);
-        setData(data);
+        setIsLoading(true)
+        const data = await apiCall(abortController.signal)
+        setData(data)
       } catch (exception) {
-        setData(undefined);
+        setData(undefined)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
 
-    let intervalId: NodeJS.Timer;
+    let intervalId: NodeJS.Timer
 
     if (pollingTime) {
       intervalId = setInterval(() => {
-        performApiCall();
-      }, pollingTime);
+        performApiCall()
+      }, pollingTime)
     }
 
-    performApiCall();
+    performApiCall()
 
     return () => {
-      abortController.abort();
-      clearInterval(intervalId);
-    };
-  }, [apiCall, pollingTime]);
+      abortController.abort()
+      clearInterval(intervalId)
+    }
+  }, [apiCall, pollingTime])
 
   return {
     isLoading,
-    data,
-  };
+    data
+  }
 }
 
-export default useApi;
+export default useApi

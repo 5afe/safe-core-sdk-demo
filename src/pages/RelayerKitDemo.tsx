@@ -1,24 +1,24 @@
-import { useState } from "react";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import Button from "@mui/material/Button";
-import LinearProgress from "@mui/material/LinearProgress";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
-import styled from "@emotion/styled";
-import { Theme } from "@mui/material";
-import { CodeBlock, atomOneDark } from "react-code-blocks";
-import SendIcon from "@mui/icons-material/SendRounded";
-import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
-import { utils } from "ethers";
+import { useState } from 'react'
+import Typography from '@mui/material/Typography'
+import Link from '@mui/material/Link'
+import Button from '@mui/material/Button'
+import LinearProgress from '@mui/material/LinearProgress'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import Divider from '@mui/material/Divider'
+import styled from '@emotion/styled'
+import { Theme } from '@mui/material'
+import { CodeBlock, atomOneDark } from 'react-code-blocks'
+import SendIcon from '@mui/icons-material/SendRounded'
+import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded'
+import { utils } from 'ethers'
 
-import AddressLabel from "src/components/address-label/AddressLabel";
-import SafeInfo from "src/components/safe-info/SafeInfo";
-import GelatoTaskStatusLabel from "src/components/gelato-task-status-label/GelatoTaskStatusLabel";
-import { useAccountAbstraction } from "src/store/accountAbstractionContext";
+import AddressLabel from 'src/components/address-label/AddressLabel'
+import SafeInfo from 'src/components/safe-info/SafeInfo'
+import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 
-const transferAmount = 0.01;
+const transferAmount = 0.01
 
 const RelayerKitDemo = () => {
   const {
@@ -33,16 +33,15 @@ const RelayerKitDemo = () => {
     gelatoTaskId,
 
     isAuthenticated,
-    loginWeb3Auth,
-  } = useAccountAbstraction();
+    loginWeb3Auth
+  } = useAccountAbstraction()
 
-  const [transactionHash, setTransactionHash] = useState<string>("");
+  const [transactionHash, setTransactionHash] = useState<string>('')
 
   // TODO: ADD PAY FEES USING USDC TOKEN
 
   const hasNativeFunds =
-    !!safeBalance &&
-    Number(utils.formatEther(safeBalance || "0")) > transferAmount;
+    !!safeBalance && Number(utils.formatEther(safeBalance || '0')) > transferAmount
 
   return (
     <>
@@ -51,10 +50,9 @@ const RelayerKitDemo = () => {
       </Typography>
 
       <Typography marginTop="16px">
-        Allow users to pay fees using any ERC-20 tokens, without having to
-        manage gas. Sponsor transactions on behalf of your users. On your first
-        relayed transaction, a Safe Account will be automatically deployed and
-        your address will be assigned as the Safe owner.
+        Allow users to pay fees using any ERC-20 tokens, without having to manage gas. Sponsor
+        transactions on behalf of your users. On your first relayed transaction, a Safe Account will
+        be automatically deployed and your address will be assigned as the Safe owner.
       </Typography>
 
       <Typography marginTop="24px" marginBottom="8px">
@@ -77,15 +75,10 @@ const RelayerKitDemo = () => {
         </Link>
       </Stack>
 
-      <Divider sx={{ margin: "32px 0 28px 0" }} />
+      <Divider sx={{ margin: '32px 0 28px 0' }} />
 
       {/* Relay Demo */}
-      <Typography
-        variant="h4"
-        component="h2"
-        fontWeight="700"
-        marginBottom="16px"
-      >
+      <Typography variant="h4" component="h2" fontWeight="700" marginBottom="16px">
         Interactive demo
       </Typography>
 
@@ -116,9 +109,7 @@ const RelayerKitDemo = () => {
             </Typography>
 
             {/* Safe Info */}
-            {safeSelected && (
-              <SafeInfo safeAddress={safeSelected} chainId={chainId} />
-            )}
+            {safeSelected && <SafeInfo safeAddress={safeSelected} chainId={chainId} />}
           </ConnectedContainer>
 
           {/* Relay Transaction */}
@@ -141,9 +132,7 @@ const RelayerKitDemo = () => {
               />
             )}
 
-            {isRelayerLoading && (
-              <LinearProgress sx={{ alignSelf: "stretch" }} />
-            )}
+            {isRelayerLoading && <LinearProgress sx={{ alignSelf: 'stretch' }} />}
 
             {!isRelayerLoading && !gelatoTaskId && (
               <>
@@ -177,17 +166,11 @@ const RelayerKitDemo = () => {
 
               {safeSelected && (
                 <Stack gap={0.5} display="flex" flexDirection="row">
-                  <AddressLabel
-                    address={safeSelected}
-                    showCopyIntoClipboardButton={false}
-                  />
+                  <AddressLabel address={safeSelected} showCopyIntoClipboardButton={false} />
 
                   <ArrowRightAltRoundedIcon />
 
-                  <AddressLabel
-                    address={safeSelected}
-                    showCopyIntoClipboardButton={false}
-                  />
+                  <AddressLabel address={safeSelected} showCopyIntoClipboardButton={false} />
                 </Stack>
               )}
             </Stack>
@@ -195,14 +178,9 @@ const RelayerKitDemo = () => {
         </Box>
       )}
 
-      <Divider style={{ margin: "40px 0 30px 0" }} />
+      <Divider style={{ margin: '40px 0 30px 0' }} />
 
-      <Typography
-        variant="h3"
-        component="h2"
-        fontWeight="700"
-        marginBottom="16px"
-      >
+      <Typography variant="h3" component="h2" fontWeight="700" marginBottom="16px">
         How to use it
       </Typography>
 
@@ -210,17 +188,17 @@ const RelayerKitDemo = () => {
       <CodeContainer>
         <CodeBlock
           text={code}
-          language={"javascript"}
+          language={'javascript'}
           showLineNumbers
           startingLineNumber={96}
           theme={atomOneDark}
         />
       </CodeContainer>
     </>
-  );
-};
+  )
+}
 
-export default RelayerKitDemo;
+export default RelayerKitDemo
 
 const code = `import { GelatoRelayAdapter } from '@safe-global/relay-kit'
 
@@ -230,10 +208,10 @@ relayAdapter.relayTransaction({
   target: '0x...', // the Safe address
   encodedTransaction: '0x...', // Encoded Safe transaction data
   chainId: 5
-})`;
+})`
 
 const ConnectedContainer = styled(Box)<{
-  theme?: Theme;
+  theme?: Theme
 }>(
   ({ theme }) => `
   
@@ -241,14 +219,14 @@ const ConnectedContainer = styled(Box)<{
   border: 1px solid ${theme.palette.border.light};
   padding: 40px 32px;
 `
-);
+)
 
 const CodeContainer = styled(Box)<{
-  theme?: Theme;
+  theme?: Theme
 }>(
   ({ theme }) => `
   border-radius: 10px;
   border: 1px solid ${theme.palette.border.light};
   padding: 16px;
 `
-);
+)
