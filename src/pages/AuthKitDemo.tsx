@@ -1,15 +1,15 @@
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
-import { CodeBlock, atomOneDark } from "react-code-blocks";
 import styled from "@emotion/styled";
 import { Theme } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { CodeBlock, atomOneDark } from "react-code-blocks";
 
-import SafeInfo from "src/components/safe-info/SafeInfo";
 import ConnectedWalletLabel from "src/components/connected-wallet-label/ConnectedWalletLabel";
+import SafeInfo from "src/components/safe-info/SafeInfo";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
 const AuthKitDemo = () => {
@@ -131,7 +131,47 @@ const AuthKitDemo = () => {
 
 export default AuthKitDemo;
 
-const code = `import { SafeAuthKit, SafeAuthProviderType } from '@safe-global/auth-kit'
+const code = `import { SafeAuthKit, Web3AuthModalPack } from '@safe-global/auth-kit'
+
+const options: Web3AuthOptions = {
+  clientId: <REACT_APP_WEB3AUTH_CLIENT_ID>,
+  web3AuthNetwork: 'testnet',
+  chainConfig: {
+    chainNamespace: CHAIN_NAMESPACES.EIP155,
+    chainId: '0x1',
+    rpcTarget: 'https://mainnet.infura.io/v3/<REACT_APP_INFURA_KEY>'
+  },
+  uiConfig: {
+    theme: 'dark',
+    loginMethodsOrder: ['google', 'facebook']
+  }
+}
+
+const modalConfig = {
+  [WALLET_ADAPTERS.TORUS_EVM]: {
+    label: 'torus',
+    showOnModal: false
+  },
+  [WALLET_ADAPTERS.METAMASK]: {
+    label: 'metamask',
+    showOnDesktop: true,
+    showOnMobile: false
+  }
+}
+
+const openloginAdapter = new OpenloginAdapter({
+  loginSettings: {
+    mfaLevel: 'mandatory'
+  },
+  adapterSettings: {
+    uxMode: 'popup',
+    whiteLabel: {
+      name: 'Safe'
+    }
+  }
+})
+
+const web3AuthModalPack = new Web3AuthModalPack(options, [openloginAdapter], modalConfig)
 
 const safeAuthKit = await SafeAuthKit.init(SafeAuthProviderType.Web3Auth, {
   chainId: '0x5',

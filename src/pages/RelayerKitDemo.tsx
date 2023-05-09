@@ -1,21 +1,21 @@
-import { useState } from "react";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import Button from "@mui/material/Button";
-import LinearProgress from "@mui/material/LinearProgress";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
 import styled from "@emotion/styled";
-import { Theme } from "@mui/material";
-import { CodeBlock, atomOneDark } from "react-code-blocks";
-import SendIcon from "@mui/icons-material/SendRounded";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
+import SendIcon from "@mui/icons-material/SendRounded";
+import { Theme } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import LinearProgress from "@mui/material/LinearProgress";
+import Link from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { utils } from "ethers";
+import { useState } from "react";
+import { CodeBlock, atomOneDark } from "react-code-blocks";
 
 import AddressLabel from "src/components/address-label/AddressLabel";
-import SafeInfo from "src/components/safe-info/SafeInfo";
 import GelatoTaskStatusLabel from "src/components/gelato-task-status-label/GelatoTaskStatusLabel";
+import SafeInfo from "src/components/safe-info/SafeInfo";
 import { useAccountAbstraction } from "src/store/accountAbstractionContext";
 
 const transferAmount = 0.01;
@@ -222,9 +222,9 @@ const RelayerKitDemo = () => {
 
 export default RelayerKitDemo;
 
-const code = `import { GelatoRelayAdapter } from '@safe-global/relay-kit'
+const code = `import { GelatoRelayPack } from '@safe-global/relay-kit'
 
-const relayAdapter = new GelatoRelayAdapter()
+const relayAdapter = new GelatoRelayPack()
 
 relayAdapter.relayTransaction({
   target: '0x...', // the Safe address
