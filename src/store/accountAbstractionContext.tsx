@@ -252,7 +252,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
           lock_wallet_address: true
         },
         customer_information: {
-          email: process.env.REACT_APP_ONRAMP_USER_EMAIL
+          email: 'john@doe.com'
         }
       }
     })
