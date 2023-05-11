@@ -1,25 +1,22 @@
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
 
-import { useAccountAbstraction } from "src/store/accountAbstractionContext";
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 
 type SafesOwnedSelectorProps = {
-  safeSelected: string;
-  onSelectSafe: React.Dispatch<React.SetStateAction<string>>;
-};
+  safeSelected: string
+  onSelectSafe: React.Dispatch<React.SetStateAction<string>>
+}
 
-function SafesOwnedSelector({
-  safeSelected,
-  onSelectSafe,
-}: SafesOwnedSelectorProps) {
-  const { safes } = useAccountAbstraction();
+function SafesOwnedSelector({ safeSelected, onSelectSafe }: SafesOwnedSelectorProps) {
+  const { safes } = useAccountAbstraction()
 
-  const showDerivedSafeAddress = safes.length === 0;
+  const showDerivedSafeAddress = safes.length === 0
 
   if (showDerivedSafeAddress) {
-    return null;
+    return null
   }
 
   return (
@@ -40,7 +37,7 @@ function SafesOwnedSelector({
         ))}
       </Select>
     </FormControl>
-  );
+  )
 }
 
-export default SafesOwnedSelector;
+export default SafesOwnedSelector

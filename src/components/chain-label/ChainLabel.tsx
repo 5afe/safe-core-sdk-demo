@@ -1,19 +1,19 @@
-import { styled } from "@mui/material/styles";
+import { styled } from '@mui/material/styles'
 
-import Chain from "src/models/chain";
+import Chain from 'src/models/chain'
 
 type ChainLabelProps = {
-  chain: Chain;
-};
+  chain: Chain
+}
 
 const ChainLabel = ({ chain }: ChainLabelProps) => {
-  const { label, color } = chain;
-  return <Label color={color}>{label}</Label>;
-};
+  const { label, color } = chain
+  return <Label color={color}>{label}</Label>
+}
 
-export default ChainLabel;
+export default ChainLabel
 
-const Label = styled("span")(
+const Label = styled('span')(
   ({ theme, color }) => `
     border-radius: 4px;
     font-size: 12px;
@@ -24,4 +24,4 @@ const Label = styled("span")(
     text-align: center;
     width: 100%;
     `
-);
+)
