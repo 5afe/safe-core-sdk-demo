@@ -205,7 +205,7 @@ const AccountAbstractionProvider = ({
 
         const safeSelected = hasSafes
           ? safes[0]
-          : safeAccountAbstraction.getSafeAddress();
+          : await safeAccountAbstraction.getSafeAddress();
 
         setSafeSelected(safeSelected);
       }
