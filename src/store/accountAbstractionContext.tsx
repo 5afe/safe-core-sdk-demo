@@ -122,8 +122,8 @@ const AccountAbstractionProvider = ({
         web3AuthNetwork: 'testnet',
         chainConfig: {
           chainNamespace: CHAIN_NAMESPACES.EIP155,
-          chainId: '0x1',
-          rpcTarget: `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
+          chainId: chain.id,
+          rpcTarget: chain.rpcUrl
         },
         uiConfig: {
           theme: 'dark',
