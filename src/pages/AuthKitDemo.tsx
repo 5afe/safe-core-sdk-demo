@@ -114,14 +114,15 @@ const AuthKitDemo = () => {
 export default AuthKitDemo
 
 const code = `import { SafeAuthKit, Web3AuthModalPack } from '@safe-global/auth-kit'
+import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
 
 const options: Web3AuthOptions = {
-  clientId: <REACT_APP_WEB3AUTH_CLIENT_ID>,
+  clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID,
   web3AuthNetwork: 'testnet',
   chainConfig: {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: chain.id,
-    rpcTarget: chain.rpcUrl
+    chainId: chainId,
+    rpcTarget: rpcTarget
   },
   uiConfig: {
     theme: 'dark',
@@ -157,7 +158,7 @@ const web3AuthModalPack = new Web3AuthModalPack(options, [openloginAdapter], mod
 
 const safeAuthKit = await SafeAuthKit.init(web3AuthModalPack)
 
-// Allow to login and get the derived eoa
+// Allow to login and get the derived EOA
 safeAuthKit.signIn()
 
 // Logout
@@ -165,7 +166,6 @@ safeAuthKit.signOut()
 
 // Get the provider
 safeAuthKit.getProvider()
-
 `
 
 const ConnectContainer = styled(Box)<{
