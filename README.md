@@ -1,6 +1,6 @@
 # Account Abstraction demo app
 
-[The Safe{Core} Account Abstraction SDK](https://github.com/safe-global/account-abstraction-sdk) allows builders to add account abstraction functionality into their apps. This demo is an example on how to use our different packages (Auth Kit, OnRamp Kit & Relay Kit).
+[The Safe{Core} SDK](https://github.com/safe-global/safe-core-sdk) provides a suite of tools to interact with the Safe ecosystem. This demo app is an example of how to use our different packages (Auth Kit, OnRamp Kit & Relay Kit).
 
 See the [Safe{Core} Account Abstraction SDK Docs](https://docs.safe.global/learn/safe-core-account-abstraction-sdk) for more details.
 
