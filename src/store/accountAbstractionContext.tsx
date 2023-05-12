@@ -162,6 +162,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     setWeb3Provider(undefined)
     setSafeSelected('')
     setAuthClient(undefined)
+    setGelatoTaskId(undefined)
   }
 
   // TODO: add disconnect owner wallet logic ?
