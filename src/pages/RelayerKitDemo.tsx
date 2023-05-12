@@ -202,9 +202,9 @@ export default RelayerKitDemo
 
 const code = `import { GelatoRelayPack } from '@safe-global/relay-kit'
 
-const relayAdapter = new GelatoRelayPack()
+const relayPack = new GelatoRelayPack()
 
-relayAdapter.relayTransaction({
+relayPack.relayTransaction({
   target: '0x...', // the Safe address
   encodedTransaction: '0x...', // Encoded Safe transaction data
   chainId: 5
