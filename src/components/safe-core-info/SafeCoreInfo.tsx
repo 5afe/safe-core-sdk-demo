@@ -20,7 +20,7 @@ const SafeCoreInfo = () => {
       </Typography>
 
       <Stack direction="row" alignItems="center" spacing={2} marginTop={'8px'} marginLeft={'42px'}>
-        <Link href="https://github.com/safe-global/account-abstraction-sdk" target="_blank">
+        <Link href="https://github.com/safe-global/safe-core-sdk" target="_blank">
           Github
         </Link>
 

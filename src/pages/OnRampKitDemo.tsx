@@ -46,7 +46,7 @@ const OnRampKitDemo = () => {
 
       <Stack direction="row" alignItems="center" spacing={2}>
         <Link
-          href="https://github.com/safe-global/account-abstraction-sdk/tree/main/packages/onramp-kit"
+          href="https://github.com/safe-global/safe-core-sdk/tree/main/packages/onramp-kit"
           target="_blank"
         >
           Github
