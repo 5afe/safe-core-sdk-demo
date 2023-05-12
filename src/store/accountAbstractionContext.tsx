@@ -223,7 +223,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       const options: MetaTransactionOptions = {
         isSponsored: false,
         gasLimit: '600000', // in this alfa version we need to manually set the gas limit
-        gasToken: ethers.constants.AddressZero // native token ???
+        gasToken: ethers.constants.AddressZero // native token
       }
 
       const gelatoTaskId = await safeAccountAbstraction.relayTransaction(dumpSafeTransafer, options)
@@ -252,7 +252,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
           lock_wallet_address: true
         },
         customer_information: {
-          email: process.env.REACT_APP_ONRAMP_USER_EMAIL
+          email: 'john@doe.com'
         }
       }
     })
@@ -314,3 +314,4 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 }
 
 export { useAccountAbstraction, AccountAbstractionProvider }
+
