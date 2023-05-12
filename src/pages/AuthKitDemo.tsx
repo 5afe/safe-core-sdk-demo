@@ -155,15 +155,7 @@ const openloginAdapter = new OpenloginAdapter({
 
 const web3AuthModalPack = new Web3AuthModalPack(options, [openloginAdapter], modalConfig)
 
-const safeAuthKit = await SafeAuthKit.init(SafeAuthProviderType.Web3Auth, {
-  chainId: '0x5',
-  authProviderConfig: {
-    rpc: <Your rpc url>, // Add your RPC e.g. https://goerli.infura.io/v3/<your project id>
-    clientId: <Your client id>, // Add your client id. Get it from the Web3Auth dashboard
-    network: 'testnet' | 'mainnet', // The network to use for the Web3Auth modal.
-    theme: 'light' | 'dark' // The theme to use for the Web3Auth modal
-  }
-})
+const safeAuthKit = await SafeAuthKit.init(web3AuthModalPack)
 
 // Allow to login and get the derived eoa
 safeAuthKit.signIn()
