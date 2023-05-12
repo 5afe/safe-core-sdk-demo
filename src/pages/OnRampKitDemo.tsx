@@ -1,20 +1,20 @@
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Tooltip from '@mui/material/Tooltip'
-import Typography from '@mui/material/Typography'
-import Link from '@mui/material/Link'
-import Stack from '@mui/material/Stack'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
 import styled from '@emotion/styled'
-import { Theme } from '@mui/material'
-import { CodeBlock, atomOneDark } from 'react-code-blocks'
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletRounded'
 import CloseIcon from '@mui/icons-material/CloseRounded'
+import { Theme } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import Link from '@mui/material/Link'
+import Stack from '@mui/material/Stack'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
+import { CodeBlock, atomOneDark } from 'react-code-blocks'
 
+import { useState } from 'react'
 import SafeInfo from 'src/components/safe-info/SafeInfo'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
-import { useState } from 'react'
 
 const OnRampKitDemo = () => {
   const {
@@ -174,25 +174,37 @@ const OnRampKitDemo = () => {
 
 export default OnRampKitDemo
 
-const code = `import { SafeOnRampKit, SafeOnRampProviderType } from '@safe-global/onramp-kit'
+const code = `import { SafeOnRampKit, StripePack } from '@safe-global/onramp-kit'
 
-const safeOnRamp = await SafeOnRampKit.init(SafeOnRampProviderType.Stripe, {
-  onRampProviderConfig: {
-    stripePublicKey: <You public key>, // You should get your own keys from Stripe
-    onRampBackendUrl: <Your backend url> // You should deploy your own server
-  }
-})
+const safeOnRamp = await SafeOnRampKit.init(
+  new StripePack({
+    stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY,
+    onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL
+  })
+)
 
 const sessionData = await safeOnRamp.open({
-  walletAddress,
-  networks: ['polygon']
   element: '#stripe-root',
-  events: {
-    onLoaded: () => console.log('Loaded'),
-    onPaymentSuccessful: () => console.log('Payment successful')
-    onPaymentError: () => console.log('Payment failed')
-    onPaymentProcessing: () => console.log('Payment processing')
+  theme: 'light',
+  defaultOptions: {
+    transaction_details: {
+      wallet_address: walletAddress,
+      supported_destination_networks: ['ethereum', 'polygon'],
+      supported_destination_currencies: ['usdc'],
+      lock_wallet_address: true
+    },
+    customer_information: {
+      email: 'john@doe.com'
+    }
   }
+}))
+
+safeOnRamp.subscribe('onramp_ui_loaded', () => {
+  console.log('UI loaded')
+})
+
+safeOnRamp.subscribe('onramp_session_updated', (e) => {
+  console.log('Session Updated', e.payload)
 })
 `
 
