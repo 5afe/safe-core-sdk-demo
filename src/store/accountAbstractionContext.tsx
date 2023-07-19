@@ -1,11 +1,11 @@
 import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
 import { Web3AuthModalPack } from '@safe-global/auth-kit'
-import { StripePack } from '@safe-global/onramp-kit'
+import { MoneriumPack, SafeMoneriumClient, StripePack } from '@safe-global/onramp-kit'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
+import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { MetaTransactionData, MetaTransactionOptions } from '@safe-global/safe-core-sdk-types'
 import { ethers, utils } from 'ethers'
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-
 import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from '@web3auth/base'
 import { Web3AuthOptions } from '@web3auth/modal'
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
@@ -32,6 +32,7 @@ type accountAbstractionContextValue = {
   gelatoTaskId?: string
   openStripeWidget: () => Promise<void>
   closeStripeWidget: () => Promise<void>
+  startMoneriumFlow: () => Promise<void>
 }
 
 const initialState = {
@@ -46,7 +47,8 @@ const initialState = {
   chainId: initialChain.id,
   isRelayerLoading: true,
   openStripeWidget: async () => {},
-  closeStripeWidget: async () => {}
+  closeStripeWidget: async () => {},
+  startMoneriumFlow: async () => {}
 }
 
 const accountAbstractionContext = createContext<accountAbstractionContextValue>(initialState)
@@ -169,10 +171,70 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     setGelatoTaskId(undefined)
   }
 
-  // TODO: add disconnect owner wallet logic ?
-
   // current safe selected by the user
   const [safeSelected, setSafeSelected] = useState<string>('')
+  const [safeThreshold, setSafeThreshold] = useState<string>()
+  const [moneriumClient, setMoneriumClient] = useState<SafeMoneriumClient>()
+  const [moneriumPack, setMoneriumPack] = useState<MoneriumPack>()
+
+  // Initialize MoneriumPack
+  useEffect(() => {
+    ;(async () => {
+      if (!web3Provider || !safeSelected) return
+
+      const safeOwner = web3Provider.getSigner()
+      const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: safeOwner })
+
+      const safeSdk = await Safe.create({
+        ethAdapter: ethAdapter,
+        safeAddress: safeSelected,
+        isL1SafeMasterCopy: true
+      })
+
+      const pack = new MoneriumPack({
+        clientId: process.env.REACT_APP_MONERIUM_CLIENT_ID || '',
+        environment: 'sandbox'
+      })
+
+      await pack.init({
+        safeSdk
+      })
+
+      const threshold = await safeSdk.getThreshold()
+      const owners = await safeSdk.getOwners()
+
+      setSafeThreshold(`${threshold}/${owners.length}`)
+      setMoneriumPack(pack)
+    })()
+  }, [web3Provider, safeSelected])
+
+  const startMoneriumFlow = useCallback(
+    async (authCode?: string, refreshToken?: string) => {
+      if (!moneriumPack) return
+
+      const moneriumClient = await moneriumPack.open({
+        redirectUrl: 'http://localhost:3000',
+        authCode,
+        refreshToken
+      })
+
+      if (moneriumClient.bearerProfile) {
+        localStorage.setItem('MONERIUM_TOKEN', moneriumClient.bearerProfile.refresh_token)
+      }
+
+      setMoneriumClient(moneriumClient)
+    },
+    [moneriumPack]
+  )
+
+  useEffect(() => {
+    const authCode = new URLSearchParams(window.location.search).get('code') || undefined
+    const refreshToken = localStorage.getItem('monerium_token') || undefined
+
+    if (authCode || refreshToken) startMoneriumFlow(authCode, refreshToken)
+  }, [startMoneriumFlow])
+
+  // TODO: add disconnect owner wallet logic ?
 
   // conterfactual safe Address if its not deployed yet
   useEffect(() => {
@@ -309,7 +371,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     gelatoTaskId,
 
     openStripeWidget,
-    closeStripeWidget
+    closeStripeWidget,
+
+    startMoneriumFlow
   }
 
   return (

@@ -9,7 +9,8 @@ export const gnosisChain: Chain = {
   blockExplorerUrl: 'https://gnosisscan.io',
   color: '#3e6957',
   transactionServiceUrl: 'https://safe-transaction-gnosis-chain.safe.global',
-  isStripePaymentsEnabled: false
+  isStripePaymentsEnabled: false,
+  isMoneriumPaymentsEnabled: false
 }
 
 export const goerliChain: Chain = {
@@ -21,7 +22,8 @@ export const goerliChain: Chain = {
   blockExplorerUrl: 'https://goerli.etherscan.io',
   color: '#fbc02d',
   transactionServiceUrl: 'https://safe-transaction-goerli.safe.global',
-  isStripePaymentsEnabled: false
+  isStripePaymentsEnabled: false,
+  isMoneriumPaymentsEnabled: true
 }
 
 export const mainnetChain: Chain = {
@@ -33,7 +35,8 @@ export const mainnetChain: Chain = {
   blockExplorerUrl: 'https://etherscan.io',
   color: '#DDDDDD',
   transactionServiceUrl: 'https://safe-transaction-mainnet.safe.global',
-  isStripePaymentsEnabled: false
+  isStripePaymentsEnabled: false,
+  isMoneriumPaymentsEnabled: false
 }
 
 export const polygonChain: Chain = {
@@ -45,7 +48,8 @@ export const polygonChain: Chain = {
   blockExplorerUrl: 'https://polygonscan.com',
   color: '#8248E5',
   transactionServiceUrl: 'https://safe-transaction-polygon.safe.global',
-  isStripePaymentsEnabled: false
+  isStripePaymentsEnabled: false,
+  isMoneriumPaymentsEnabled: false
 }
 
 export const mumbaiChain: Chain = {
@@ -57,6 +61,7 @@ export const mumbaiChain: Chain = {
   blockExplorerUrl: 'https://mumbai.polygonscan.com',
   color: '#8248E5',
   isStripePaymentsEnabled: true,
+  isMoneriumPaymentsEnabled: false,
   faucetUrl: 'https://mumbaifaucet.com/'
 }
 
