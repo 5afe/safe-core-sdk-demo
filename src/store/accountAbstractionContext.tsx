@@ -13,6 +13,7 @@ import { initialChain } from 'src/chains/chains'
 import usePolling from 'src/hooks/usePolling'
 import Chain from 'src/models/chain'
 import getChain from 'src/utils/getChain'
+import { AuthContext } from '@monerium/sdk'
 
 type accountAbstractionContextValue = {
   ownerAddress?: string
@@ -33,6 +34,8 @@ type accountAbstractionContextValue = {
   openStripeWidget: () => Promise<void>
   closeStripeWidget: () => Promise<void>
   startMoneriumFlow: () => Promise<void>
+  closeMoneriumFlow: () => void
+  moneriumAuthContext?: AuthContext
 }
 
 const initialState = {
@@ -48,7 +51,8 @@ const initialState = {
   isRelayerLoading: true,
   openStripeWidget: async () => {},
   closeStripeWidget: async () => {},
-  startMoneriumFlow: async () => {}
+  startMoneriumFlow: async () => {},
+  closeMoneriumFlow: () => {}
 }
 
 const accountAbstractionContext = createContext<accountAbstractionContextValue>(initialState)
@@ -173,6 +177,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   // current safe selected by the user
   const [safeSelected, setSafeSelected] = useState<string>('')
+  const [moneriumAuthContext, setMoneriumAuthContext] = useState<AuthContext>()
   const [safeThreshold, setSafeThreshold] = useState<string>()
   const [moneriumClient, setMoneriumClient] = useState<SafeMoneriumClient>()
   const [moneriumPack, setMoneriumPack] = useState<MoneriumPack>()
@@ -219,13 +224,23 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       })
 
       if (moneriumClient.bearerProfile) {
-        localStorage.setItem('MONERIUM_TOKEN', moneriumClient.bearerProfile.refresh_token)
+        localStorage.setItem('monerium_token', moneriumClient.bearerProfile.refresh_token)
+
+        const authContext = await moneriumClient.getAuthContext()
+
+        setMoneriumAuthContext(authContext)
       }
 
       setMoneriumClient(moneriumClient)
     },
     [moneriumPack]
   )
+
+  const closeMoneriumFlow = useCallback(() => {
+    moneriumPack?.close()
+    localStorage.removeItem('monerium_token')
+    setMoneriumAuthContext(undefined)
+  }, [moneriumPack])
 
   useEffect(() => {
     const authCode = new URLSearchParams(window.location.search).get('code') || undefined
@@ -373,7 +388,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     openStripeWidget,
     closeStripeWidget,
 
-    startMoneriumFlow
+    startMoneriumFlow,
+    closeMoneriumFlow,
+    moneriumAuthContext
   }
 
   return (

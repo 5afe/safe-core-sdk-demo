@@ -12,6 +12,7 @@ import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { CodeBlock, atomOneDark } from 'react-code-blocks'
+import LogoutIcon from '@mui/icons-material/LogoutRounded'
 
 import { useState } from 'react'
 import SafeInfo from 'src/components/safe-info/SafeInfo'
@@ -26,7 +27,9 @@ const OnRampKitDemo = () => {
     chainId,
     isAuthenticated,
     loginWeb3Auth,
-    startMoneriumFlow
+    startMoneriumFlow,
+    closeMoneriumFlow,
+    moneriumAuthContext
   } = useAccountAbstraction()
 
   const [tabsValue, setTabsValue] = useState(0)
@@ -166,20 +169,39 @@ const OnRampKitDemo = () => {
 
             {tabsValue === 1 && (
               <>
-                <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-                  You can login with Monerium and link the selected Safe with your account
-                </Typography>
-                <Tooltip title={'Login with Monerium'}>
-                  <Button
-                    startIcon={<LoginIcon />}
-                    variant="contained"
-                    onClick={() => startMoneriumFlow()}
-                    disabled={!chain?.isMoneriumPaymentsEnabled}
-                  >
-                    Login with Monerium
-                    {!chain?.isMoneriumPaymentsEnabled ? ' (only in Goerli chain)' : ''}
-                  </Button>
-                </Tooltip>
+                {moneriumAuthContext ? (
+                  <>
+                    <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
+                      {moneriumAuthContext.name}, you are logged in using Monerium
+                    </Typography>
+                    <Tooltip title={'Logout'}>
+                      <Button
+                        startIcon={<LogoutIcon />}
+                        variant="contained"
+                        onClick={() => closeMoneriumFlow()}
+                      >
+                        Logout
+                      </Button>
+                    </Tooltip>
+                  </>
+                ) : (
+                  <>
+                    <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
+                      You can login with Monerium and link the selected Safe with your account
+                    </Typography>
+                    <Tooltip title={'Login with Monerium'}>
+                      <Button
+                        startIcon={<LoginIcon />}
+                        variant="contained"
+                        onClick={() => startMoneriumFlow()}
+                        disabled={!chain?.isMoneriumPaymentsEnabled}
+                      >
+                        Login with Monerium
+                        {!chain?.isMoneriumPaymentsEnabled ? ' (only in Goerli chain)' : ''}
+                      </Button>
+                    </Tooltip>
+                  </>
+                )}
               </>
             )}
           </ConnectedContainer>
