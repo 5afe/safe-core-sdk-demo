@@ -17,6 +17,7 @@ import LogoutIcon from '@mui/icons-material/LogoutRounded'
 import { useState } from 'react'
 import SafeInfo from 'src/components/safe-info/SafeInfo'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import { MONERIUM_SNIPPET, STRIPE_SNIPPET } from 'src/utils/snippets'
 
 const OnRampKitDemo = () => {
   const {
@@ -217,7 +218,7 @@ const OnRampKitDemo = () => {
       {/* TODO: create a component for this? */}
       <CodeContainer>
         <CodeBlock
-          text={tabsValue === 0 ? stripeCode : moneriumCode}
+          text={tabsValue === 0 ? STRIPE_SNIPPET : MONERIUM_SNIPPET}
           language={'javascript'}
           showLineNumbers
           startingLineNumber={96}
@@ -229,88 +230,6 @@ const OnRampKitDemo = () => {
 }
 
 export default OnRampKitDemo
-
-const stripeCode = `import { StripePack } from '@safe-global/onramp-kit'
-
-const stripePack = new StripePack({
-  stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY,
-  onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL
-})
-
-await stripePack.init()
-
-const sessionData = await stripePack.open({
-  element: '#stripe-root',
-  theme: 'light',
-  defaultOptions: {
-    transaction_details: {
-      wallet_address: walletAddress,
-      supported_destination_networks: ['ethereum', 'polygon'],
-      supported_destination_currencies: ['usdc'],
-      lock_wallet_address: true
-    },
-    customer_information: {
-      email: 'john@doe.com'
-    }
-  }
-}))
-
-stripePack.subscribe('onramp_ui_loaded', () => {
-  console.log('UI loaded')
-})
-
-stripePack.subscribe('onramp_session_updated', (e) => {
-  console.log('Session Updated', e.payload)
-})
-`
-
-const moneriumCode = `import { MoneriumPack } from '@safe-global/onramp-kit
-import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
-import { OrderState } from '@monerium/sdk'
-
-const safeOwner = web3Provider.getSigner()
-const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: safeOwner })
-
-const safeSdk = await Safe.create({
-  ethAdapter: ethAdapter,
-  safeAddress: safeSelected,
-  isL1SafeMasterCopy: true
-})
-
-const pack = new MoneriumPack({
-  clientId: process.env.REACT_APP_MONERIUM_CLIENT_ID || '',
-  environment: 'sandbox'
-})
-
-await pack.init({
-  safeSdk
-})
-
-const moneriumClient = await moneriumPack.open({
-  redirectUrl: 'http://localhost:3000',
-  authCode,
-  refreshToken
-})
-
-const authContext = await moneriumClient.getAuthContext()
-const profile = await moneriumClient.getProfile(authContext.defaultProfile)
-const balances = await moneriumClient.getBalances()
-const orders = await moneriumClient.getOrders()
-
-if (moneriumClient.bearerProfile) {
-  localStorage.setItem(MONERIUM_TOKEN, moneriumClient.bearerProfile.refresh_token)
-}
-
-moneriumPack.subscribe(OrderState.pending, (notification) => {
-  console.log(notification.meta.state)
-})
-
-moneriumPack.subscribe(OrderState.placed, (notification) => {
-  console.log(notification.meta.state)
-})
-
-moneriumPack.close()
-`
 
 const ConnectedContainer = styled(Box)<{
   theme?: Theme

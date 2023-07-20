@@ -17,6 +17,7 @@ import AddressLabel from 'src/components/address-label/AddressLabel'
 import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
 import SafeInfo from 'src/components/safe-info/SafeInfo'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import { GELATO_SNIPPET } from 'src/utils/snippets'
 
 const transferAmount = 0.01
 
@@ -187,7 +188,7 @@ const RelayerKitDemo = () => {
       {/* TODO: create a component for this? */}
       <CodeContainer>
         <CodeBlock
-          text={code}
+          text={GELATO_SNIPPET}
           language={'javascript'}
           showLineNumbers
           startingLineNumber={96}
@@ -199,16 +200,6 @@ const RelayerKitDemo = () => {
 }
 
 export default RelayerKitDemo
-
-const code = `import { GelatoRelayPack } from '@safe-global/relay-kit'
-
-const relayPack = new GelatoRelayPack()
-
-relayPack.relayTransaction({
-  target: '0x...', // the Safe address
-  encodedTransaction: '0x...', // Encoded Safe transaction data
-  chainId: 5
-})`
 
 const ConnectedContainer = styled(Box)<{
   theme?: Theme
