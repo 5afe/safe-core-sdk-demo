@@ -96,9 +96,9 @@ const OnRampKitDemo = () => {
           </Button>
         </ConnectedContainer>
       ) : (
-        <Box display="flex" gap={3} alignItems="flex-start">
+        <Box display="flex" gap={3} alignItems="flex-wrap">
           {/* safe Account */}
-          <ConnectedContainer>
+          <ConnectedContainer flex={1}>
             <Typography fontWeight="700">Safe Account</Typography>
 
             <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
@@ -109,11 +109,16 @@ const OnRampKitDemo = () => {
             {safeSelected && <SafeInfo safeAddress={safeSelected} chainId={chainId} />}
           </ConnectedContainer>
 
-          {/* Stripe widget */}
-          <ConnectedContainer>
-            <Tabs value={tabsValue} onChange={handleTabChange} aria-label="basic tabs example">
-              <Tab label="Stripe" />
-              <Tab label="Monerium" />
+          {/* Provider widget */}
+          <ConnectedContainer flex={2}>
+            <Tabs
+              value={tabsValue}
+              onChange={handleTabChange}
+              aria-label="basic tabs example"
+              sx={{ marginTop: '-15px' }}
+            >
+              <Tab label="Stripe" sx={{ fontWeight: 'bold' }} />
+              <Tab label="Monerium" sx={{ fontWeight: 'bold' }} />
             </Tabs>
 
             {tabsValue === 0 && (
@@ -188,16 +193,17 @@ const OnRampKitDemo = () => {
                 ) : (
                   <>
                     <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-                      You can login with Monerium and link the selected Safe with your account
+                      You can login with Monerium and link the selected Safe Account{''}
                     </Typography>
-                    <Tooltip title={'Login with Monerium'}>
+
+                    <Tooltip title={'Login'}>
                       <Button
                         startIcon={<LoginIcon />}
                         variant="contained"
                         onClick={() => startMoneriumFlow()}
                         disabled={!chain?.isMoneriumPaymentsEnabled}
                       >
-                        Login with Monerium
+                        Login
                         {!chain?.isMoneriumPaymentsEnabled ? ' (only in Goerli chain)' : ''}
                       </Button>
                     </Tooltip>

@@ -93,7 +93,7 @@ stripePack.subscribe('onramp_session_updated', (e) => {
 })
 `
 
-export const MONERIUM_SNIPPET = `import { MoneriumPack } from '@safe-global/onramp-kit
+export const MONERIUM_SNIPPET = `import { MoneriumPack } from '@safe-global/onramp-kit'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { OrderState } from '@monerium/sdk'
 
