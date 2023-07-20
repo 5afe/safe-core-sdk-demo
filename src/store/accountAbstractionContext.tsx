@@ -212,7 +212,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       if (!moneriumPack) return
 
       const moneriumClient = await moneriumPack.open({
-        redirectUrl: 'http://localhost:3000',
+        redirectUrl: process.env.REACT_APP_MONERIUM_REDIRECT_URL,
         authCode,
         refreshToken
       })
