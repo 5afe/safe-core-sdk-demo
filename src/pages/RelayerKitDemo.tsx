@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { CodeBlock, atomOneDark } from 'react-code-blocks'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
+import Code from 'src/components/code/Code'
 import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
 import SafeInfo from 'src/components/safe-info/SafeInfo'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
@@ -185,16 +186,7 @@ const RelayerKitDemo = () => {
         How to use it
       </Typography>
 
-      {/* TODO: create a component for this? */}
-      <CodeContainer>
-        <CodeBlock
-          text={GELATO_SNIPPET}
-          language={'javascript'}
-          showLineNumbers
-          startingLineNumber={96}
-          theme={atomOneDark}
-        />
-      </CodeContainer>
+      <Code text={GELATO_SNIPPET} language={'javascript'} />
     </>
   )
 }
@@ -209,15 +201,5 @@ const ConnectedContainer = styled(Box)<{
   border-radius: 10px;
   border: 1px solid ${theme.palette.border.light};
   padding: 40px 32px;
-`
-)
-
-const CodeContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 16px;
 `
 )

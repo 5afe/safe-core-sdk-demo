@@ -7,6 +7,7 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CodeBlock, atomOneDark } from 'react-code-blocks'
+import Code from 'src/components/code/Code'
 
 import ConnectedWalletLabel from 'src/components/connected-wallet-label/ConnectedWalletLabel'
 import SafeInfo from 'src/components/safe-info/SafeInfo'
@@ -98,16 +99,7 @@ const AuthKitDemo = () => {
         How to use it
       </Typography>
 
-      {/* TODO: create a component for this? */}
-      <CodeContainer>
-        <CodeBlock
-          text={WEB3AUTH_SNIPPET}
-          language={'javascript'}
-          showLineNumbers
-          startingLineNumber={96}
-          theme={atomOneDark}
-        />
-      </CodeContainer>
+      <Code text={WEB3AUTH_SNIPPET} language={'javascript'} />
     </>
   )
 }
@@ -122,16 +114,6 @@ const ConnectContainer = styled(Box)<{
   border-radius: 10px;
   border: 1px solid ${theme.palette.border.light};
   padding: 50px;
-`
-)
-
-const CodeContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 16px;
 `
 )
 

@@ -18,6 +18,7 @@ import { useState } from 'react'
 import SafeInfo from 'src/components/safe-info/SafeInfo'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { MONERIUM_SNIPPET, STRIPE_SNIPPET } from 'src/utils/snippets'
+import Code from 'src/components/code/Code'
 
 const OnRampKitDemo = () => {
   const {
@@ -215,16 +216,7 @@ const OnRampKitDemo = () => {
         How to use it
       </Typography>
 
-      {/* TODO: create a component for this? */}
-      <CodeContainer>
-        <CodeBlock
-          text={tabsValue === 0 ? STRIPE_SNIPPET : MONERIUM_SNIPPET}
-          language={'javascript'}
-          showLineNumbers
-          startingLineNumber={96}
-          theme={atomOneDark}
-        />
-      </CodeContainer>
+      <Code text={tabsValue === 0 ? STRIPE_SNIPPET : MONERIUM_SNIPPET} language={'javascript'} />
     </>
   )
 }
@@ -241,15 +233,5 @@ const ConnectedContainer = styled(Box)<{
   padding: 40px 32px;
 
   min-height: 265px;
-`
-)
-
-const CodeContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 16px;
 `
 )
