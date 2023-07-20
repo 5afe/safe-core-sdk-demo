@@ -1,6 +1,6 @@
 import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
 import { Web3AuthModalPack } from '@safe-global/auth-kit'
-import { MoneriumPack, SafeMoneriumClient, StripePack } from '@safe-global/onramp-kit'
+import { MoneriumPack, StripePack } from '@safe-global/onramp-kit'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { MetaTransactionData, MetaTransactionOptions } from '@safe-global/safe-core-sdk-types'
@@ -178,8 +178,6 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   // current safe selected by the user
   const [safeSelected, setSafeSelected] = useState<string>('')
   const [moneriumAuthContext, setMoneriumAuthContext] = useState<AuthContext>()
-  const [safeThreshold, setSafeThreshold] = useState<string>()
-  const [moneriumClient, setMoneriumClient] = useState<SafeMoneriumClient>()
   const [moneriumPack, setMoneriumPack] = useState<MoneriumPack>()
 
   // Initialize MoneriumPack
@@ -205,10 +203,6 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
         safeSdk
       })
 
-      const threshold = await safeSdk.getThreshold()
-      const owners = await safeSdk.getOwners()
-
-      setSafeThreshold(`${threshold}/${owners.length}`)
       setMoneriumPack(pack)
     })()
   }, [web3Provider, safeSelected])
@@ -230,8 +224,6 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
         setMoneriumAuthContext(authContext)
       }
-
-      setMoneriumClient(moneriumClient)
     },
     [moneriumPack]
   )
