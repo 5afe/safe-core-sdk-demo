@@ -6,7 +6,6 @@ import Divider from '@mui/material/Divider'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { CodeBlock, atomOneDark } from 'react-code-blocks'
 import Code from 'src/components/code/Code'
 
 import ConnectedWalletLabel from 'src/components/connected-wallet-label/ConnectedWalletLabel'

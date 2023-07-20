@@ -11,7 +11,6 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { utils } from 'ethers'
 import { useState } from 'react'
-import { CodeBlock, atomOneDark } from 'react-code-blocks'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
 import Code from 'src/components/code/Code'
