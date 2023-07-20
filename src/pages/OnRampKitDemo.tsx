@@ -33,7 +33,10 @@ const OnRampKitDemo = () => {
     moneriumAuthContext
   } = useAccountAbstraction()
 
-  const [tabsValue, setTabsValue] = useState(0)
+  const [tabsValue, setTabsValue] = useState(() => {
+    const authCode = new URLSearchParams(window.location.search).get('code') || undefined
+    return authCode ? 1 : 0
+  })
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabsValue(newValue)
