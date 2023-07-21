@@ -1,6 +1,6 @@
 import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
-import { SafeAuthKit, Web3AuthModalPack } from '@safe-global/auth-kit'
-import { SafeOnRampKit, StripePack } from '@safe-global/onramp-kit'
+import { Web3AuthModalPack } from '@safe-global/auth-kit'
+import { StripePack } from '@safe-global/onramp-kit'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
 import { MetaTransactionData, MetaTransactionOptions } from '@safe-global/safe-core-sdk-types'
 import { ethers, utils } from 'ethers'
@@ -84,14 +84,13 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     setChainId(chain.id)
     setWeb3Provider(undefined)
     setSafeSelected('')
-    setAuthClient(undefined)
   }, [chain])
 
   // authClient
-  const [authClient, setAuthClient] = useState<SafeAuthKit<Web3AuthModalPack>>()
+  const [web3AuthModalPack, setWeb3AuthModalPack] = useState<Web3AuthModalPack>()
 
   // onRampClient
-  const [onRampClient, setOnRampClient] = useState<SafeOnRampKit<StripePack>>()
+  const [stripePack, setStripePack] = useState<StripePack>()
 
   // auth-kit implementation
   const loginWeb3Auth = useCallback(async () => {
@@ -134,20 +133,26 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
         }
       })
 
-      const web3AuthModalPack = new Web3AuthModalPack(options, [openloginAdapter], modalConfig)
+      const web3AuthModalPack = new Web3AuthModalPack({
+        txServiceUrl: chain.transactionServiceUrl
+      })
 
-      const safeAuth = await SafeAuthKit.init(web3AuthModalPack)
+      await web3AuthModalPack.init({
+        options,
+        adapters: [openloginAdapter],
+        modalConfig
+      })
 
-      if (safeAuth) {
-        const { safes, eoa } = await safeAuth.signIn()
-        const provider = safeAuth.getProvider() as ethers.providers.ExternalProvider
+      if (web3AuthModalPack) {
+        const { safes, eoa } = await web3AuthModalPack.signIn()
+        const provider = web3AuthModalPack.getProvider() as ethers.providers.ExternalProvider
 
         // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
         setChainId(chain.id)
         setOwnerAddress(eoa)
         setSafes(safes || [])
         setWeb3Provider(new ethers.providers.Web3Provider(provider))
-        setAuthClient(safeAuth)
+        setWeb3AuthModalPack(web3AuthModalPack)
       }
     } catch (error) {
       console.log('error: ', error)
@@ -155,13 +160,12 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   }, [chain])
 
   const logoutWeb3Auth = () => {
-    authClient?.signOut()
+    web3AuthModalPack?.signOut()
     setOwnerAddress('')
     setSafes([])
     setChainId(chain.id)
     setWeb3Provider(undefined)
     setSafeSelected('')
-    setAuthClient(undefined)
     setGelatoTaskId(undefined)
   }
 
@@ -236,13 +240,14 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   // onramp-kit implementation
   const openStripeWidget = async () => {
-    const onRampClient = await SafeOnRampKit.init(
-      new StripePack({
-        stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY || '',
-        onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL || ''
-      })
-    )
-    const sessionData = await onRampClient?.open({
+    const stripePack = new StripePack({
+      stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY || '',
+      onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL || ''
+    })
+
+    await stripePack.init()
+
+    const sessionData = await stripePack.open({
       // sessionId: sessionId, optional parameter
       element: '#stripe-root',
       defaultOptions: {
@@ -258,13 +263,13 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       }
     })
 
-    setOnRampClient(onRampClient)
+    setStripePack(stripePack)
 
     console.log('Stripe sessionData: ', sessionData)
   }
 
   const closeStripeWidget = async () => {
-    onRampClient?.close()
+    stripePack?.close()
   }
 
   // we can pay Gelato tx relayer fees with native token & USDC
@@ -315,4 +320,3 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 }
 
 export { useAccountAbstraction, AccountAbstractionProvider }
-

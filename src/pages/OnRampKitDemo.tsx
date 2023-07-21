@@ -174,16 +174,16 @@ const OnRampKitDemo = () => {
 
 export default OnRampKitDemo
 
-const code = `import { SafeOnRampKit, StripePack } from '@safe-global/onramp-kit'
+const code = `import { StripePack } from '@safe-global/onramp-kit'
 
-const safeOnRamp = await SafeOnRampKit.init(
-  new StripePack({
-    stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY,
-    onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL
-  })
-)
+const stripePack = new StripePack({
+  stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY,
+  onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL
+})
 
-const sessionData = await safeOnRamp.open({
+await stripePack.init()
+
+const sessionData = await stripePack.open({
   element: '#stripe-root',
   theme: 'light',
   defaultOptions: {
@@ -199,11 +199,11 @@ const sessionData = await safeOnRamp.open({
   }
 }))
 
-safeOnRamp.subscribe('onramp_ui_loaded', () => {
+stripePack.subscribe('onramp_ui_loaded', () => {
   console.log('UI loaded')
 })
 
-safeOnRamp.subscribe('onramp_session_updated', (e) => {
+stripePack.subscribe('onramp_session_updated', (e) => {
   console.log('Session Updated', e.payload)
 })
 `

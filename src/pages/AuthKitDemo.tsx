@@ -113,7 +113,7 @@ const AuthKitDemo = () => {
 
 export default AuthKitDemo
 
-const code = `import { SafeAuthKit, Web3AuthModalPack } from '@safe-global/auth-kit'
+const code = `import { Web3AuthModalPack } from '@safe-global/auth-kit'
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
 
 const options: Web3AuthOptions = {
@@ -154,18 +154,24 @@ const openloginAdapter = new OpenloginAdapter({
   }
 })
 
-const web3AuthModalPack = new Web3AuthModalPack(options, [openloginAdapter], modalConfig)
+const web3AuthModalPack = new Web3AuthModalPack({
+  txServiceUrl: 'https://safe-transaction-{chain}.safe.global',
+})
 
-const safeAuthKit = await SafeAuthKit.init(web3AuthModalPack)
+await web3AuthModalPack.init({
+  options,
+  adapters: [openloginAdapter],
+  modalConfig
+})
 
 // Allow to login and get the derived EOA
-safeAuthKit.signIn()
+await web3AuthModalPack.signIn()
 
 // Logout
-safeAuthKit.signOut()
+await web3AuthModalPack.signOut()
 
 // Get the provider
-safeAuthKit.getProvider()
+web3AuthModalPack.getProvider()
 `
 
 const ConnectContainer = styled(Box)<{
