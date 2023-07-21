@@ -106,12 +106,12 @@ const safeSdk = await Safe.create({
   isL1SafeMasterCopy: true
 })
 
-const pack = new MoneriumPack({
+const moneriumPack = new MoneriumPack({
   clientId: process.env.REACT_APP_MONERIUM_CLIENT_ID || '',
   environment: 'sandbox'
 })
 
-await pack.init({
+await moneriumPack.init({
   safeSdk
 })
 
