@@ -151,6 +151,12 @@ const RelayerKitDemo = () => {
                   Send Transaction
                 </Button>
 
+                {!hasNativeFunds && (
+                  <Typography color="error">
+                    Insufficient funds. Send some funds to the Safe Account
+                  </Typography>
+                )}
+
                 {!hasNativeFunds && chain?.faucetUrl && (
                   <Link href={chain.faucetUrl} target="_blank">
                     Request 0.5 {chain.token}.

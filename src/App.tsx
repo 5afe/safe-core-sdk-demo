@@ -1,10 +1,10 @@
+import { useCallback, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import '@safe-global/safe-react-components/dist/fonts.css'
-import { useCallback, useState } from 'react'
 
 import Header from 'src/components/header/Header'
 import Providers from 'src/components/providers/Providers'
@@ -14,9 +14,18 @@ import OnRampKitDemo from 'src/pages/OnRampKitDemo'
 import RelayerKitDemo from 'src/pages/RelayerKitDemo'
 import NavMenu from './components/nav-menu/NavMenu'
 import SafeCoreInfo from './components/safe-core-info/SafeCoreInfo'
+import { useAccountAbstraction } from './store/accountAbstractionContext'
 
 function App() {
+  const { setChainId } = useAccountAbstraction()
   const [activeStep, setActiveStep] = useState(0)
+
+  useEffect(() => {
+    const authCode = new URLSearchParams(window.location.search).get('code') || undefined
+    if (authCode) {
+      setActiveStep(2)
+    }
+  }, [setChainId])
 
   const nextStep = useCallback(() => {
     setActiveStep((activeStep) => activeStep + 1)

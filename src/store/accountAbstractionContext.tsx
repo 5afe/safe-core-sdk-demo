@@ -75,7 +75,14 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   const [safes, setSafes] = useState<string[]>([])
 
   // chain selected
-  const [chainId, setChainId] = useState<string>(initialChain.id)
+  const [chainId, setChainId] = useState<string>(() => {
+    const authCode = new URLSearchParams(window.location.search).get('code')
+    if (authCode) {
+      return '0x5'
+    } else {
+      return initialChain.id
+    }
+  })
 
   // web3 provider to perform signatures
   const [web3Provider, setWeb3Provider] = useState<ethers.providers.Web3Provider>()
@@ -98,9 +105,8 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   // onRampClient
   const [stripePack, setStripePack] = useState<StripePack>()
 
-  // auth-kit implementation
-  const loginWeb3Auth = useCallback(async () => {
-    try {
+  useEffect(() => {
+    ;(async () => {
       const options: Web3AuthOptions = {
         clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID || '',
         web3AuthNetwork: 'testnet',
@@ -149,21 +155,35 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
         modalConfig
       })
 
-      if (web3AuthModalPack) {
-        const { safes, eoa } = await web3AuthModalPack.signIn()
-        const provider = web3AuthModalPack.getProvider() as ethers.providers.ExternalProvider
+      setWeb3AuthModalPack(web3AuthModalPack)
+    })()
+  }, [chain])
 
-        // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
-        setChainId(chain.id)
-        setOwnerAddress(eoa)
-        setSafes(safes || [])
-        setWeb3Provider(new ethers.providers.Web3Provider(provider))
-        setWeb3AuthModalPack(web3AuthModalPack)
-      }
+  // auth-kit implementation
+  const loginWeb3Auth = useCallback(async () => {
+    if (!web3AuthModalPack) return
+
+    try {
+      const { safes, eoa } = await web3AuthModalPack.signIn()
+      const provider = web3AuthModalPack.getProvider() as ethers.providers.ExternalProvider
+
+      // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
+      setChainId(chain.id)
+      setOwnerAddress(eoa)
+      setSafes(safes || [])
+      setWeb3Provider(new ethers.providers.Web3Provider(provider))
     } catch (error) {
       console.log('error: ', error)
     }
-  }, [chain])
+  }, [chain, web3AuthModalPack])
+
+  useEffect(() => {
+    if (web3AuthModalPack && web3AuthModalPack.getProvider()) {
+      ;(async () => {
+        await loginWeb3Auth()
+      })()
+    }
+  }, [web3AuthModalPack, loginWeb3Auth])
 
   const logoutWeb3Auth = () => {
     web3AuthModalPack?.signOut()
