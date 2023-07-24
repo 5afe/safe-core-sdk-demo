@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import styled from '@emotion/styled'
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletRounded'
 import LoginIcon from '@mui/icons-material/Login'
 import CloseIcon from '@mui/icons-material/CloseRounded'
@@ -14,13 +13,15 @@ import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import LogoutIcon from '@mui/icons-material/LogoutRounded'
-import { Theme } from '@mui/material'
 
-import SafeInfo from 'src/components/safe-info/SafeInfo'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { MONERIUM_SNIPPET, STRIPE_SNIPPET } from 'src/utils/snippets'
-import Code from 'src/components/code/Code'
 import isContractAddress from 'src/utils/isContractAddress'
+
+import SafeInfo from 'src/components/safe-info/SafeInfo'
+import Code from 'src/components/code/Code'
+import AuthenticateMessage from 'src/components/authenticate-message/AuthenticateMessage'
+import { ConnectedContainer } from 'src/components/styles'
 
 type OnRampKitDemoProps = {
   setStep: (newStep: number) => void
@@ -38,7 +39,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
     loginWeb3Auth,
     startMoneriumFlow,
     closeMoneriumFlow,
-    moneriumAuthContext
+    moneriumInfo
   } = useAccountAbstraction()
   const [isSafeDeployed, setIsSafeDeployed] = useState<boolean>(false)
 
@@ -54,7 +55,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
     })()
   }, [web3Provider, safeSelected])
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabsValue(newValue)
   }
 
@@ -99,25 +100,14 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
       </Typography>
 
       {!isAuthenticated ? (
-        <ConnectedContainer
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          gap={3}
-        >
-          <Typography variant="h4" component="h3" fontWeight="700">
-            To use the Onramp Kit you need to be authenticated
-          </Typography>
-
-          <Button variant="contained" onClick={loginWeb3Auth}>
-            Connect
-          </Button>
-        </ConnectedContainer>
+        <AuthenticateMessage
+          message="To use the Onramp Kit you need to be authenticated"
+          onConnect={loginWeb3Auth}
+        />
       ) : (
         <Box display="flex" gap={3} alignItems="flex-wrap">
           {/* safe Account */}
-          <ConnectedContainer flex={1}>
+          <ConnectedContainer flex={1} minHeight={265}>
             <Typography fontWeight="700">Safe Account</Typography>
 
             <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
@@ -129,7 +119,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
           </ConnectedContainer>
 
           {/* Provider widget */}
-          <ConnectedContainer flex={2}>
+          <ConnectedContainer flex={2} minHeight={265}>
             <Tabs
               value={tabsValue}
               onChange={handleTabChange}
@@ -142,10 +132,20 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
 
             {tabsValue === 0 && (
               <>
-                {moneriumAuthContext ? (
+                {moneriumInfo ? (
                   <>
-                    <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-                      {moneriumAuthContext.name}, you are logged in using Monerium
+                    <Typography fontSize="14px" marginTop="8px" marginBottom="16px">
+                      🔥 {moneriumInfo.name}, you are logged in using Monerium !!
+                    </Typography>
+                    <Typography fontSize="14px" marginTop="8px" marginBottom="16px">
+                      Your account{' '}
+                      <Typography component="span" color="primary">
+                        {moneriumInfo.iban.replace(/\s/g, '')}
+                      </Typography>{' '}
+                      balance is{' '}
+                      <Typography component="span" fontWeight="bold">
+                        {moneriumInfo.balance + 'EUR'}
+                      </Typography>
                     </Typography>
                     <Tooltip title={'Logout'}>
                       <Button
@@ -269,16 +269,3 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
 }
 
 export default OnRampKitDemo
-
-const ConnectedContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 40px 32px;
-
-  min-height: 265px;
-`
-)

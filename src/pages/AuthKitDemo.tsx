@@ -1,5 +1,3 @@
-import styled from '@emotion/styled'
-import { Theme } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -10,6 +8,7 @@ import Code from 'src/components/code/Code'
 
 import ConnectedWalletLabel from 'src/components/connected-wallet-label/ConnectedWalletLabel'
 import SafeInfo from 'src/components/safe-info/SafeInfo'
+import { ConnectContainer, ConnectedContainer } from 'src/components/styles'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { WEB3AUTH_SNIPPET } from 'src/utils/snippets'
 
@@ -104,25 +103,3 @@ const AuthKitDemo = () => {
 }
 
 export default AuthKitDemo
-
-const ConnectContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 50px;
-`
-)
-
-const ConnectedContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 40px 32px;
-`
-)

@@ -1,7 +1,5 @@
-import styled from '@emotion/styled'
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded'
 import SendIcon from '@mui/icons-material/SendRounded'
-import { Theme } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -13,9 +11,11 @@ import { utils } from 'ethers'
 import { useState } from 'react'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
+import AuthenticateMessage from 'src/components/authenticate-message/AuthenticateMessage'
 import Code from 'src/components/code/Code'
 import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
 import SafeInfo from 'src/components/safe-info/SafeInfo'
+import { ConnectedContainer } from 'src/components/styles'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { GELATO_SNIPPET } from 'src/utils/snippets'
 
@@ -84,21 +84,10 @@ const RelayerKitDemo = () => {
       </Typography>
 
       {!isAuthenticated ? (
-        <ConnectedContainer
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          gap={3}
-        >
-          <Typography variant="h4" component="h3" fontWeight="700">
-            To use the Relay Kit you need to be authenticated
-          </Typography>
-
-          <Button variant="contained" onClick={loginWeb3Auth}>
-            Connect
-          </Button>
-        </ConnectedContainer>
+        <AuthenticateMessage
+          message="To use the Relay Kit you need to be authenticated"
+          onConnect={loginWeb3Auth}
+        />
       ) : (
         <Box display="flex" gap={3}>
           {/* safe Account */}
@@ -197,14 +186,3 @@ const RelayerKitDemo = () => {
 }
 
 export default RelayerKitDemo
-
-const ConnectedContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 40px 32px;
-`
-)

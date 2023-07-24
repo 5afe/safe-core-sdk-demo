@@ -1,19 +1,21 @@
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { ethers, utils } from 'ethers'
+import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from '@web3auth/base'
+import { Web3AuthOptions } from '@web3auth/modal'
+import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
+
 import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
 import { Web3AuthModalPack } from '@safe-global/auth-kit'
 import { MoneriumPack, StripePack } from '@safe-global/onramp-kit'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { MetaTransactionData, MetaTransactionOptions } from '@safe-global/safe-core-sdk-types'
-import { ethers, utils } from 'ethers'
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from '@web3auth/base'
-import { Web3AuthOptions } from '@web3auth/modal'
-import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
+
 import { initialChain } from 'src/chains/chains'
 import usePolling from 'src/hooks/usePolling'
 import Chain from 'src/models/chain'
 import getChain from 'src/utils/getChain'
-import { AuthContext } from '@monerium/sdk'
+import getMoneriumInfo, { MoneriumInfo } from 'src/utils/getMoneriumInfo'
 
 type accountAbstractionContextValue = {
   ownerAddress?: string
@@ -35,7 +37,7 @@ type accountAbstractionContextValue = {
   closeStripeWidget: () => Promise<void>
   startMoneriumFlow: () => Promise<void>
   closeMoneriumFlow: () => void
-  moneriumAuthContext?: AuthContext
+  moneriumInfo?: MoneriumInfo
 }
 
 const initialState = {
@@ -197,7 +199,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   // current safe selected by the user
   const [safeSelected, setSafeSelected] = useState<string>('')
-  const [moneriumAuthContext, setMoneriumAuthContext] = useState<AuthContext>()
+  const [moneriumInfo, setMoneriumInfo] = useState<MoneriumInfo>()
   const [moneriumPack, setMoneriumPack] = useState<MoneriumPack>()
 
   // Initialize MoneriumPack
@@ -241,17 +243,19 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
         localStorage.setItem('monerium_token', moneriumClient.bearerProfile.refresh_token)
 
         const authContext = await moneriumClient.getAuthContext()
+        const profile = await moneriumClient.getProfile(authContext.defaultProfile)
+        const balances = await moneriumClient.getBalances(authContext.defaultProfile)
 
-        setMoneriumAuthContext(authContext)
+        setMoneriumInfo(getMoneriumInfo(safeSelected, authContext, profile, balances))
       }
     },
-    [moneriumPack]
+    [moneriumPack, safeSelected]
   )
 
   const closeMoneriumFlow = useCallback(() => {
     moneriumPack?.close()
     localStorage.removeItem('monerium_token')
-    setMoneriumAuthContext(undefined)
+    setMoneriumInfo(undefined)
   }, [moneriumPack])
 
   useEffect(() => {
@@ -402,7 +406,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
     startMoneriumFlow,
     closeMoneriumFlow,
-    moneriumAuthContext
+    moneriumInfo
   }
 
   return (
