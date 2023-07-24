@@ -3,7 +3,8 @@ import styled from '@emotion/styled'
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletRounded'
 import LoginIcon from '@mui/icons-material/Login'
 import CloseIcon from '@mui/icons-material/CloseRounded'
-import { Tab, Tabs, Theme } from '@mui/material'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -13,6 +14,7 @@ import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import LogoutIcon from '@mui/icons-material/LogoutRounded'
+import { Theme } from '@mui/material'
 
 import SafeInfo from 'src/components/safe-info/SafeInfo'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
@@ -20,7 +22,11 @@ import { MONERIUM_SNIPPET, STRIPE_SNIPPET } from 'src/utils/snippets'
 import Code from 'src/components/code/Code'
 import isContractAddress from 'src/utils/isContractAddress'
 
-const OnRampKitDemo = () => {
+type OnRampKitDemoProps = {
+  setStep: (newStep: number) => void
+}
+
+const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
   const {
     web3Provider,
     openStripeWidget,
@@ -153,16 +159,33 @@ const OnRampKitDemo = () => {
                   </>
                 ) : (
                   <>
-                    {isSafeDeployed ? (
+                    {!chain?.isMoneriumPaymentsEnabled ? (
                       <Typography fontSize="14px" marginTop="16px" marginBottom="32px">
-                        You can login with Monerium and link the selected Safe Account{''}
+                        The Monerium payments are only enabled in Goerli chain.{' '}
+                        <Link href="#" onClick={() => setStep(0)}>
+                          Update the chosen chain
+                        </Link>{' '}
                       </Typography>
                     ) : (
-                      <Typography fontSize="14px" marginTop="16px" marginBottom="32px">
-                        The Safe Account is not deployed yet. To use "Login with Monerium", deploy
-                        the Safe first by sending your first transaction using the Relay Kit
-                      </Typography>
+                      <>
+                        {isSafeDeployed && (
+                          <Typography fontSize="14px" marginTop="16px" marginBottom="32px">
+                            You can login with Monerium and link the selected Safe Account{''}
+                          </Typography>
+                        )}
+
+                        {!isSafeDeployed && (
+                          <Typography fontSize="14px" marginTop="16px" marginBottom="32px">
+                            The Safe Account is not deployed yet. To use "Login with Monerium",
+                            deploy the Safe first by sending your first transaction using the{' '}
+                            <Link href="#" onClick={() => setStep(3)}>
+                              Relay Kit
+                            </Link>{' '}
+                          </Typography>
+                        )}
+                      </>
                     )}
+
                     <Tooltip title={'Login'}>
                       <Button
                         startIcon={<LoginIcon />}
