@@ -24,10 +24,7 @@ const SafeCoreInfo = () => {
           Github
         </Link>
 
-        <Link
-          href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk"
-          target="_blank"
-        >
+        <Link href="https://docs.safe.global/safe-core-aa-sdk/safe-core-sdk" target="_blank">
           Documentation
         </Link>
 

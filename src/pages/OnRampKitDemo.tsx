@@ -83,10 +83,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
           Github
         </Link>
 
-        <Link
-          href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/onramp-kit"
-          target="_blank"
-        >
+        <Link href="https://docs.safe.global/safe-core-aa-sdk/onramp-kit" target="_blank">
           Documentation
         </Link>
       </Stack>

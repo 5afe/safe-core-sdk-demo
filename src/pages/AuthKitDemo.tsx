@@ -38,10 +38,7 @@ const AuthKitDemo = () => {
           Github
         </Link>
 
-        <Link
-          href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/auth-kit"
-          target="_blank"
-        >
+        <Link href="https://docs.safe.global/safe-core-aa-sdk/auth-kit" target="_blank">
           Documentation
         </Link>
       </Stack>

@@ -68,10 +68,7 @@ const RelayerKitDemo = () => {
           Github
         </Link>
 
-        <Link
-          href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/relay-kit"
-          target="_blank"
-        >
+        <Link href="https://docs.safe.global/safe-core-aa-sdk/relay-kit" target="_blank">
           Documentation
         </Link>
       </Stack>
