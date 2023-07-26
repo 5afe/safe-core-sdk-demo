@@ -16,6 +16,7 @@ import usePolling from 'src/hooks/usePolling'
 import Chain from 'src/models/chain'
 import getChain from 'src/utils/getChain'
 import getMoneriumInfo, { MoneriumInfo } from 'src/utils/getMoneriumInfo'
+import isMoneriumRedirect from 'src/utils/isMoneriumRedirect'
 
 type accountAbstractionContextValue = {
   ownerAddress?: string
@@ -78,12 +79,11 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   // chain selected
   const [chainId, setChainId] = useState<string>(() => {
-    const authCode = new URLSearchParams(window.location.search).get('code')
-    if (authCode) {
+    if (isMoneriumRedirect()) {
       return '0x5'
-    } else {
-      return initialChain.id
     }
+
+    return initialChain.id
   })
 
   // web3 provider to perform signatures

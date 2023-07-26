@@ -15,14 +15,14 @@ import RelayerKitDemo from 'src/pages/RelayerKitDemo'
 import NavMenu from './components/nav-menu/NavMenu'
 import SafeCoreInfo from './components/safe-core-info/SafeCoreInfo'
 import { useAccountAbstraction } from './store/accountAbstractionContext'
+import isMoneriumRedirect from './utils/isMoneriumRedirect'
 
 function App() {
   const { setChainId } = useAccountAbstraction()
   const [activeStep, setActiveStep] = useState(0)
 
   useEffect(() => {
-    const authCode = new URLSearchParams(window.location.search).get('code') || undefined
-    if (authCode) {
+    if (isMoneriumRedirect()) {
       setActiveStep(2)
     }
   }, [setChainId])
