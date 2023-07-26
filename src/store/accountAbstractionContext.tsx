@@ -70,6 +70,8 @@ const useAccountAbstraction = () => {
   return context
 }
 
+const MONERIUM_TOKEN = 'monerium_token'
+
 const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => {
   // owner address from the email  (provided by web3Auth)
   const [ownerAddress, setOwnerAddress] = useState<string>('')
@@ -241,7 +243,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       })
 
       if (moneriumClient.bearerProfile) {
-        localStorage.setItem('monerium_token', moneriumClient.bearerProfile.refresh_token)
+        localStorage.setItem(MONERIUM_TOKEN, moneriumClient.bearerProfile.refresh_token)
 
         const authContext = await moneriumClient.getAuthContext()
         const profile = await moneriumClient.getProfile(authContext.defaultProfile)
@@ -255,13 +257,13 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   const closeMoneriumFlow = useCallback(() => {
     moneriumPack?.close()
-    localStorage.removeItem('monerium_token')
+    localStorage.removeItem(MONERIUM_TOKEN)
     setMoneriumInfo(undefined)
   }, [moneriumPack])
 
   useEffect(() => {
     const authCode = new URLSearchParams(window.location.search).get('code') || undefined
-    const refreshToken = localStorage.getItem('monerium_token') || undefined
+    const refreshToken = localStorage.getItem(MONERIUM_TOKEN) || undefined
 
     if (authCode || refreshToken) startMoneriumFlow(authCode, refreshToken)
   }, [startMoneriumFlow])
