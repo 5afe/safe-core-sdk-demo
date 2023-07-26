@@ -14,7 +14,7 @@ import AddressLabel from 'src/components/address-label/AddressLabel'
 import AuthenticateMessage from 'src/components/authenticate-message/AuthenticateMessage'
 import Code from 'src/components/code/Code'
 import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
-import SafeInfo from 'src/components/safe-info/SafeInfo'
+import SafeAccount from 'src/components/safe-account/SafeAccount'
 import { ConnectedContainer } from 'src/components/styles'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { GELATO_SNIPPET } from 'src/utils/snippets'
@@ -91,20 +91,12 @@ const RelayerKitDemo = () => {
       ) : (
         <Box display="flex" gap={3}>
           {/* safe Account */}
-          <ConnectedContainer>
-            <Typography fontWeight="700">Safe Account</Typography>
-
-            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-              Your Safe account (Smart Contract) holds and protects your assets.
-            </Typography>
-
-            {/* Safe Info */}
-            {safeSelected && <SafeInfo safeAddress={safeSelected} chainId={chainId} />}
-          </ConnectedContainer>
+          <SafeAccount flex={1} />
 
           {/* Relay Transaction */}
           <ConnectedContainer
             display="flex"
+            flex={2}
             flexDirection="column"
             gap={2}
             alignItems="flex-start"

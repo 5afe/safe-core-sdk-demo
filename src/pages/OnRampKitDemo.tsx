@@ -18,10 +18,10 @@ import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { MONERIUM_SNIPPET, STRIPE_SNIPPET } from 'src/utils/snippets'
 import isContractAddress from 'src/utils/isContractAddress'
 
-import SafeInfo from 'src/components/safe-info/SafeInfo'
 import Code from 'src/components/code/Code'
 import AuthenticateMessage from 'src/components/authenticate-message/AuthenticateMessage'
 import { ConnectedContainer } from 'src/components/styles'
+import SafeAccount from 'src/components/safe-account/SafeAccount'
 
 type OnRampKitDemoProps = {
   setStep: (newStep: number) => void
@@ -34,7 +34,6 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
     closeStripeWidget,
     safeSelected,
     chain,
-    chainId,
     isAuthenticated,
     loginWeb3Auth,
     startMoneriumFlow,
@@ -107,16 +106,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
       ) : (
         <Box display="flex" gap={3} alignItems="flex-wrap">
           {/* safe Account */}
-          <ConnectedContainer flex={1} minHeight={265}>
-            <Typography fontWeight="700">Safe Account</Typography>
-
-            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-              Your Safe account (Smart Contract) holds and protects your assets.
-            </Typography>
-
-            {/* Safe Info */}
-            {safeSelected && <SafeInfo safeAddress={safeSelected} chainId={chainId} />}
-          </ConnectedContainer>
+          <SafeAccount flex={1} minHeight={265} />
 
           {/* Provider widget */}
           <ConnectedContainer flex={2} minHeight={265}>
