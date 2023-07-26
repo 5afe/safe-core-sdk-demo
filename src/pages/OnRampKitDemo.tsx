@@ -12,7 +12,6 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import LogoutIcon from '@mui/icons-material/LogoutRounded'
 
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { MONERIUM_SNIPPET, STRIPE_SNIPPET } from 'src/utils/snippets'
@@ -22,6 +21,9 @@ import Code from 'src/components/code/Code'
 import AuthenticateMessage from 'src/components/authenticate-message/AuthenticateMessage'
 import { ConnectedContainer } from 'src/components/styles'
 import SafeAccount from 'src/components/safe-account/SafeAccount'
+import MoneriumDeploySafeAccount from 'src/components/monerium/MoneriumDeploySafeAccount'
+import MoneriumChainWarning from 'src/components/monerium/MoneriumChainWarning'
+import MoneriumInfo from 'src/components/monerium/MoneriumInfo'
 
 type OnRampKitDemoProps = {
   setStep: (newStep: number) => void
@@ -120,60 +122,18 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
             {tabsValue === 0 && (
               <>
                 {moneriumInfo ? (
-                  <>
-                    <Typography fontSize="14px" marginTop="8px" marginBottom="16px">
-                      🔥 {moneriumInfo.name}, you are logged in using Monerium !!
-                    </Typography>
-                    <Typography fontSize="14px" marginTop="8px" marginBottom="16px">
-                      Your account{' '}
-                      <Typography component="span" color="primary">
-                        {moneriumInfo.iban.replace(/\s/g, '')}
-                      </Typography>{' '}
-                      balance is{' '}
-                      <Typography component="span" fontWeight="bold">
-                        {moneriumInfo.balance + 'EUR'}
-                      </Typography>
-                    </Typography>
-                    <Tooltip title={'Logout'}>
-                      <Button
-                        startIcon={<LogoutIcon />}
-                        variant="contained"
-                        onClick={() => closeMoneriumFlow()}
-                      >
-                        Logout
-                      </Button>
-                    </Tooltip>
-                  </>
+                  <MoneriumInfo moneriumInfo={moneriumInfo} onLogout={closeMoneriumFlow} />
                 ) : (
                   <>
                     {!chain?.isMoneriumPaymentsEnabled ? (
-                      <Typography fontSize="14px" marginTop="16px" marginBottom="32px">
-                        The Monerium payments are only enabled in Goerli chain.{' '}
-                        <Link href="#" onClick={() => setStep(0)}>
-                          Update the chosen chain
-                        </Link>{' '}
-                      </Typography>
+                      <MoneriumChainWarning onUpdateChain={() => setStep(0)} />
                     ) : (
-                      <>
-                        {isSafeDeployed && (
-                          <Typography fontSize="14px" marginTop="16px" marginBottom="32px">
-                            You can login with Monerium and link the selected Safe Account{''}
-                          </Typography>
-                        )}
-
-                        {!isSafeDeployed && (
-                          <Typography fontSize="14px" marginTop="16px" marginBottom="32px">
-                            The Safe Account is not deployed yet. To use "Login with Monerium",
-                            deploy the Safe first by sending your first transaction using the{' '}
-                            <Link href="#" onClick={() => setStep(3)}>
-                              Relay Kit
-                            </Link>{' '}
-                          </Typography>
-                        )}
-                      </>
+                      <MoneriumDeploySafeAccount
+                        isSafeDeployed={isSafeDeployed}
+                        onDeploy={() => setStep(3)}
+                      />
                     )}
-
-                    <Tooltip title={'Login'}>
+                    <Tooltip title="Login">
                       <Button
                         startIcon={<LoginIcon />}
                         variant="contained"
@@ -181,7 +141,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
                         disabled={!chain?.isMoneriumPaymentsEnabled || !isSafeDeployed}
                       >
                         Login
-                        {!chain?.isMoneriumPaymentsEnabled ? ' (only in Goerli chain)' : ''}
+                        {!chain?.isMoneriumPaymentsEnabled && ' (only in Goerli chain)'}
                       </Button>
                     </Tooltip>
                   </>
