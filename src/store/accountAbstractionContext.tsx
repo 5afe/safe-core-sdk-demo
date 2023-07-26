@@ -195,6 +195,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     setWeb3Provider(undefined)
     setSafeSelected('')
     setGelatoTaskId(undefined)
+    closeMoneriumFlow()
   }
 
   // current safe selected by the user
