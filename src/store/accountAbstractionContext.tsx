@@ -97,7 +97,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     try {
       const options: Web3AuthOptions = {
         clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID || '',
-        web3AuthNetwork: "cyan",
+        web3AuthNetwork: 'testnet',
         chainConfig: {
           chainNamespace: CHAIN_NAMESPACES.EIP155,
           chainId: chain.id,
