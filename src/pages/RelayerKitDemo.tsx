@@ -144,7 +144,6 @@ const RelayerKitDemo = () => {
                 <Button
                   startIcon={<SendIcon />}
                   variant="contained"
-                  disabled={!hasNativeFunds}
                   onClick={relayTransaction}
                 >
                   Send Transaction
