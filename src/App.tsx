@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import '@safe-global/safe-react-components/dist/fonts.css'
 import { useCallback, useState } from 'react'
-
+import { Amplify } from "aws-amplify";
 import Header from 'src/components/header/Header'
 import Providers from 'src/components/providers/Providers'
 import AuthKitDemo from 'src/pages/AuthKitDemo'
@@ -14,6 +14,15 @@ import OnRampKitDemo from 'src/pages/OnRampKitDemo'
 import RelayerKitDemo from 'src/pages/RelayerKitDemo'
 import NavMenu from './components/nav-menu/NavMenu'
 import SafeCoreInfo from './components/safe-core-info/SafeCoreInfo'
+import {
+  AmplifyProvider,
+  Authenticator
+} from "@aws-amplify/ui-react";
+import aws_exports from "./aws-exports";
+
+import "@aws-amplify/ui-react/styles.css";
+
+Amplify.configure(aws_exports);
 
 function App() {
   const [activeStep, setActiveStep] = useState(0)
@@ -39,63 +48,69 @@ function App() {
   const nextLabel = steps[activeStep].nextLabel
 
   return (
-    <Providers>
-      <>
-        <CssBaseline />
+    <AmplifyProvider>
+      <Authenticator>
+        {({ signOut, user }) => (
+      <Providers>
+        <>
+          <CssBaseline />
 
-        {/* App header */}
-        <Header setStep={setStep} />
+          {/* App header */}
+          <Header setStep={setStep} />
 
-        <Box
-          display="flex"
-          gap={3}
-          alignItems="flex-start"
-          maxWidth="1200px"
-          margin="120px auto 42px auto"
-        >
-          {showSafeCoreVideo ? (
-            <SafeCoreInfo />
-          ) : (
-            <NavMenu setStep={setStep} activeStep={activeStep} />
-          )}
-
-          <main style={{ flexGrow: 1 }}>
-            {/* Active Step Component */}
-            <ActiveStepComponent setStep={setStep} />
-
-            {/* next & back Buttons */}
-            {!isFirstStep && (
-              <Stack direction="row" alignItems="center" spacing={2} marginTop="32px">
-                <Button onClick={previousStep} variant="outlined">
-                  Back
-                </Button>
-
-                {!isLastStep && (
-                  <>
-                    {nextLabel && (
-                      <Typography
-                        variant="h3"
-                        component="h2"
-                        fontWeight="700"
-                        flexGrow="1"
-                        textAlign="right"
-                        fontSize="20px"
-                      >
-                        {nextLabel}
-                      </Typography>
-                    )}
-
-                    <Button onClick={nextStep} variant="contained">
-                      Next
-                    </Button>
-                  </>
-                )}
-              </Stack>
+          <Box
+            display="flex"
+            gap={3}
+            alignItems="flex-start"
+            maxWidth="1200px"
+            margin="120px auto 42px auto"
+          >
+            {showSafeCoreVideo ? (
+              <SafeCoreInfo />
+            ) : (
+              <NavMenu setStep={setStep} activeStep={activeStep} />
             )}
-          </main>
-        </Box>
-      </>
-    </Providers>
+
+            <main style={{ flexGrow: 1 }}>
+              {/* Active Step Component */}
+              <ActiveStepComponent setStep={setStep} />
+
+              {/* next & back Buttons */}
+              {!isFirstStep && (
+                <Stack direction="row" alignItems="center" spacing={2} marginTop="32px">
+                  <Button onClick={previousStep} variant="outlined">
+                    Back
+                  </Button>
+
+                  {!isLastStep && (
+                    <>
+                      {nextLabel && (
+                        <Typography
+                          variant="h3"
+                          component="h2"
+                          fontWeight="700"
+                          flexGrow="1"
+                          textAlign="right"
+                          fontSize="20px"
+                        >
+                          {nextLabel}
+                        </Typography>
+                      )}
+
+                      <Button onClick={nextStep} variant="contained">
+                        Next
+                      </Button>
+                    </>
+                  )}
+                </Stack>
+              )}
+            </main>
+          </Box>
+        </>
+      </Providers>
+      )}
+      </Authenticator>
+    </AmplifyProvider>
   )
 }
 

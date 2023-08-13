@@ -10,7 +10,6 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import { CodeBlock, atomOneDark } from 'react-code-blocks'
 
 import { useState } from 'react'
 import SafeInfo from 'src/components/safe-info/SafeInfo'
@@ -159,39 +158,6 @@ const OnRampKitDemo = () => {
 
 export default OnRampKitDemo
 
-const code = `import { StripePack } from '@safe-global/onramp-kit'
-
-const stripePack = new StripePack({
-  stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY,
-  onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL
-})
-
-await stripePack.init()
-
-const sessionData = await stripePack.open({
-  element: '#stripe-root',
-  theme: 'light',
-  defaultOptions: {
-    transaction_details: {
-      wallet_address: walletAddress,
-      supported_destination_networks: ['ethereum', 'polygon'],
-      supported_destination_currencies: ['usdc'],
-      lock_wallet_address: true
-    },
-    customer_information: {
-      email: 'john@doe.com'
-    }
-  }
-}))
-
-stripePack.subscribe('onramp_ui_loaded', () => {
-  console.log('UI loaded')
-})
-
-stripePack.subscribe('onramp_session_updated', (e) => {
-  console.log('Session Updated', e.payload)
-})
-`
 
 const ConnectedContainer = styled(Box)<{
   theme?: Theme
@@ -203,15 +169,5 @@ const ConnectedContainer = styled(Box)<{
   padding: 40px 32px;
 
   min-height: 265px;
-`
-)
-
-const CodeContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 16px;
 `
 )
