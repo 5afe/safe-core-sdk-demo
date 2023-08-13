@@ -179,21 +179,6 @@ const RelayerKitDemo = () => {
       )}
 
       <Divider style={{ margin: '40px 0 30px 0' }} />
-
-      <Typography variant="h3" component="h2" fontWeight="700" marginBottom="16px">
-        How to use it
-      </Typography>
-
-      {/* TODO: create a component for this? */}
-      <CodeContainer>
-        <CodeBlock
-          text={code}
-          language={'javascript'}
-          showLineNumbers
-          startingLineNumber={96}
-          theme={atomOneDark}
-        />
-      </CodeContainer>
     </>
   )
 }
