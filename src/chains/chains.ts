@@ -60,7 +60,7 @@ export const mumbaiChain: Chain = {
   faucetUrl: 'https://mumbaifaucet.com/'
 }
 
-const chains: Chain[] = [mumbaiChain, polygonChain, mainnetChain]
+const chains: Chain[] = [polygonChain]
 
 export const initialChain = polygonChain
 

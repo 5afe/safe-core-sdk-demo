@@ -17,6 +17,9 @@
           "appId": "df060agwewo71",
           "type": "cicd"
         }
+      },
+      "auth": {
+        "baseprojectf00ffdea": {}
       }
     }
   }

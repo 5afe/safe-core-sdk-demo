@@ -253,7 +253,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       defaultOptions: {
         transaction_details: {
           wallet_address: safeSelected,
-          supported_destination_networks: ['ethereum', 'polygon'],
+          supported_destination_networks: ['polygon'],
           supported_destination_currencies: ['usdc'],
           lock_wallet_address: true
         },
