@@ -118,7 +118,7 @@ import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
 
 const options: Web3AuthOptions = {
   clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID,
-  web3AuthNetwork: 'testnet',
+  web3AuthNetwork: 'mainnet',
   chainConfig: {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
     chainId: chainId,
