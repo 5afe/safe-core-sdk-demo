@@ -220,13 +220,13 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
         {
           to: safeSelected,
           data: '0x',
-          value: utils.parseUnits('0.01', 'ether').toString(),
+          value: utils.parseUnits('0.00', 'ether').toString(),
           operation: 0 // OperationType.Call,
         }
       ]
 
       const options: MetaTransactionOptions = {
-        isSponsored: false,
+        isSponsored: true,
         gasLimit: '600000', // in this alfa version we need to manually set the gas limit
         gasToken: ethers.constants.AddressZero // native token
       }
