@@ -109,7 +109,7 @@ const steps = [
   {
     // Auth Kit step
     component: AuthKitDemo,
-    nextLabel: 'to Onramp Kit'
+    nextLabel: 'to Onramp Kit!'
   },
   {
     // Onramp Kit step
