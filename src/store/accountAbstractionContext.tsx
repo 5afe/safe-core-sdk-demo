@@ -96,8 +96,8 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   const loginWeb3Auth = useCallback(async () => {
     try {
       const options: Web3AuthOptions = {
-        clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID,
-        web3AuthNetwork: process.env.WEB3AUTH_NETWORK,
+        clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID || '',
+        web3AuthNetwork: process.env.WEB3AUTH_NETWORK || '',
         chainConfig: {
           chainNamespace: CHAIN_NAMESPACES.EIP155,
           chainId: chain.id,
@@ -179,7 +179,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     const getSafeAddress = async () => {
       if (web3Provider) {
         const signer = web3Provider.getSigner()
-        const relayPack = new GelatoRelayPack(process.env.GELATO_RELAY_API)
+        const relayPack = new GelatoRelayPack(process.env.GELATO_RELAY_API || '')
         const safeAccountAbstraction = new AccountAbstraction(signer)
 
         await safeAccountAbstraction.init({ relayPack })
@@ -210,7 +210,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       setIsRelayerLoading(true)
 
       const signer = web3Provider.getSigner()
-      const relayPack = new GelatoRelayPack(process.env.GELATO_RELAY_API)
+      const relayPack = new GelatoRelayPack(process.env.GELATO_RELAY_API || '')
       const safeAccountAbstraction = new AccountAbstraction(signer)
 
       await safeAccountAbstraction.init({ relayPack })
