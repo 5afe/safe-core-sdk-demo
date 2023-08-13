@@ -31,3 +31,5 @@ Run the demo App:
 ```bash
 yarn start
 ```
+
+Touch 1
