@@ -1,7 +1,9 @@
-import styled from '@emotion/styled'
+import { useEffect, useState } from 'react'
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletRounded'
+import LoginIcon from '@mui/icons-material/Login'
 import CloseIcon from '@mui/icons-material/CloseRounded'
-import { Theme } from '@mui/material'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -10,22 +12,53 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import { CodeBlock, atomOneDark } from 'react-code-blocks'
 
-import { useState } from 'react'
-import SafeInfo from 'src/components/safe-info/SafeInfo'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import { MONERIUM_SNIPPET, STRIPE_SNIPPET } from 'src/utils/snippets'
+import isContractAddress from 'src/utils/isContractAddress'
 
-const OnRampKitDemo = () => {
+import Code from 'src/components/code/Code'
+import AuthenticateMessage from 'src/components/authenticate-message/AuthenticateMessage'
+import { ConnectedContainer } from 'src/components/styles'
+import SafeAccount from 'src/components/safe-account/SafeAccount'
+import MoneriumDeploySafeAccount from 'src/components/monerium/MoneriumDeploySafeAccount'
+import MoneriumChainWarning from 'src/components/monerium/MoneriumChainWarning'
+import MoneriumInfo from 'src/components/monerium/MoneriumInfo'
+
+type OnRampKitDemoProps = {
+  setStep: (newStep: number) => void
+}
+
+const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
   const {
+    web3Provider,
     openStripeWidget,
     closeStripeWidget,
     safeSelected,
     chain,
-    chainId,
     isAuthenticated,
-    loginWeb3Auth
+    loginWeb3Auth,
+    startMoneriumFlow,
+    closeMoneriumFlow,
+    moneriumInfo
   } = useAccountAbstraction()
+  const [isSafeDeployed, setIsSafeDeployed] = useState<boolean>(false)
+
+  const [tabsValue, setTabsValue] = useState(0)
+
+  useEffect(() => {
+    ;(async () => {
+      if (!safeSelected) return
+
+      const isDeployed = await isContractAddress(safeSelected, web3Provider)
+
+      setIsSafeDeployed(isDeployed)
+    })()
+  }, [web3Provider, safeSelected])
+
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
+    setTabsValue(newValue)
+  }
 
   const [showStripeWidget, setShowStripeWidget] = useState<boolean>(false)
 
@@ -52,10 +85,7 @@ const OnRampKitDemo = () => {
           Github
         </Link>
 
-        <Link
-          href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/onramp-kit"
-          target="_blank"
-        >
+        <Link href="https://docs.safe.global/safe-core-aa-sdk/onramp-kit" target="_blank">
           Documentation
         </Link>
       </Stack>
@@ -68,85 +98,107 @@ const OnRampKitDemo = () => {
       </Typography>
 
       {!isAuthenticated ? (
-        <ConnectedContainer
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          gap={3}
-        >
-          <Typography variant="h4" component="h3" fontWeight="700">
-            To use the Onramp Kit you need to be authenticated
-          </Typography>
-
-          <Button variant="contained" onClick={loginWeb3Auth}>
-            Connect
-          </Button>
-        </ConnectedContainer>
+        <AuthenticateMessage
+          message="To use the Onramp Kit you need to be authenticated"
+          onConnect={loginWeb3Auth}
+        />
       ) : (
-        <Box display="flex" gap={3} alignItems="flex-start">
+        <Box display="flex" gap={3} alignItems="flex-wrap">
           {/* safe Account */}
-          <ConnectedContainer>
-            <Typography fontWeight="700">Safe Account</Typography>
+          <SafeAccount flex={1} minHeight={265} />
 
-            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-              Your Safe account (Smart Contract) holds and protects your assets.
-            </Typography>
+          {/* Provider widget */}
+          <ConnectedContainer flex={2} minHeight={265}>
+            <Tabs
+              value={tabsValue}
+              onChange={handleTabChange}
+              aria-label="basic tabs example"
+              sx={{ marginTop: '-15px' }}
+            >
+              <Tab label="Monerium" sx={{ fontWeight: 'bold' }} />
+              <Tab label="Stripe" sx={{ fontWeight: 'bold' }} />
+            </Tabs>
 
-            {/* Safe Info */}
-            {safeSelected && <SafeInfo safeAddress={safeSelected} chainId={chainId} />}
-          </ConnectedContainer>
+            {tabsValue === 0 && (
+              <>
+                {moneriumInfo ? (
+                  <MoneriumInfo moneriumInfo={moneriumInfo} onLogout={closeMoneriumFlow} />
+                ) : (
+                  <>
+                    {!chain?.isMoneriumPaymentsEnabled ? (
+                      <MoneriumChainWarning onUpdateChain={() => setStep(0)} />
+                    ) : (
+                      <MoneriumDeploySafeAccount
+                        isSafeDeployed={isSafeDeployed}
+                        onDeploy={() => setStep(3)}
+                      />
+                    )}
+                    <Tooltip title="Login">
+                      <Button
+                        startIcon={<LoginIcon />}
+                        variant="contained"
+                        onClick={() => startMoneriumFlow()}
+                        disabled={!chain?.isMoneriumPaymentsEnabled || !isSafeDeployed}
+                      >
+                        Login
+                        {!chain?.isMoneriumPaymentsEnabled && ' (only in Goerli chain)'}
+                      </Button>
+                    </Tooltip>
+                  </>
+                )}
+              </>
+            )}
 
-          {/* Stripe widget */}
-          <ConnectedContainer>
-            <Typography fontWeight="700">Stripe widget</Typography>
-
-            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-              This widget is on testmode, you will need to use{' '}
-              <Link
-                href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/onramp-kit#considerations-and-limitations"
-                target="_blank"
-              >
-                fake data
-              </Link>{' '}
-              in order to simulate the process. Available only in the United States.
-            </Typography>
-
-            {!showStripeWidget ? (
-              <Tooltip title={'buy USDC to your Safe address using Stripe payment provider'}>
-                {/* Buy USDC with our OnRamp kit */}
-                <Button
-                  startIcon={<WalletIcon />}
-                  variant="contained"
-                  onClick={async () => {
-                    setShowStripeWidget(true)
-                    await openStripeWidget()
-                  }}
-                  disabled={!chain?.isStripePaymentsEnabled}
-                >
-                  Buy USDC
-                  {!chain?.isStripePaymentsEnabled ? ' (only in Mumbai chain)' : ''}
-                </Button>
-              </Tooltip>
-            ) : (
-              <Stack display="flex" flexDirection="column" alignItems="center" gap={1}>
-                <Tooltip title={'close Stripe Widget'}>
-                  <IconButton
-                    size="small"
-                    color="primary"
-                    sx={{ alignSelf: 'flex-end' }}
-                    onClick={async () => {
-                      setShowStripeWidget(false)
-                      await closeStripeWidget()
-                    }}
+            {tabsValue === 1 && (
+              <>
+                <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
+                  This widget is on testmode, you will need to use{' '}
+                  <Link
+                    href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/onramp-kit#considerations-and-limitations"
+                    target="_blank"
                   >
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                    fake data
+                  </Link>{' '}
+                  in order to simulate the process. Available only in the United States.
+                </Typography>
 
-                {/* Stripe root widget */}
-                <div id="stripe-root"></div>
-              </Stack>
+                {!showStripeWidget ? (
+                  <Tooltip title={'buy USDC to your Safe address using Stripe payment provider'}>
+                    {/* Buy USDC with our OnRamp kit */}
+                    <Button
+                      startIcon={<WalletIcon />}
+                      variant="contained"
+                      onClick={async () => {
+                        setShowStripeWidget(true)
+                        await openStripeWidget()
+                      }}
+                      disabled={!chain?.isStripePaymentsEnabled}
+                    >
+                      Buy USDC
+                      {!chain?.isStripePaymentsEnabled ? ' (only in Mumbai chain)' : ''}
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Stack display="flex" flexDirection="column" alignItems="center" gap={1}>
+                    <Tooltip title={'close Stripe Widget'}>
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        sx={{ alignSelf: 'flex-end' }}
+                        onClick={async () => {
+                          setShowStripeWidget(false)
+                          await closeStripeWidget()
+                        }}
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+
+                    {/* Stripe root widget */}
+                    <div id="stripe-root"></div>
+                  </Stack>
+                )}
+              </>
             )}
           </ConnectedContainer>
         </Box>
@@ -158,75 +210,9 @@ const OnRampKitDemo = () => {
         How to use it
       </Typography>
 
-      {/* TODO: create a component for this? */}
-      <CodeContainer>
-        <CodeBlock
-          text={code}
-          language={'javascript'}
-          showLineNumbers
-          startingLineNumber={96}
-          theme={atomOneDark}
-        />
-      </CodeContainer>
+      <Code text={tabsValue === 0 ? MONERIUM_SNIPPET : STRIPE_SNIPPET} language={'javascript'} />
     </>
   )
 }
 
 export default OnRampKitDemo
-
-const code = `import { StripePack } from '@safe-global/onramp-kit'
-
-const stripePack = new StripePack({
-  stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY,
-  onRampBackendUrl: process.env.REACT_APP_STRIPE_BACKEND_BASE_URL
-})
-
-await stripePack.init()
-
-const sessionData = await stripePack.open({
-  element: '#stripe-root',
-  theme: 'light',
-  defaultOptions: {
-    transaction_details: {
-      wallet_address: walletAddress,
-      supported_destination_networks: ['ethereum', 'polygon'],
-      supported_destination_currencies: ['usdc'],
-      lock_wallet_address: true
-    },
-    customer_information: {
-      email: 'john@doe.com'
-    }
-  }
-}))
-
-stripePack.subscribe('onramp_ui_loaded', () => {
-  console.log('UI loaded')
-})
-
-stripePack.subscribe('onramp_session_updated', (e) => {
-  console.log('Session Updated', e.payload)
-})
-`
-
-const ConnectedContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 40px 32px;
-
-  min-height: 265px;
-`
-)
-
-const CodeContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 16px;
-`
-)

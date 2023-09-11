@@ -9,6 +9,7 @@ type Chain = {
   blockExplorerUrl: string
   transactionServiceUrl?: string
   isStripePaymentsEnabled: boolean // only available in Mumbai chain
+  isMoneriumPaymentsEnabled: boolean // only available in Goerli chain
   faucetUrl?: string
 }
 

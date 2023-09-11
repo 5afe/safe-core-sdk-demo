@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import Tooltip from '@mui/material/Tooltip'
 import { Skeleton, Theme } from '@mui/material'
 import styled from '@emotion/styled'
-import { providers, utils } from 'ethers'
+import { utils } from 'ethers'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
 import AmountLabel from 'src/components/amount-label/AmountLabel'
@@ -15,6 +15,7 @@ import safeLogoDark from 'src/assets/safe-info-logo-dark.svg'
 import usePolling from 'src/hooks/usePolling'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { useTheme } from 'src/store/themeContext'
+import isContractAddress from 'src/utils/isContractAddress'
 
 type SafeInfoProps = {
   safeAddress: string
@@ -149,17 +150,3 @@ const AmountContainer = styled('div')<{
   cursor: ${!!onClick ? 'pointer' : 'initial'};
   `
 )
-
-// TODO: create a util for this?
-const isContractAddress = async (
-  address: string,
-  provider?: providers.Web3Provider
-): Promise<boolean> => {
-  try {
-    const code = await provider?.getCode(address)
-
-    return code !== '0x'
-  } catch (error) {
-    return false
-  }
-}

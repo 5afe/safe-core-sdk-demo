@@ -2298,14 +2298,14 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz#8be36a1f66f3265389e90b5f9c9962146758f728"
   integrity sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==
 
-"@safe-global/account-abstraction-kit-poc@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@safe-global/account-abstraction-kit-poc/-/account-abstraction-kit-poc-1.0.1.tgz#711567fe600aeb31a6155fcb6d53661f5de64dc0"
-  integrity sha512-gZGxonvt5l2ueYdC8TYFxqx1U7GXvs7DUnPayv5gf84lOmLXF/MK4LpprxDvUjsLd37C1F+mv2LbwfJ4m/zpFA==
+"@safe-global/account-abstraction-kit-poc@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/account-abstraction-kit-poc/-/account-abstraction-kit-poc-1.3.0.tgz#2e31c8af6ed2bd35266a0263b25d78a0e3468f62"
+  integrity sha512-vy/QixbkjMBkjTITymPf0dMuXFgkvIqcyQSmjll0USk7VOb1mK0Vjjo/qGXT715rvYq0KyTCQPk8Y8frRcLK1g==
   dependencies:
-    "@safe-global/protocol-kit" "^1.0.1"
-    "@safe-global/relay-kit" "^1.0.0"
-    "@safe-global/safe-core-sdk-types" "^2.0.0"
+    "@safe-global/protocol-kit" "^1.3.0"
+    "@safe-global/relay-kit" "^1.3.0"
+    "@safe-global/safe-core-sdk-types" "^2.3.0"
     ethereumjs-util "^7.1.5"
     ethers "^5.7.2"
 
@@ -2318,66 +2318,39 @@
     "@safe-global/safe-core-sdk-types" "^2.2.0"
     node-fetch "^2.6.6"
 
-"@safe-global/auth-kit@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/auth-kit/-/auth-kit-1.2.0.tgz#1ffc55aa4ef33824bb02761d4ba0b1256f123586"
-  integrity sha512-8v4Vl+YvIEacKlDem/CswhMh9zIgsBgAc60+xSdlQ3RXlAHTo2WYODOsHcMppNMskMD3H4zH4spntM6T8fdZBA==
+"@safe-global/auth-kit@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@safe-global/auth-kit/-/auth-kit-1.2.1.tgz#3b7d1f7e8aedec93927ee5d5a4c4181da743330b"
+  integrity sha512-qt88FbKuSSXaWMwAcSkceutXCk38l0hjI845Ia5hzvpsExjIq5OvuH2h9iZdSSb4j67jALClgcCm3ZCPsTUrtQ==
   dependencies:
     "@safe-global/api-kit" "^1.3.0"
-    "@safe-global/protocol-kit" "^1.2.0"
+    "@safe-global/protocol-kit" "^1.3.0"
     "@walletconnect/client" "^1.8.0"
     "@web3auth/base" "^4.3.0"
     "@web3auth/modal" "^4.3.1"
     "@web3auth/openlogin-adapter" "^4.3.0"
     ethers "^5.7.2"
 
-"@safe-global/onramp-kit@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/onramp-kit/-/onramp-kit-1.3.0.tgz#463482bc4a985b960d29f2ea9a3ac7b54cc28844"
-  integrity sha512-yxyTrh7JMJogVrUd942EuGrJLyUc9Q1V0XoOkzeQYf874pubiglQ+pTi6D6+DfeHUAMLm9aHYAnTmSOenHo8DA==
+"@safe-global/onramp-kit@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/onramp-kit/-/onramp-kit-1.4.0.tgz#3fe5dd379462ff0892804ceb64c511b7bd4187cd"
+  integrity sha512-vfzA/APdDEnrFL7uub+8VH4pUhOc0/zeAvYOYVnrKNX1FAlyaGjnEBem1zxryeFpRRVhHQMgOwxQsHPdK6BAzw==
   dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/address" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@ethersproject/hash" "^5.7.0"
     "@monerium/sdk" "^2.3.0"
     "@safe-global/api-kit" "^1.3.0"
-    "@safe-global/protocol-kit" "^1.2.0"
-    "@safe-global/safe-core-sdk-types" "^2.2.0"
+    "@safe-global/protocol-kit" "^1.3.0"
+    "@safe-global/safe-core-sdk-types" "^2.3.0"
     "@stripe/crypto" "^0.0.4"
     "@stripe/stripe-js" "^1.52.0"
-    ethers "^5.7.0"
 
-"@safe-global/protocol-kit@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-1.0.0.tgz#92a50d975bc3a9971993590c254a48a184c054bf"
-  integrity sha512-dRU4ik7PVAWW/j9N1njaxAMA5qeXS7TQGrls2sKrwEfZTjoAJ0Jzn9BWn43yP9CaQJ++g5vZ9FjcHnAkVikblg==
-  dependencies:
-    "@ethersproject/address" "^5.7.0"
-    "@ethersproject/bignumber" "^5.7.0"
-    "@ethersproject/solidity" "^5.7.0"
-    "@safe-global/safe-deployments" "^1.22.0"
-    ethereumjs-util "^7.1.5"
-    semver "^7.3.8"
-    web3 "^1.8.1"
-    web3-core "^1.8.1"
-    web3-utils "^1.8.1"
-
-"@safe-global/protocol-kit@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-1.0.1.tgz#05c00436a75bebedb2cc35efc461c9aa909f8f89"
-  integrity sha512-ZLfFxV6U9f5bJKcCQmrDJq/FzDGz7FMpXOjJ+G90VkaqBme3En73sN1KGd7++VKS7H3ukyM/xetrJs2mtvHlZg==
-  dependencies:
-    "@ethersproject/address" "^5.7.0"
-    "@ethersproject/bignumber" "^5.7.0"
-    "@ethersproject/solidity" "^5.7.0"
-    "@safe-global/safe-deployments" "^1.22.0"
-    ethereumjs-util "^7.1.5"
-    semver "^7.3.8"
-    web3 "^1.8.1"
-    web3-core "^1.8.1"
-    web3-utils "^1.8.1"
-
-"@safe-global/protocol-kit@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-1.2.0.tgz#5501fa0e2a1b4ad03cd5a4ee12bb9e799e1dd5a7"
-  integrity sha512-drU2uK30AZ4tqI/9ER7PGMD/lZp/5B9T02t+noTk7WF9Xb7HxskJd8GNU01KE55oyH31Y0AfXaE68H/f9lYa4A==
+"@safe-global/protocol-kit@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-1.3.0.tgz#fb84a3797a4afc74ac7fc218e796037d6e3cc3cc"
+  integrity sha512-zBhwHpaUggywmnR1Xm5RV22DpyjmVWYP3pnOl4rcf9LAc1k7IVmw6WIt2YVhHRaWGxVYMd4RitJX8Dx2+8eLZQ==
   dependencies:
     "@ethersproject/address" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
@@ -2388,27 +2361,17 @@
     web3 "^1.8.1"
     web3-core "^1.8.1"
     web3-utils "^1.8.1"
+    zksync-web3 "^0.14.3"
 
-"@safe-global/relay-kit@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/relay-kit/-/relay-kit-1.0.0.tgz#e2762badb6d9397acef05e8587f26fdc4553b5d0"
-  integrity sha512-kOFxOoXDd2ZfLH3r2kUocZquhfY/V0K4AXzzFzVU2W8f89XzfgiG3ibjftMMuW650WUG5mHB8sXEcjSilPXviA==
+"@safe-global/relay-kit@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/relay-kit/-/relay-kit-1.3.0.tgz#312ad04213ea8195ef55b8ac9e41c543a20303e4"
+  integrity sha512-lB0WC2KoA0Cz1eZEeG+PGWz2bL3ccevx6Hw8ddXCm/Nj4HsmT4vkGvmwV9j/m0kWr/geXkAtsCJ5Li+pwDHejw==
   dependencies:
     "@gelatonetwork/relay-sdk" "^3.1.0"
-    "@safe-global/protocol-kit" "^1.0.0"
-    "@safe-global/safe-core-sdk-types" "^2.0.0"
+    "@safe-global/protocol-kit" "^1.3.0"
+    "@safe-global/safe-core-sdk-types" "^2.3.0"
     ethers "^5.7.2"
-
-"@safe-global/safe-core-sdk-types@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-2.0.0.tgz#643dd87c9738ff8b3eaecb06ce399cae8a48af02"
-  integrity sha512-9bcGaEuJCRG1ccGxKNjLzJuXMqdJZEFkWi+1vf6UFO8gpmanasvBozMEo6fzUMtDBGgkkStYywhO6Cp0tKyD3Q==
-  dependencies:
-    "@ethersproject/bignumber" "^5.7.0"
-    "@ethersproject/contracts" "^5.7.0"
-    "@safe-global/safe-deployments" "^1.22.0"
-    web3-core "^1.8.1"
-    web3-utils "^1.8.1"
 
 "@safe-global/safe-core-sdk-types@^2.2.0":
   version "2.2.0"
@@ -2421,12 +2384,16 @@
     web3-core "^1.8.1"
     web3-utils "^1.8.1"
 
-"@safe-global/safe-deployments@^1.22.0":
-  version "1.22.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.22.0.tgz#4214ac5a9ebcad7cdbf5f641b0728bc0e497286e"
-  integrity sha512-SmbeCRMlcO/EONxbV6nP6pM/60q0NIHVezxx5FMv0dIAkDffdbm25reonKlOk3AJYW1b/c6pZA0RbWDwFSJEkQ==
+"@safe-global/safe-core-sdk-types@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-2.3.0.tgz#e3be109e58a2d224d1b89052563b04f3efed4bec"
+  integrity sha512-dU0KkDV1KJNf11ajbUjWiSi4ygdyWfhk1M50lTJWUdCn1/2Bsb/hICM8LoEk6DCoFumxaoCet02SmYakXsW2CA==
   dependencies:
-    semver "^7.3.7"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@safe-global/safe-deployments" "^1.26.0"
+    web3-core "^1.8.1"
+    web3-utils "^1.8.1"
 
 "@safe-global/safe-deployments@^1.26.0":
   version "1.26.0"
@@ -2435,10 +2402,10 @@
   dependencies:
     semver "^7.3.7"
 
-"@safe-global/safe-react-components@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-react-components/-/safe-react-components-2.0.3.tgz#4aa611a16a7e3aea4bdbf3ec8efd7c8feb674b13"
-  integrity sha512-eeFMWvP6k7E//47El3ejNuOd6BiSafsFd8/eTqSygnr+BMqzUitY/O/StyAmXF4ohntpzsFOtoR8AJhCk1ScUg==
+"@safe-global/safe-react-components@^2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-react-components/-/safe-react-components-2.0.6.tgz#795a3506b84806e43a50171e71ad5bde3a36f012"
+  integrity sha512-KCo/zf+xcBlXhcROQbyyscsfOExLV1dTQBoKrB2zluwQOQjbsKZu3qOpnIgU/94yHATm38IOJdC8snv6fQQe0A==
   dependencies:
     "@ethersproject/address" "^5.7.0"
     ethereum-blockies-base64 "^1.0.2"
@@ -6580,7 +6547,7 @@ ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.1, ethereumjs-util@^7.1.5:
     ethereum-cryptography "^0.1.3"
     rlp "^2.2.4"
 
-ethers@5.7.2, ethers@^5.7.0, ethers@^5.7.1, ethers@^5.7.2:
+ethers@5.7.2, ethers@^5.7.1, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -13472,3 +13439,8 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zksync-web3@^0.14.3:
+  version "0.14.3"
+  resolved "https://registry.yarnpkg.com/zksync-web3/-/zksync-web3-0.14.3.tgz#64ac2a16d597464c3fc4ae07447a8007631c57c9"
+  integrity sha512-hT72th4AnqyLW1d5Jlv8N2B/qhEnl2NePK2A3org7tAa24niem/UAaHMkEvmWI3SF9waYUPtqAtjpf+yvQ9zvQ==

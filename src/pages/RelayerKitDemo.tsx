@@ -1,7 +1,5 @@
-import styled from '@emotion/styled'
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded'
 import SendIcon from '@mui/icons-material/SendRounded'
-import { Theme } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -11,12 +9,15 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { utils } from 'ethers'
 import { useState } from 'react'
-import { CodeBlock, atomOneDark } from 'react-code-blocks'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
+import AuthenticateMessage from 'src/components/authenticate-message/AuthenticateMessage'
+import Code from 'src/components/code/Code'
 import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
-import SafeInfo from 'src/components/safe-info/SafeInfo'
+import SafeAccount from 'src/components/safe-account/SafeAccount'
+import { ConnectedContainer } from 'src/components/styles'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import { GELATO_SNIPPET } from 'src/utils/snippets'
 
 const transferAmount = 0.01
 
@@ -67,10 +68,7 @@ const RelayerKitDemo = () => {
           Github
         </Link>
 
-        <Link
-          href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/relay-kit"
-          target="_blank"
-        >
+        <Link href="https://docs.safe.global/safe-core-aa-sdk/relay-kit" target="_blank">
           Documentation
         </Link>
       </Stack>
@@ -83,38 +81,19 @@ const RelayerKitDemo = () => {
       </Typography>
 
       {!isAuthenticated ? (
-        <ConnectedContainer
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          gap={3}
-        >
-          <Typography variant="h4" component="h3" fontWeight="700">
-            To use the Relay Kit you need to be authenticated
-          </Typography>
-
-          <Button variant="contained" onClick={loginWeb3Auth}>
-            Connect
-          </Button>
-        </ConnectedContainer>
+        <AuthenticateMessage
+          message="To use the Relay Kit you need to be authenticated"
+          onConnect={loginWeb3Auth}
+        />
       ) : (
         <Box display="flex" gap={3}>
           {/* safe Account */}
-          <ConnectedContainer>
-            <Typography fontWeight="700">Safe Account</Typography>
-
-            <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-              Your Safe account (Smart Contract) holds and protects your assets.
-            </Typography>
-
-            {/* Safe Info */}
-            {safeSelected && <SafeInfo safeAddress={safeSelected} chainId={chainId} />}
-          </ConnectedContainer>
+          <SafeAccount flex={1} />
 
           {/* Relay Transaction */}
           <ConnectedContainer
             display="flex"
+            flex={2}
             flexDirection="column"
             gap={2}
             alignItems="flex-start"
@@ -150,6 +129,12 @@ const RelayerKitDemo = () => {
                   Send Transaction
                 </Button>
 
+                {!hasNativeFunds && (
+                  <Typography color="error">
+                    Insufficient funds. Send some funds to the Safe Account
+                  </Typography>
+                )}
+
                 {!hasNativeFunds && chain?.faucetUrl && (
                   <Link href={chain.faucetUrl} target="_blank">
                     Request 0.5 {chain.token}.
@@ -184,49 +169,9 @@ const RelayerKitDemo = () => {
         How to use it
       </Typography>
 
-      {/* TODO: create a component for this? */}
-      <CodeContainer>
-        <CodeBlock
-          text={code}
-          language={'javascript'}
-          showLineNumbers
-          startingLineNumber={96}
-          theme={atomOneDark}
-        />
-      </CodeContainer>
+      <Code text={GELATO_SNIPPET} language={'javascript'} />
     </>
   )
 }
 
 export default RelayerKitDemo
-
-const code = `import { GelatoRelayPack } from '@safe-global/relay-kit'
-
-const relayPack = new GelatoRelayPack()
-
-relayPack.relayTransaction({
-  target: '0x...', // the Safe address
-  encodedTransaction: '0x...', // Encoded Safe transaction data
-  chainId: 5
-})`
-
-const ConnectedContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 40px 32px;
-`
-)
-
-const CodeContainer = styled(Box)<{
-  theme?: Theme
-}>(
-  ({ theme }) => `
-  border-radius: 10px;
-  border: 1px solid ${theme.palette.border.light};
-  padding: 16px;
-`
-)
