@@ -32,11 +32,12 @@ const GelatoTaskStatusLabel = ({
   setTransactionHash
 }: GelatoTaskStatusLabelProps) => {
   const { accountAbstractionKit } = useAccountAbstraction()
-  const fetchGelatoTaskInfo = useCallback(
-    async () =>
-      await (accountAbstractionKit?.relayPack as GelatoRelayPack)?.getTaskStatus(gelatoTaskId),
-    [gelatoTaskId, accountAbstractionKit]
-  )
+  const fetchGelatoTaskInfo = useCallback(async () => {
+    const relayPack = accountAbstractionKit?.relayPack as GelatoRelayPack
+    const taskStatusResponse = await relayPack.getTaskStatus(gelatoTaskId)
+
+    return taskStatusResponse
+  }, [gelatoTaskId, accountAbstractionKit])
 
   const { data: gelatoTaskInfo } = useApi(fetchGelatoTaskInfo, pollingTime)
 
