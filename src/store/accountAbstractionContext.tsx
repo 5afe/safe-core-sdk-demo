@@ -8,6 +8,7 @@ import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
 import { Web3AuthModalPack } from '@safe-global/auth-kit'
 import { MoneriumPack, StripePack } from '@safe-global/onramp-kit'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
+import { RelayResponse as GelatoRelayResponse } from '@gelatonetwork/relay-sdk'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { MetaTransactionData, MetaTransactionOptions } from '@safe-global/safe-core-sdk-types'
 
@@ -39,6 +40,7 @@ type accountAbstractionContextValue = {
   startMoneriumFlow: () => Promise<void>
   closeMoneriumFlow: () => void
   moneriumInfo?: MoneriumInfo
+  accountAbstractionKit?: AccountAbstraction
 }
 
 const initialState = {
@@ -270,26 +272,36 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   // TODO: add disconnect owner wallet logic ?
 
+  const [accountAbstractionKit, setAccountAbstractionKit] = useState<AccountAbstraction>()
+
   // conterfactual safe Address if its not deployed yet
   useEffect(() => {
     const getSafeAddress = async () => {
       if (web3Provider) {
-        const signer = web3Provider.getSigner()
-        const relayPack = new GelatoRelayPack()
-        const safeAccountAbstraction = new AccountAbstraction(signer)
-
-        await safeAccountAbstraction.init({ relayPack })
-
         const hasSafes = safes.length > 0
 
-        const safeSelected = hasSafes ? safes[0] : await safeAccountAbstraction.getSafeAddress()
+        const safeSelected = hasSafes ? safes[0] : await accountAbstractionKit?.safeSdk.getAddress()
 
-        setSafeSelected(safeSelected)
+        setSafeSelected(safeSelected || '')
       }
     }
 
     getSafeAddress()
-  }, [safes, web3Provider])
+  }, [accountAbstractionKit?.safeSdk, safes, web3Provider])
+
+  useEffect(() => {
+    if (!web3Provider) return
+    ;(async () => {
+      // Instantiate AccountAbstraction kit
+      const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: web3Provider.getSigner() })
+      const safeAccountAbstraction = new AccountAbstraction(ethAdapter)
+      const safeSdk = await safeAccountAbstraction.init()
+      const relayPack = new GelatoRelayPack({ safeSdk })
+      safeAccountAbstraction.setRelayPack(relayPack)
+
+      setAccountAbstractionKit(safeAccountAbstraction)
+    })()
+  }, [web3Provider])
 
   const [isRelayerLoading, setIsRelayerLoading] = useState<boolean>(false)
   const [gelatoTaskId, setGelatoTaskId] = useState<string>()
@@ -304,12 +316,6 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   const relayTransaction = async () => {
     if (web3Provider) {
       setIsRelayerLoading(true)
-
-      const signer = web3Provider.getSigner()
-      const relayPack = new GelatoRelayPack()
-      const safeAccountAbstraction = new AccountAbstraction(signer)
-
-      await safeAccountAbstraction.init({ relayPack })
 
       // we use a dump safe transfer as a demo transaction
       const dumpSafeTransafer: MetaTransactionData[] = [
@@ -327,10 +333,13 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
         gasToken: ethers.constants.AddressZero // native token
       }
 
-      const gelatoTaskId = await safeAccountAbstraction.relayTransaction(dumpSafeTransafer, options)
+      const response = (await accountAbstractionKit?.relayTransaction(
+        dumpSafeTransafer,
+        options
+      )) as GelatoRelayResponse
 
       setIsRelayerLoading(false)
-      setGelatoTaskId(gelatoTaskId)
+      setGelatoTaskId(response.taskId)
     }
   }
 
@@ -409,7 +418,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
     startMoneriumFlow,
     closeMoneriumFlow,
-    moneriumInfo
+    moneriumInfo,
+
+    accountAbstractionKit
   }
 
   return (

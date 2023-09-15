@@ -6,13 +6,14 @@ import Link from '@mui/material/Link'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { GelatoRelayPack } from '@safe-global/relay-kit'
 import { useCallback, useEffect } from 'react'
 
 import { TransactionStatusResponse } from '@gelatonetwork/relay-sdk'
 import AddressLabel from 'src/components/address-label/AddressLabel'
 import useApi from 'src/hooks/useApi'
 import getChain from 'src/utils/getChain'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import { GelatoRelayPack } from '@safe-global/relay-kit'
 
 type GelatoTaskStatusLabelProps = {
   gelatoTaskId: string
@@ -30,9 +31,11 @@ const GelatoTaskStatusLabel = ({
   transactionHash,
   setTransactionHash
 }: GelatoTaskStatusLabelProps) => {
+  const { accountAbstractionKit } = useAccountAbstraction()
   const fetchGelatoTaskInfo = useCallback(
-    async () => await new GelatoRelayPack().getTaskStatus(gelatoTaskId),
-    [gelatoTaskId]
+    async () =>
+      await (accountAbstractionKit?.relayPack as GelatoRelayPack)?.getTaskStatus(gelatoTaskId),
+    [gelatoTaskId, accountAbstractionKit]
   )
 
   const { data: gelatoTaskInfo } = useApi(fetchGelatoTaskInfo, pollingTime)

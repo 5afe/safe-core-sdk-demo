@@ -143,7 +143,7 @@ moneriumPack.close()
 
 export const GELATO_SNIPPET = `import { GelatoRelayPack } from '@safe-global/relay-kit'
 
-const relayPack = new GelatoRelayPack()
+const relayPack = new GelatoRelayPack({ safeSdk, apiKey }) // apiKey is optional
 
 relayPack.relayTransaction({
   target: '0x...', // the Safe address
