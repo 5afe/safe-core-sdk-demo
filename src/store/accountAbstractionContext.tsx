@@ -280,14 +280,16 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       if (web3Provider) {
         const hasSafes = safes.length > 0
 
-        const safeSelected = hasSafes ? safes[0] : await accountAbstractionKit?.safeSdk.getAddress()
+        const safeSelected = hasSafes
+          ? safes[0]
+          : await accountAbstractionKit?.protocolKit.getAddress()
 
         setSafeSelected(safeSelected || '')
       }
     }
 
     getSafeAddress()
-  }, [accountAbstractionKit?.safeSdk, safes, web3Provider])
+  }, [accountAbstractionKit?.protocolKit, safes, web3Provider])
 
   useEffect(() => {
     if (!web3Provider) return
@@ -295,9 +297,11 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       // Instantiate AccountAbstraction kit
       const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: web3Provider.getSigner() })
       const safeAccountAbstraction = new AccountAbstraction(ethAdapter)
-      const safeSdk = await safeAccountAbstraction.init()
-      const relayPack = new GelatoRelayPack({ safeSdk })
-      safeAccountAbstraction.setRelayPack(relayPack)
+      await safeAccountAbstraction.init()
+      const gelatoRelayPack = new GelatoRelayPack({
+        protocolKit: safeAccountAbstraction.protocolKit
+      })
+      safeAccountAbstraction.setRelayKit(gelatoRelayPack)
 
       setAccountAbstractionKit(safeAccountAbstraction)
     })()
@@ -339,6 +343,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       )) as GelatoRelayResponse
 
       setIsRelayerLoading(false)
+      console.log(response)
       setGelatoTaskId(response.taskId)
     }
   }
