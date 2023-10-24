@@ -69,8 +69,9 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
       </Typography>
 
       <Typography marginTop="16px">
-        Allow users to buy cryptocurrencies using a credit card and other payment options directly
-        within your app. Click on "Buy USDC" to on-ramp funds to your Safe using the Stripe widget!
+        {tabsValue === 0
+          ? 'With Monerium you can connect your web3 wallet to any euro bank account with your personal IBAN, directly transferable between your wallet and bank accounts.'
+          : 'Allow users to buy cryptocurrencies using a credit card and other payment options directly within your app. Click on "Buy USDC" to on-ramp funds to your Safe using the Stripe widget!'}
       </Typography>
 
       <Typography marginTop="24px" marginBottom="8px">
