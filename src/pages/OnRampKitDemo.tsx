@@ -70,7 +70,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
 
       <Typography marginTop="16px">
         {tabsValue === 0
-          ? 'With Monerium you can connect your web3 wallet to any euro bank account with your personal IBAN, directly transferable between your wallet and bank accounts.'
+          ? 'Monerium gives you a personal IBAN for your web3 wallet to send and receive Euros between your wallet and bank accounts in seconds.'
           : 'Allow users to buy cryptocurrencies using a credit card and other payment options directly within your app. Click on "Buy USDC" to on-ramp funds to your Safe using the Stripe widget!'}
       </Typography>
 
