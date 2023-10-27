@@ -69,7 +69,7 @@ const Intro = ({ setStep }: IntroProps) => {
       </Typography>
 
       <Typography>
-        Consider that the Onramp kit will only work on Mumbai test chain and US based connection.
+        Please note: the Onramp kit will only work in the EU on Görli and in the US on Mumbai test chains.
       </Typography>
 
       <Box display="flex" gap={2} marginTop="32px" alignItems="center">
