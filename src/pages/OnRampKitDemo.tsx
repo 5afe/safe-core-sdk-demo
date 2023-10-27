@@ -141,7 +141,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
                         disabled={!chain?.isMoneriumPaymentsEnabled || !isSafeDeployed}
                       >
                         Login
-                        {!chain?.isMoneriumPaymentsEnabled && ' (only in Goerli chain)'}
+                        {!chain?.isMoneriumPaymentsEnabled && ' (only on Goerli chain)'}
                       </Button>
                     </Tooltip>
                   </>
