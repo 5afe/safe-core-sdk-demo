@@ -70,7 +70,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
 
       <Typography marginTop="16px">
         Allow users to buy cryptocurrencies using a credit card and other payment options directly
-        within your app. Click on "Buy USDC" to on-ramp funds to your Safe using the Stripe widget!
+        within your app. Click on "Buy USDC" to on-ramp funds to your Safe using Monerium or the Stripe widget!
       </Typography>
 
       <Typography marginTop="24px" marginBottom="8px">
@@ -175,7 +175,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
                       disabled={!chain?.isStripePaymentsEnabled}
                     >
                       Buy USDC
-                      {!chain?.isStripePaymentsEnabled ? ' (only in Mumbai chain)' : ''}
+                      {!chain?.isStripePaymentsEnabled ? ' (only on Mumbai chain)' : ''}
                     </Button>
                   </Tooltip>
                 ) : (
