@@ -1,4 +1,4 @@
-export const WEB3AUTH_SNIPPET = `import { Web3AuthModalPack } from '@safe-global/auth-kit'
+export const WEB3AUTH_SNIPPET = (chainId: string) => `import { Web3AuthModalPack } from '@safe-global/auth-kit'
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
 
 const options: Web3AuthOptions = {
@@ -6,8 +6,8 @@ const options: Web3AuthOptions = {
   web3AuthNetwork: 'testnet',
   chainConfig: {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: chainId,
-    rpcTarget: rpcTarget
+    chainId: ${chainId},
+    rpcTarget: '...'
   },
   uiConfig: {
     theme: 'dark',
