@@ -1,15 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { ethers, utils } from 'ethers'
-import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from '@web3auth/base'
-import { Web3AuthOptions } from '@web3auth/modal'
-import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
 
 import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
-import { Web3AuthModalPack } from '@safe-global/auth-kit'
+import { SafeAuthInitOptions, SafeAuthPack } from '@safe-global/auth-kit'
 import { MoneriumPack, StripePack } from '@safe-global/onramp-kit'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { MetaTransactionData, MetaTransactionOptions } from '@safe-global/safe-core-sdk-types'
+import { SUPPORTED_NETWORKS } from '@toruslabs/ethereum-controllers'
 
 import { initialChain } from 'src/chains/chains'
 import usePolling from 'src/hooks/usePolling'
@@ -91,7 +89,8 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   // web3 provider to perform signatures
   const [web3Provider, setWeb3Provider] = useState<ethers.providers.Web3Provider>()
 
-  const isAuthenticated = !!ownerAddress && !!chainId
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+
   const chain = getChain(chainId) || initialChain
 
   // reset React state when you switch the chain
@@ -104,99 +103,72 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   }, [chain])
 
   // authClient
-  const [web3AuthModalPack, setWeb3AuthModalPack] = useState<Web3AuthModalPack>()
+  const [safeAuthPack, setSafeAuthPack] = useState<SafeAuthPack>()
 
   // onRampClient
   const [stripePack, setStripePack] = useState<StripePack>()
 
   useEffect(() => {
     ;(async () => {
-      const options: Web3AuthOptions = {
-        clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID || '',
-        web3AuthNetwork: 'testnet',
-        chainConfig: {
-          chainNamespace: CHAIN_NAMESPACES.EIP155,
-          chainId: chain.id,
-          rpcTarget: chain.rpcUrl
-        },
-        uiConfig: {
-          theme: 'dark',
-          loginMethodsOrder: ['google', 'facebook']
-        }
+      const options: SafeAuthInitOptions = {
+        enableLogging: true,
+        showWidgetButton: false,
+        chainConfig: SUPPORTED_NETWORKS[chain.id]
       }
 
-      const modalConfig = {
-        [WALLET_ADAPTERS.TORUS_EVM]: {
-          label: 'torus',
-          showOnModal: false
-        },
-        [WALLET_ADAPTERS.METAMASK]: {
-          label: 'metamask',
-          showOnDesktop: true,
-          showOnMobile: false
-        }
-      }
-
-      const openloginAdapter = new OpenloginAdapter({
-        loginSettings: {
-          mfaLevel: 'mandatory'
-        },
-        adapterSettings: {
-          uxMode: 'popup',
-          whiteLabel: {
-            name: 'Safe'
-          }
-        }
-      })
-
-      const web3AuthModalPack = new Web3AuthModalPack({
+      const authPack = new SafeAuthPack({
         txServiceUrl: chain.transactionServiceUrl
       })
 
-      await web3AuthModalPack.init({
-        options,
-        adapters: [openloginAdapter],
-        modalConfig
-      })
+      await authPack.init(options)
 
-      setWeb3AuthModalPack(web3AuthModalPack)
+      setSafeAuthPack(authPack)
+
+      // If the provider has an account the we can try to sign in the user
+      authPack.subscribe('accountsChanged', async (accounts) => {
+        if (accounts.length > 0) {
+          const { safes, eoa } = await authPack.signIn()
+          const provider = authPack.getProvider() as ethers.providers.ExternalProvider
+
+          // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
+          setChainId(chain.id)
+          setOwnerAddress(eoa)
+          setSafes(safes || [])
+          setWeb3Provider(new ethers.providers.Web3Provider(provider))
+          setIsAuthenticated(true)
+        }
+      })
     })()
   }, [chain])
 
   // auth-kit implementation
   const loginWeb3Auth = useCallback(async () => {
-    if (!web3AuthModalPack) return
+    if (!safeAuthPack) return
 
     try {
-      const { safes, eoa } = await web3AuthModalPack.signIn()
-      const provider = web3AuthModalPack.getProvider() as ethers.providers.ExternalProvider
+      const { safes, eoa } = await safeAuthPack.signIn()
+      const provider = safeAuthPack.getProvider() as ethers.providers.ExternalProvider
 
       // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
       setChainId(chain.id)
       setOwnerAddress(eoa)
       setSafes(safes || [])
       setWeb3Provider(new ethers.providers.Web3Provider(provider))
+      setIsAuthenticated(true)
     } catch (error) {
       console.log('error: ', error)
     }
-  }, [chain, web3AuthModalPack])
-
-  useEffect(() => {
-    if (web3AuthModalPack && web3AuthModalPack.getProvider()) {
-      ;(async () => {
-        await loginWeb3Auth()
-      })()
-    }
-  }, [web3AuthModalPack, loginWeb3Auth])
+  }, [chain, safeAuthPack])
 
   const logoutWeb3Auth = () => {
-    web3AuthModalPack?.signOut()
+    safeAuthPack?.signOut()
     setOwnerAddress('')
     setSafes([])
     setChainId(chain.id)
     setWeb3Provider(undefined)
     setSafeSelected('')
     setGelatoTaskId(undefined)
+    setIsAuthenticated(false)
     closeMoneriumFlow()
   }
 
