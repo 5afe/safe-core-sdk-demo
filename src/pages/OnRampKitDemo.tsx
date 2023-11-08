@@ -69,9 +69,8 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
       </Typography>
 
       <Typography marginTop="16px">
-        {tabsValue === 0
-          ? 'Monerium gives you a personal IBAN for your web3 wallet to send and receive Euros between your wallet and bank accounts in seconds.'
-          : 'Allow users to buy cryptocurrencies using a credit card and other payment options directly within your app. Click on "Buy USDC" to on-ramp funds to your Safe using the Stripe widget!'}
+        Allow users to buy cryptocurrencies using a credit card and other payment options directly
+        within your app.
       </Typography>
 
       <Typography marginTop="24px" marginBottom="8px">
@@ -142,7 +141,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
                         disabled={!chain?.isMoneriumPaymentsEnabled || !isSafeDeployed}
                       >
                         Login
-                        {!chain?.isMoneriumPaymentsEnabled && ' (only in Goerli chain)'}
+                        {!chain?.isMoneriumPaymentsEnabled && ' (only on Goerli chain)'}
                       </Button>
                     </Tooltip>
                   </>
@@ -176,7 +175,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
                       disabled={!chain?.isStripePaymentsEnabled}
                     >
                       Buy USDC
-                      {!chain?.isStripePaymentsEnabled ? ' (only in Mumbai chain)' : ''}
+                      {!chain?.isStripePaymentsEnabled ? ' (only on Mumbai chain)' : ''}
                     </Button>
                   </Tooltip>
                 ) : (
