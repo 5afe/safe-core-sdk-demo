@@ -20,35 +20,39 @@ function SafeAccount(props: BoxProps) {
       <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
         Your Safe account (Smart Contract) holds and protects your assets.
       </Typography>
-      <FormControl fullWidth sx={{ marginBottom: '20px' }}>
-        <InputLabel id="switch-address-selector-label">Select Safe</InputLabel>
-        <Select
-          color="success"
-          aria-label="safe address selector"
-          id="switch-address-selector"
-          labelId="switch-address-selector-label"
-          label="Select Safe"
-          value={safeSelected}
-          onChange={(event: SelectChangeEvent) => setSafeSelected(event.target.value as string)}
-        >
-          {safes.map((safeAddress) => (
-            <MenuItem
-              key={safeAddress}
-              value={safeAddress}
-              onClick={() => setSafeSelected(safeAddress)}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}
+
+      {!!safes && safes.length > 1 && (
+        <FormControl fullWidth sx={{ marginBottom: '20px' }}>
+          <InputLabel id="switch-address-selector-label">Select Safe</InputLabel>
+          <Select
+            color="success"
+            aria-label="safe address selector"
+            id="switch-address-selector"
+            labelId="switch-address-selector-label"
+            label="Select Safe"
+            value={safeSelected}
+            onChange={(event: SelectChangeEvent) => setSafeSelected(event.target.value as string)}
+          >
+            {safes.map((safeAddress) => (
+              <MenuItem
+                key={safeAddress}
+                value={safeAddress}
+                onClick={() => setSafeSelected(safeAddress)}
               >
-                <AddressLabel address={safeAddress} />
-              </div>
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <AddressLabel address={safeAddress} />
+                </div>
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
+
       {/* Safe Info */}
       {safeSelected && <SafeInfo safeAddress={safeSelected} chainId={chainId} />}
     </ConnectedContainer>
