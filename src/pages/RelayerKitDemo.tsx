@@ -8,7 +8,7 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { utils } from 'ethers'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
 import AuthenticateMessage from 'src/components/authenticate-message/AuthenticateMessage'
@@ -28,6 +28,7 @@ const RelayerKitDemo = () => {
 
     safeSelected,
     safeBalance,
+    erc20token,
 
     isRelayerLoading,
     relayTransaction,
@@ -39,10 +40,19 @@ const RelayerKitDemo = () => {
 
   const [transactionHash, setTransactionHash] = useState<string>('')
 
-  // TODO: ADD PAY FEES USING USDC TOKEN
+  const hasNativeFunds = useMemo(
+    () => !!safeBalance && Number(utils.formatEther(safeBalance || '0')) > transferAmount,
+    [safeBalance]
+  )
 
-  const hasNativeFunds =
-    !!safeBalance && Number(utils.formatEther(safeBalance || '0')) > transferAmount
+  const hasERC20Funds = useMemo(
+    () =>
+      !!erc20token &&
+      Number(utils.formatUnits(erc20token.balance || 0, erc20token.decimals)) > transferAmount,
+    [erc20token]
+  )
+
+  const hasFunds = hasERC20Funds || (!erc20token && hasNativeFunds)
 
   return (
     <>
@@ -123,19 +133,19 @@ const RelayerKitDemo = () => {
                 <Button
                   startIcon={<SendIcon />}
                   variant="contained"
-                  disabled={!hasNativeFunds}
+                  disabled={!hasFunds}
                   onClick={relayTransaction}
                 >
                   Send Transaction
                 </Button>
 
-                {!hasNativeFunds && (
+                {!hasFunds && (
                   <Typography color="error">
                     Insufficient funds. Send some funds to the Safe Account
                   </Typography>
                 )}
 
-                {!hasNativeFunds && chain?.faucetUrl && (
+                {!hasNativeFunds && !erc20token && chain?.faucetUrl && (
                   <Link href={chain.faucetUrl} target="_blank">
                     Request 0.5 {chain.token}.
                   </Link>
@@ -146,7 +156,7 @@ const RelayerKitDemo = () => {
             {/* Transaction details */}
             <Stack gap={0.5} display="flex" flexDirection="column">
               <Typography>
-                Transfer {transferAmount} {chain?.token}
+                Transfer {transferAmount} {erc20token?.symbol || chain?.token}
               </Typography>
 
               {safeSelected && (
