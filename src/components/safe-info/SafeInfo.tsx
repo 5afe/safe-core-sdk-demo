@@ -1,10 +1,13 @@
 import { useCallback, useState } from 'react'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import Tooltip from '@mui/material/Tooltip'
-import { Skeleton, Theme } from '@mui/material'
+import { ethers, utils } from 'ethers'
 import styled from '@emotion/styled'
-import { utils } from 'ethers'
+import { Skeleton, Theme } from '@mui/material'
+import FormControl from '@mui/material/FormControl'
+import MenuItem from '@mui/material/MenuItem'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import Stack from '@mui/material/Stack'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
 import AmountLabel from 'src/components/amount-label/AmountLabel'
@@ -17,6 +20,21 @@ import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { useTheme } from 'src/store/themeContext'
 import isContractAddress from 'src/utils/isContractAddress'
 
+type TokenBalanceProps = {
+  value: string
+  tokenSymbol: string
+}
+
+function TokenBalance({ value, tokenSymbol }: TokenBalanceProps) {
+  return (
+    <AmountContainer>
+      <Typography fontWeight="700">
+        <AmountLabel amount={value} tokenSymbol={tokenSymbol} />
+      </Typography>
+    </AmountContainer>
+  )
+}
+
 type SafeInfoProps = {
   safeAddress: string
   chainId: string
@@ -26,7 +44,14 @@ type SafeInfoProps = {
 // TODO: ADD CHAIN LABEL
 
 function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
-  const { web3Provider, chain, safeBalance } = useAccountAbstraction()
+  const {
+    chain,
+    erc20Balances = {},
+    safeBalance,
+    setTokenAddress,
+    tokenAddress,
+    web3Provider
+  } = useAccountAbstraction()
 
   const [isDeployed, setIsDeployed] = useState<boolean>(false)
   const [isDeployLoading, setIsDeployLoading] = useState<boolean>(true)
@@ -98,15 +123,43 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
         )}
 
         {!isLoading && (
-          <AmountContainer>
-            {/* Safe Balance */}
-            <Typography fontWeight="700">
-              <AmountLabel
-                amount={utils.formatEther(safeBalance || '0')}
+          <>
+            {Object.values(erc20Balances).length > 0 ? (
+              <FormControl fullWidth variant="standard">
+                <Select
+                  labelId="token-selector-label"
+                  id="token-selector"
+                  value={tokenAddress}
+                  label="Token"
+                  onChange={(event: SelectChangeEvent) =>
+                    setTokenAddress(event.target.value as string)
+                  }
+                >
+                  <MenuItem value={ethers.constants.AddressZero}>
+                    {/* Safe Balance for native token */}
+                    <TokenBalance
+                      value={utils.formatEther(safeBalance || '0')}
+                      tokenSymbol={chain?.token || ''}
+                    />
+                  </MenuItem>
+                  {Object.values(erc20Balances).map((erc20Balance) => (
+                    <MenuItem value={erc20Balance.address}>
+                      {/* ERC20 Safe Balances */}
+                      <TokenBalance
+                        value={utils.formatUnits(erc20Balance.balance || 0, erc20Balance.decimals)}
+                        tokenSymbol={erc20Balance.symbol}
+                      />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <TokenBalance
+                value={utils.formatEther(safeBalance || '0')}
                 tokenSymbol={chain?.token || ''}
               />
-            </Typography>
-          </AmountContainer>
+            )}
+          </>
         )}
       </Stack>
     </Stack>
