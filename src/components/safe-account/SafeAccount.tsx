@@ -34,7 +34,11 @@ function SafeAccount(props: BoxProps) {
             onChange={(event: SelectChangeEvent) => setSafeSelected(event.target.value as string)}
           >
             {safes.map((safeAddress) => (
-              <MenuItem value={safeAddress} onClick={() => setSafeSelected(safeAddress)}>
+              <MenuItem
+                key={safeAddress}
+                value={safeAddress}
+                onClick={() => setSafeSelected(safeAddress)}
+              >
                 <div
                   style={{
                     display: 'flex',
