@@ -71,6 +71,7 @@ const useAccountAbstraction = () => {
 }
 
 const MONERIUM_TOKEN = 'monerium_token'
+const MONERIUM_SELECTED_SAFE = 'monerium_safe_selected'
 
 const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => {
   // owner address from the email  (provided by web3Auth)
@@ -236,6 +237,8 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     async (authCode?: string, refreshToken?: string) => {
       if (!moneriumPack) return
 
+      localStorage.setItem(MONERIUM_SELECTED_SAFE, safeSelected)
+
       const moneriumClient = await moneriumPack.open({
         redirectUrl: process.env.REACT_APP_MONERIUM_REDIRECT_URL,
         authCode,
@@ -281,8 +284,11 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
         await safeAccountAbstraction.init({ relayPack })
 
         const hasSafes = safes.length > 0
+        const storedSafe = localStorage.getItem(MONERIUM_SELECTED_SAFE) || undefined
 
-        const safeSelected = hasSafes ? safes[0] : await safeAccountAbstraction.getSafeAddress()
+        const safeSelected = hasSafes
+          ? storedSafe || safes[0]
+          : await safeAccountAbstraction.getSafeAddress()
 
         setSafeSelected(safeSelected)
       }
