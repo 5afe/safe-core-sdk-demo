@@ -7,7 +7,7 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { utils } from 'ethers'
+import { ethers } from 'ethers'
 import { useState } from 'react'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
@@ -42,7 +42,7 @@ const RelayerKitDemo = () => {
   // TODO: ADD PAY FEES USING USDC TOKEN
 
   const hasNativeFunds =
-    !!safeBalance && Number(utils.formatEther(safeBalance || '0')) > transferAmount
+    !!safeBalance && Number(ethers.formatEther(safeBalance || '0')) > transferAmount
 
   return (
     <>

@@ -137,9 +137,7 @@ const getGelatoTaskStatusColor = (
     ExecPending: theme.palette.info.light,
     ExecSuccess: theme.palette.success.light,
     Cancelled: theme.palette.error.light,
-    ExecReverted: theme.palette.error.light,
-    Blacklisted: theme.palette.error.light,
-    NotFound: theme.palette.error.light
+    ExecReverted: theme.palette.error.light
   }
 
   return colors[taskStatus]
@@ -152,9 +150,7 @@ const getGelatoTaskStatusLabel = (taskStatus: TransactionStatusResponse['taskSta
     ExecPending: 'Executing',
     ExecSuccess: 'Success',
     Cancelled: 'Cancelled',
-    ExecReverted: 'Reverted',
-    Blacklisted: 'Blacklisted',
-    NotFound: 'Not Found'
+    ExecReverted: 'Reverted'
   }
 
   return label[taskStatus]

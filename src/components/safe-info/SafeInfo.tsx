@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import Tooltip from '@mui/material/Tooltip'
 import { Skeleton, Theme } from '@mui/material'
 import styled from '@emotion/styled'
-import { utils } from 'ethers'
+import { ethers } from 'ethers'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
 import AmountLabel from 'src/components/amount-label/AmountLabel'
@@ -102,7 +102,7 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
             {/* Safe Balance */}
             <Typography fontWeight="700">
               <AmountLabel
-                amount={utils.formatEther(safeBalance || '0')}
+                amount={ethers.formatEther(safeBalance || '0')}
                 tokenSymbol={chain?.token || ''}
               />
             </Typography>

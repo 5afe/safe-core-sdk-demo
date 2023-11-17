@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { ethers, utils } from 'ethers'
+import { ethers } from 'ethers'
 import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from '@web3auth/base'
 import { Web3AuthOptions } from '@web3auth/modal'
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
@@ -25,7 +25,7 @@ type accountAbstractionContextValue = {
   safes: string[]
   chain?: Chain
   isAuthenticated: boolean
-  web3Provider?: ethers.providers.Web3Provider
+  web3Provider?: ethers.BrowserProvider
   loginWeb3Auth: () => void
   logoutWeb3Auth: () => void
   setChainId: (chainId: string) => void
@@ -91,7 +91,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   })
 
   // web3 provider to perform signatures
-  const [web3Provider, setWeb3Provider] = useState<ethers.providers.Web3Provider>()
+  const [web3Provider, setWeb3Provider] = useState<ethers.BrowserProvider>()
 
   const isAuthenticated = !!ownerAddress && !!chainId
   const chain = getChain(chainId) || initialChain
@@ -171,13 +171,13 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
     try {
       const { safes, eoa } = await web3AuthModalPack.signIn()
-      const provider = web3AuthModalPack.getProvider() as ethers.providers.ExternalProvider
+      const provider = web3AuthModalPack.getProvider()!
 
       // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
       setChainId(chain.id)
       setOwnerAddress(eoa)
       setSafes(safes || [])
-      setWeb3Provider(new ethers.providers.Web3Provider(provider))
+      setWeb3Provider(new ethers.BrowserProvider(provider))
     } catch (error) {
       console.log('error: ', error)
     }
@@ -212,13 +212,13 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     ;(async () => {
       if (!web3Provider || !safeSelected) return
 
-      const safeOwner = web3Provider.getSigner()
+      const safeOwner = await web3Provider.getSigner()
       const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: safeOwner })
 
       const safeSdk = await Safe.create({
-        ethAdapter: ethAdapter,
+        ethAdapter,
         safeAddress: safeSelected,
-        isL1SafeMasterCopy: true
+        isL1SafeSingleton: true
       })
 
       const pack = new MoneriumPack({
@@ -295,7 +295,10 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     if (!web3Provider) return
     ;(async () => {
       // Instantiate AccountAbstraction kit
-      const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: web3Provider.getSigner() })
+      const ethAdapter = new EthersAdapter({
+        ethers,
+        signerOrProvider: await web3Provider.getSigner()
+      })
       const safeAccountAbstraction = new AccountAbstraction(ethAdapter)
       await safeAccountAbstraction.init()
       const gelatoRelayPack = new GelatoRelayPack({
@@ -326,7 +329,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
         {
           to: safeSelected,
           data: '0x',
-          value: utils.parseUnits('0.01', 'ether').toString(),
+          value: ethers.parseUnits('0.01', 'ether').toString(),
           operation: 0 // OperationType.Call,
         }
       ]
@@ -334,7 +337,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       const options: MetaTransactionOptions = {
         isSponsored: false,
         gasLimit: '600000', // in this alfa version we need to manually set the gas limit
-        gasToken: ethers.constants.AddressZero // native token
+        gasToken: ethers.ZeroAddress // native token
       }
 
       const response = (await accountAbstractionKit?.relayTransaction(
