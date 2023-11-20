@@ -2348,55 +2348,55 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz#8be36a1f66f3265389e90b5f9c9962146758f728"
   integrity sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==
 
-"@safe-global/account-abstraction-kit-poc@2.0.0-alpha.2":
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/account-abstraction-kit-poc/-/account-abstraction-kit-poc-2.0.0-alpha.2.tgz#1cfb99e662fd97f9ee232c33eb124f24e9ac0a3f"
-  integrity sha512-2gQZ1k3qUp786MGKpmUz12elCurjJ5BT1DQ7wkAZkSLQ4yxaRJlkAYI4iBKbSYOlB3pIziSN43p1BK9TPCG2Xw==
+"@safe-global/account-abstraction-kit-poc@2.0.0-alpha.4":
+  version "2.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@safe-global/account-abstraction-kit-poc/-/account-abstraction-kit-poc-2.0.0-alpha.4.tgz#4f08cce6afe7f5833b02792764a161f54d7f12e1"
+  integrity sha512-usHmDpyK9JGI/XLmxOJB3bg+lfC/hTPac/kIcOdQp7nsMR2xEyC/rqJMP6RzpawXdpC7JjpK9Dw1hinO93PbcQ==
   dependencies:
-    "@safe-global/protocol-kit" "^2.0.0-alpha.2"
-    "@safe-global/relay-kit" "^2.0.0-alpha.2"
-    "@safe-global/safe-core-sdk-types" "^3.0.0-alpha.0"
+    "@safe-global/protocol-kit" "^2.0.0-alpha.4"
+    "@safe-global/relay-kit" "^2.0.0-alpha.4"
+    "@safe-global/safe-core-sdk-types" "^3.0.0-alpha.1"
 
-"@safe-global/api-kit@^2.0.0-alpha.2":
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/api-kit/-/api-kit-2.0.0-alpha.2.tgz#76590b3ca157cb2402943501e8ef0ceed4c0c827"
-  integrity sha512-i/aMChgwpsyx2tR4ogTggvTPb9mJTm0UGi2g819/87sWN/CXN0Q9oXYggVkZ2WHmz9eNqMLE0mn5Gn+DlhnJvA==
+"@safe-global/api-kit@^2.0.0-alpha.3":
+  version "2.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/@safe-global/api-kit/-/api-kit-2.0.0-alpha.3.tgz#cd990ddfd9eee1334078a2cc584b9f6561adb4eb"
+  integrity sha512-bpXYZM474CqwxjQK18qjT3ApoomD5CpQyMby0WBl3obkHIRufwq99CSb8BhXcTGsSbZQhADvNVSfxrR58BK5Wg==
   dependencies:
-    "@safe-global/protocol-kit" "^2.0.0-alpha.2"
-    "@safe-global/safe-core-sdk-types" "^3.0.0-alpha.0"
+    "@safe-global/protocol-kit" "^2.0.0-alpha.4"
+    "@safe-global/safe-core-sdk-types" "^3.0.0-alpha.1"
     ethers "^6.7.1"
     node-fetch "^2.7.0"
 
-"@safe-global/auth-kit@2.0.0-alpha.2":
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/auth-kit/-/auth-kit-2.0.0-alpha.2.tgz#41c3eef70f204b9d0207fec609a7c363b5102bae"
-  integrity sha512-8ABqJBoiYaQS436cqS8cEOP0WA+4GfzC48d/brxHP8D2MAPTnfYVcH/0uFzrlrH85E4hputYx2wtYBEH3kqkdA==
+"@safe-global/auth-kit@2.0.0-alpha.4":
+  version "2.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@safe-global/auth-kit/-/auth-kit-2.0.0-alpha.4.tgz#5e3eb1dead5057647aa3c4e44c0f5e905b946afc"
+  integrity sha512-EsSnQ2NdpKJMf61Jv+hk8g1Oj59O6vGoRuEJ1N9JeO3T9BlAvEsYXf6+IhEsWFO1LbiK+TNBMd6wfmXixmPjkA==
   dependencies:
-    "@safe-global/api-kit" "^2.0.0-alpha.2"
-    "@safe-global/protocol-kit" "^2.0.0-alpha.2"
+    "@safe-global/api-kit" "^2.0.0-alpha.3"
+    "@safe-global/protocol-kit" "^2.0.0-alpha.4"
     "@walletconnect/client" "^1.8.0"
     "@web3auth/base" "^4.3.0"
     "@web3auth/modal" "^4.3.1"
     "@web3auth/openlogin-adapter" "^4.3.0"
     ethers "^6.7.1"
 
-"@safe-global/onramp-kit@2.0.0-alpha.2":
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/onramp-kit/-/onramp-kit-2.0.0-alpha.2.tgz#22f331954f98bbe1bff3b72f53656e36921d9ebe"
-  integrity sha512-Iz6wwsrkLymuHUCc3MYOBiO26XFJ3TWSw67LqSlxK5q74GaID7Wa9uiGiEvfDmgC+QUEjF3sGEVW0wmkF/ia0Q==
+"@safe-global/onramp-kit@2.0.0-alpha.4":
+  version "2.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/@safe-global/onramp-kit/-/onramp-kit-2.0.0-alpha.3.tgz#3e718883e07da38fba064b16f990f29246abb5d8"
+  integrity sha512-xopBOt87Ew+XX5AlKhxhs6q6z36ntxq2lLOeZ1TPf1JZJlAhQTE2UHcBBzftmds0W3HV5urLOvk3sBEInNr1fA==
   dependencies:
     "@monerium/sdk" "2.6.5"
-    "@safe-global/api-kit" "^2.0.0-alpha.2"
-    "@safe-global/protocol-kit" "^2.0.0-alpha.2"
-    "@safe-global/safe-core-sdk-types" "^3.0.0-alpha.0"
+    "@safe-global/api-kit" "^2.0.0-alpha.3"
+    "@safe-global/protocol-kit" "^2.0.0-alpha.4"
+    "@safe-global/safe-core-sdk-types" "^3.0.0-alpha.1"
     "@stripe/crypto" "^0.0.4"
     "@stripe/stripe-js" "^1.54.2"
     ethers "^6.7.1"
 
-"@safe-global/protocol-kit@2.0.0-alpha.2", "@safe-global/protocol-kit@^2.0.0-alpha.2":
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-2.0.0-alpha.2.tgz#c720ab8cb4e0443f261c5d31b0630c2bab123ed6"
-  integrity sha512-9wrS09I+Zx3bz4KWP2ix5+aY8lKPetfSAMryXdOxEnQHtKrIsxxpPllRVoiQFLtXkRSdsrEqjaoGFSWeviNDQA==
+"@safe-global/protocol-kit@2.0.0-alpha.4", "@safe-global/protocol-kit@^2.0.0-alpha.4":
+  version "2.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-2.0.0-alpha.4.tgz#6edb25e05d9de0486f887fdebde5fc405a3a25b3"
+  integrity sha512-d4kLP/zmO24TtPCrGmfdP/z2UMELzHAawrQNNQR1EGulNicb+1cRrGCCSBFciJwRsORz9cikoWUNMyYTdN8mbA==
   dependencies:
     "@noble/hashes" "^1.3.2"
     "@safe-global/safe-deployments" "^1.28.0"
@@ -2407,19 +2407,19 @@
     web3-core "^1.10.3"
     web3-utils "^1.10.3"
 
-"@safe-global/relay-kit@2.0.0-alpha.2", "@safe-global/relay-kit@^2.0.0-alpha.2":
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/relay-kit/-/relay-kit-2.0.0-alpha.2.tgz#146bfa9fa4fc81f804d546e11e0363540970edc2"
-  integrity sha512-rIf3/vGLom/R+rhLvsEKCLV8RZZf/vrVZifKhMLCGKd+p6WkFTQIy6LV7MXxTDM9cBizcdvGF28vLSJYH2Dz6g==
+"@safe-global/relay-kit@2.0.0-alpha.4", "@safe-global/relay-kit@^2.0.0-alpha.4":
+  version "2.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@safe-global/relay-kit/-/relay-kit-2.0.0-alpha.4.tgz#e6e73eff91e45e9f96321fe20de754be13f24151"
+  integrity sha512-wMxttystvZSzeAHCsAjc3rBSIsjTYJwObP5NTyVRnyhYeTwk3R17MmtQx7NvrLstBiMsrXZwiDddzaztRDW1LQ==
   dependencies:
     "@gelatonetwork/relay-sdk" "^5.5.0"
-    "@safe-global/protocol-kit" "^2.0.0-alpha.2"
-    "@safe-global/safe-core-sdk-types" "^3.0.0-alpha.0"
+    "@safe-global/protocol-kit" "^2.0.0-alpha.4"
+    "@safe-global/safe-core-sdk-types" "^3.0.0-alpha.1"
 
-"@safe-global/safe-core-sdk-types@^3.0.0-alpha.0":
-  version "3.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-3.0.0-alpha.0.tgz#3b211d8a3b5431110efb2ea5daee734fb5a8c73c"
-  integrity sha512-Aj1MdJwL/+gujZMoIPRNmh1L73WQ+aJJK4EMd5kIiSqB1gXMqgl9Di9zB29/k/U0TozGoKH2Abuzd2arZA9H7g==
+"@safe-global/safe-core-sdk-types@^3.0.0-alpha.1":
+  version "3.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-3.0.0-alpha.1.tgz#b33dfc64e9760dc0ad486cd11acfca978e0c7c1c"
+  integrity sha512-g00jh36jEpDv/j7C9sThckGvu/Ey413oag/mjHJz7Wq65SmTHU0wx0G83HxL8EEyxU3+z9s0uCGQGieXmNGmtQ==
   dependencies:
     "@safe-global/safe-deployments" "^1.28.0"
     ethers "^6.7.1"
