@@ -154,7 +154,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
                 <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
                   This widget is on testmode, you will need to use{' '}
                   <Link
-                    href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/onramp-kit#considerations-and-limitations"
+                    href="https://docs.safe.global/safe-core-aa-sdk/onramp-kit/stripe#testing-my-dapp-containing-the-stripe-widget"
                     target="_blank"
                   >
                     fake data
