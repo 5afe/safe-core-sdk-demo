@@ -132,6 +132,14 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
           label: 'torus',
           showOnModal: false
         },
+        [WALLET_ADAPTERS.WALLET_CONNECT_V1]: {
+          label: 'wc1',
+          showOnModal: false
+        },
+        [WALLET_ADAPTERS.WALLET_CONNECT_V2]: {
+          label: 'wc2',
+          showOnModal: false
+        },
         [WALLET_ADAPTERS.METAMASK]: {
           label: 'metamask',
           showOnDesktop: true,
