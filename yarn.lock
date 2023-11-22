@@ -2380,10 +2380,10 @@
     "@web3auth/openlogin-adapter" "^4.3.0"
     ethers "^6.7.1"
 
-"@safe-global/onramp-kit@2.0.0-alpha.4":
-  version "2.0.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/@safe-global/onramp-kit/-/onramp-kit-2.0.0-alpha.4.tgz#4afe915923d42aa7db855439358390264acd0018"
-  integrity sha512-eOseN8NfEMqLHP6n1oR03PO5WAfubAX28TXonrxrtmpiVxs3GDlld2pt9wB+xjTNejQ6zcz5HQalYObkY1bNNg==
+"@safe-global/onramp-kit@2.0.0-alpha.5":
+  version "2.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@safe-global/onramp-kit/-/onramp-kit-2.0.0-alpha.5.tgz#c33485e019bd45549eb9da6f4ca93c0ba6b757fd"
+  integrity sha512-4vQ40yQ1vztEIR8IxZ1skGTGB1pyP1Sb2symQcI/IQrOSjg6+Jbw6UWa+7/uszAL+Hf6zscCOdZwq3YJrzLJuw==
   dependencies:
     "@monerium/sdk" "2.6.5"
     "@safe-global/api-kit" "^2.0.0-alpha.4"
