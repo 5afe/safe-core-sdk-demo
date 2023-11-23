@@ -111,7 +111,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   useEffect(() => {
     ;(async () => {
       if (safeAuthPack) {
-        safeAuthPack.sdk.clearInit()
+        safeAuthPack.destroy()
       }
 
       const options: SafeAuthInitOptions = {
