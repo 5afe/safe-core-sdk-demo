@@ -141,12 +141,33 @@ moneriumPack.subscribe(OrderState.placed, (notification) => {
 moneriumPack.close()
 `
 
-export const GELATO_SNIPPET = `import { GelatoRelayPack } from '@safe-global/relay-kit'
+export const GELATO_SNIPPET = `import { ethers } from 'ethers'
+import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
+import { GelatoRelayPack } from '@safe-global/relay-kit'
+import { OperationType } from '@safe-global/safe-core-sdk-types'
 
-const relayPack = new GelatoRelayPack({ safeSdk, apiKey }) // apiKey is optional
+const RPC_URL = 'https://...'
+const signerPrivateKey = process.env.OWNER_1_PRIVATE_KEY!
+const safeAddress = '0x...' // Safe from which the transaction will be sent
 
-relayPack.relayTransaction({
-  target: '0x...', // the Safe address
-  encodedTransaction: '0x...', // Encoded Safe transaction data
-  chainId: 5
-})`
+const provider = new ethers.JsonRpcProvider(RPC_URL)
+const signer = new ethers.Wallet(signerPrivateKey, provider)
+const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: signer })
+
+// Initialize the kits
+const protocolKit = await Safe.create({ ethAdapter, safeAddress })
+const relayKit = new GelatoRelayPack({ protocolKit, apiKey }) // apiKey is optional
+
+// Prepare the transaction
+const transactions: MetaTransactionData[] = [{
+  to: '0x...', // the destination address
+  data: '0x',
+  value: withdrawAmount,
+  operation: OperationType.Call
+}]
+
+const safeTransaction = await relayKit.createRelayedTransaction({ transactions })
+const signedSafeTransaction = await protocolKit.signTransaction(safeTransaction)
+
+// Send the signed transaction to the relay
+relayKit.executeRelayTransaction(signedSafeTransaction)`
