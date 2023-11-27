@@ -156,7 +156,7 @@ const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: signer })
 
 // Initialize the kits
 const protocolKit = await Safe.create({ ethAdapter, safeAddress })
-const relayKit = new GelatoRelayPack({ protocolKit, apiKey }) // apiKey is optional
+const relayKit = new GelatoRelayPack({ protocolKit, apiKey }) // apiKey is mandatory only for 1Balance
 
 // Prepare the transaction
 const transactions: MetaTransactionData[] = [{
