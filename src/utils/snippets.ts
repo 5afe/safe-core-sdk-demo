@@ -1,62 +1,26 @@
-export const WEB3AUTH_SNIPPET = `import { Web3AuthModalPack } from '@safe-global/auth-kit'
-import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
+export const WEB3AUTH_SNIPPET = `import { SafeAuthPack, SafeAuthInitOptions } from '@safe-global/auth-kit'
 
-const options: Web3AuthOptions = {
-  clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID,
-  web3AuthNetwork: 'testnet',
+const safeAuthPack = new SafeAuthPack()
+
+const options: SafeAuthInitOptions = {
+  enableLogging: true,
+  showWidgetButton: false,
   chainConfig: {
-    chainNamespace: CHAIN_NAMESPACES.EIP155,
     chainId: chainId,
-    rpcTarget: rpcTarget
-  },
-  uiConfig: {
-    theme: 'dark',
-    loginMethodsOrder: ['google', 'facebook']
+    rpcTarget: rpcUrl
   }
 }
 
-const modalConfig = {
-  [WALLET_ADAPTERS.TORUS_EVM]: {
-    label: 'torus',
-    showOnModal: false
-  },
-  [WALLET_ADAPTERS.METAMASK]: {
-    label: 'metamask',
-    showOnDesktop: true,
-    showOnMobile: false
-  }
-}
+await safeAuthPack.init(options)
 
-const openloginAdapter = new OpenloginAdapter({
-  loginSettings: {
-    mfaLevel: 'mandatory'
-  },
-  adapterSettings: {
-    uxMode: 'popup',
-    whiteLabel: {
-      name: 'Safe'
-    }
-  }
-})
-
-const web3AuthModalPack = new Web3AuthModalPack({
-  txServiceUrl: 'https://safe-transaction-{chain}.safe.global',
-})
-
-await web3AuthModalPack.init({
-  options,
-  adapters: [openloginAdapter],
-  modalConfig
-})
-
-// Allow to login and get the derived EOA
-await web3AuthModalPack.signIn()
+// Log in and get the derived EOA
+await safeAuthPack.signIn()
 
 // Logout
-await web3AuthModalPack.signOut()
+await safeAuthPack.signOut()
 
 // Get the provider
-web3AuthModalPack.getProvider()
+safeAuthPack.getProvider()
 `
 
 export const STRIPE_SNIPPET = `import { StripePack } from '@safe-global/onramp-kit'
