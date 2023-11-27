@@ -144,7 +144,7 @@ moneriumPack.close()
 export const GELATO_SNIPPET = `import { ethers } from 'ethers'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
-import { OperationType } from '@safe-global/safe-core-sdk-types'
+import { MetaTransactionData, OperationType } from '@safe-global/safe-core-sdk-types'
 
 const RPC_URL = 'https://...'
 const signerPrivateKey = process.env.OWNER_1_PRIVATE_KEY!
