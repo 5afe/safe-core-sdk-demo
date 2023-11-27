@@ -3,7 +3,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 
 import ChainLabel from 'src/components/chain-label/ChainLabel'
-import chains from 'src/chains/chains'
+import chains from 'src/constants/chains'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 
 const ChainSelector = () => {

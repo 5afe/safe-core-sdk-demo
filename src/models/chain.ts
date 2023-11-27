@@ -11,6 +11,7 @@ type Chain = {
   isStripePaymentsEnabled: boolean // only available in Mumbai chain
   isMoneriumPaymentsEnabled: boolean // only available in Goerli chain
   faucetUrl?: string
+  supportedErc20Tokens?: string[] // erc20 token contract addresses that can be used to pay transaction fees
 }
 
 export default Chain
