@@ -86,7 +86,7 @@ export const sepoliaChain: Chain = {
   shortName: 'eth',
   label: 'Sepolia',
   rpcUrl: 'https://ethereum-sepolia.publicnode.com/',
-  blockExplorerUrl: 'https://mumbai.polygonscan.com',
+  blockExplorerUrl: 'https://sepolia.polygonscan.com',
   color: '#AA36A7',
   isStripePaymentsEnabled: false,
   isMoneriumPaymentsEnabled: false,
