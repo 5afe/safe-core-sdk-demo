@@ -143,7 +143,7 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
                     />
                   </MenuItem>
                   {Object.values(erc20Balances).map((erc20Balance) => (
-                    <MenuItem value={erc20Balance.address}>
+                    <MenuItem value={erc20Balance.address} key={erc20Balance.address}>
                       {/* ERC20 Safe Balances */}
                       <TokenBalance
                         value={ethers.formatUnits(erc20Balance.balance || 0, erc20Balance.decimals)}

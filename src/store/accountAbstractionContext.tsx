@@ -393,17 +393,19 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   const safeBalance = usePolling(fetchSafeBalance)
 
   // fetch safe's ERC20 balances
-  const fetchErc20SafeBalances = useCallback(
-    async (): Promise<Record<string, ERC20Token>> =>
-      Promise.all(
-        chain.supportedErc20Tokens?.map((erc20Address) =>
-          getERC20Info(erc20Address, web3Provider, safeSelected)
-        ) || []
-      ).then((tokens) =>
-        tokens.reduce((acc, token) => (!!token ? { ...acc, [token.address]: token } : acc), {})
-      ),
-    [web3Provider, safeSelected]
-  )
+  const fetchErc20SafeBalances = useCallback(async (): Promise<Record<string, ERC20Token>> => {
+    if (!web3Provider) {
+      return {}
+    }
+
+    return Promise.all(
+      chain.supportedErc20Tokens?.map((erc20Address) =>
+        getERC20Info(erc20Address, web3Provider, safeSelected)
+      ) || []
+    ).then((tokens) =>
+      tokens.reduce((acc, token) => (!!token ? { ...acc, [token.address]: token } : acc), {})
+    )
+  }, [web3Provider, safeSelected, chain])
 
   const erc20Balances = usePolling(fetchErc20SafeBalances)
   const erc20token = erc20Balances?.[tokenAddress]
