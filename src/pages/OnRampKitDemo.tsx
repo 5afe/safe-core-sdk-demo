@@ -70,7 +70,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
 
       <Typography marginTop="16px">
         Allow users to buy cryptocurrencies using a credit card and other payment options directly
-        within your app. Click on "Buy USDC" to on-ramp funds to your Safe using the Stripe widget!
+        within your app.
       </Typography>
 
       <Typography marginTop="24px" marginBottom="8px">
@@ -141,7 +141,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
                         disabled={!chain?.isMoneriumPaymentsEnabled || !isSafeDeployed}
                       >
                         Login
-                        {!chain?.isMoneriumPaymentsEnabled && ' (only in Goerli chain)'}
+                        {!chain?.isMoneriumPaymentsEnabled && ' (only on Goerli chain)'}
                       </Button>
                     </Tooltip>
                   </>
@@ -154,7 +154,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
                 <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
                   This widget is on testmode, you will need to use{' '}
                   <Link
-                    href="https://docs.safe.global/learn/safe-core-account-abstraction-sdk/onramp-kit#considerations-and-limitations"
+                    href="https://docs.safe.global/safe-core-aa-sdk/onramp-kit/stripe#testing-my-dapp-containing-the-stripe-widget"
                     target="_blank"
                   >
                     fake data
@@ -175,7 +175,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
                       disabled={!chain?.isStripePaymentsEnabled}
                     >
                       Buy USDC
-                      {!chain?.isStripePaymentsEnabled ? ' (only in Mumbai chain)' : ''}
+                      {!chain?.isStripePaymentsEnabled ? ' (only on Mumbai chain)' : ''}
                     </Button>
                   </Tooltip>
                 ) : (

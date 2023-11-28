@@ -9,10 +9,12 @@ import { RelayResponse as GelatoRelayResponse } from '@gelatonetwork/relay-sdk'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { MetaTransactionData, MetaTransactionOptions } from '@safe-global/safe-core-sdk-types'
 
-import { initialChain } from 'src/chains/chains'
+import { initialChain } from 'src/constants/chains'
 import usePolling from 'src/hooks/usePolling'
 import Chain from 'src/models/chain'
+import { ERC20Token } from 'src/models/erc20token'
 import getChain from 'src/utils/getChain'
+import { getERC20Info } from 'src/utils/getERC20Info'
 import getMoneriumInfo, { MoneriumInfo } from 'src/utils/getMoneriumInfo'
 import isMoneriumRedirect from 'src/utils/isMoneriumRedirect'
 
@@ -20,6 +22,8 @@ type accountAbstractionContextValue = {
   ownerAddress?: string
   chainId: string
   safes: string[]
+  tokenAddress: string
+  erc20token?: ERC20Token
   chain?: Chain
   isAuthenticated: boolean
   web3Provider?: ethers.BrowserProvider
@@ -28,7 +32,9 @@ type accountAbstractionContextValue = {
   setChainId: (chainId: string) => void
   safeSelected?: string
   safeBalance?: string
+  erc20Balances?: Record<string, ERC20Token>
   setSafeSelected: React.Dispatch<React.SetStateAction<string>>
+  setTokenAddress: React.Dispatch<React.SetStateAction<string>>
   isRelayerLoading: boolean
   relayTransaction: () => Promise<void>
   gelatoTaskId?: string
@@ -47,8 +53,10 @@ const initialState = {
   relayTransaction: async () => {},
   setChainId: () => {},
   setSafeSelected: () => {},
+  setTokenAddress: () => {},
   onRampWithStripe: async () => {},
   safes: [],
+  tokenAddress: ethers.ZeroAddress,
   chainId: initialChain.id,
   isRelayerLoading: true,
   openStripeWidget: async () => {},
@@ -70,6 +78,7 @@ const useAccountAbstraction = () => {
 }
 
 const MONERIUM_TOKEN = 'monerium_token'
+const MONERIUM_SELECTED_SAFE = 'monerium_safe_selected'
 
 const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => {
   // owner address from the email  (provided by web3Auth)
@@ -77,6 +86,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   // safes owned by the user
   const [safes, setSafes] = useState<string[]>([])
+
+  // selected token to be used for fee payments (native token by default)
+  const [tokenAddress, setTokenAddress] = useState<string>(ethers.ZeroAddress)
 
   // chain selected
   const [chainId, setChainId] = useState<string>(() => {
@@ -219,6 +231,8 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     async (authCode?: string, refreshToken?: string) => {
       if (!moneriumPack) return
 
+      localStorage.setItem(MONERIUM_SELECTED_SAFE, safeSelected)
+
       const moneriumClient = await moneriumPack.open({
         redirectUrl: process.env.REACT_APP_MONERIUM_REDIRECT_URL,
         authCode,
@@ -260,9 +274,10 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     const getSafeAddress = async () => {
       if (web3Provider) {
         const hasSafes = safes.length > 0
+        const storedSafe = localStorage.getItem(MONERIUM_SELECTED_SAFE) || undefined
 
         const safeSelected = hasSafes
-          ? safes[0]
+          ? storedSafe || safes[0]
           : await accountAbstractionKit?.protocolKit.getAddress()
 
         setSafeSelected(safeSelected || '')
@@ -318,7 +333,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       const options: MetaTransactionOptions = {
         isSponsored: false,
         gasLimit: '600000', // in this alfa version we need to manually set the gas limit
-        gasToken: ethers.ZeroAddress // native token
+        gasToken: tokenAddress
       }
 
       const response = (await accountAbstractionKit?.relayTransaction(
@@ -366,9 +381,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     stripePack?.close()
   }
 
-  // we can pay Gelato tx relayer fees with native token & USDC
-  // TODO: ADD native Safe Balance polling
-  // TODO: ADD USDC Safe Balance polling
+  // we can pay Gelato tx relayer fees with native token & ERC20
 
   // fetch safe address balance with polling
   const fetchSafeBalance = useCallback(async () => {
@@ -379,11 +392,29 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   const safeBalance = usePolling(fetchSafeBalance)
 
+  // fetch safe's ERC20 balances
+  const fetchErc20SafeBalances = useCallback(
+    async (): Promise<Record<string, ERC20Token>> =>
+      Promise.all(
+        chain.supportedErc20Tokens?.map((erc20Address) =>
+          getERC20Info(erc20Address, web3Provider, safeSelected)
+        ) || []
+      ).then((tokens) =>
+        tokens.reduce((acc, token) => (!!token ? { ...acc, [token.address]: token } : acc), {})
+      ),
+    [web3Provider, safeSelected]
+  )
+
+  const erc20Balances = usePolling(fetchErc20SafeBalances)
+  const erc20token = erc20Balances?.[tokenAddress]
+
   const state = {
     ownerAddress,
     chainId,
     chain,
     safes,
+    erc20token,
+    tokenAddress,
 
     isAuthenticated,
 
@@ -396,7 +427,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
     safeSelected,
     safeBalance,
+    erc20Balances,
     setSafeSelected,
+    setTokenAddress,
 
     isRelayerLoading,
     relayTransaction,
