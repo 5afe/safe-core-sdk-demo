@@ -1,4 +1,4 @@
-import { ethers, providers } from 'ethers'
+import { ethers } from 'ethers'
 import erc20ABI from 'src/constants/erc20ABI.json'
 import { ERC20Token } from 'src/models/erc20token'
 
@@ -11,10 +11,10 @@ import { ERC20Token } from 'src/models/erc20token'
  */
 export const getERC20Info = async (
   erc20Address: string,
-  provider?: providers.Web3Provider,
+  provider: ethers.BrowserProvider,
   accountAddress?: string
 ): Promise<ERC20Token | undefined> => {
-  if (erc20Address === ethers.constants.AddressZero) {
+  if (erc20Address === ethers.ZeroAddress) {
     return undefined
   }
 

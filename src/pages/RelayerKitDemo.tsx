@@ -7,7 +7,7 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { utils } from 'ethers'
+import { ethers } from 'ethers'
 import { useMemo, useState } from 'react'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
@@ -41,14 +41,14 @@ const RelayerKitDemo = () => {
   const [transactionHash, setTransactionHash] = useState<string>('')
 
   const hasNativeFunds = useMemo(
-    () => !!safeBalance && Number(utils.formatEther(safeBalance || '0')) > transferAmount,
+    () => !!safeBalance && Number(ethers.formatEther(safeBalance || '0')) > transferAmount,
     [safeBalance]
   )
 
   const hasERC20Funds = useMemo(
     () =>
       !!erc20token &&
-      Number(utils.formatUnits(erc20token.balance || 0, erc20token.decimals)) > transferAmount,
+      Number(ethers.formatUnits(erc20token.balance || 0, erc20token.decimals)) > transferAmount,
     [erc20token]
   )
 

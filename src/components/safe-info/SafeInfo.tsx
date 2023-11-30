@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { ethers, utils } from 'ethers'
+import { ethers } from 'ethers'
 import styled from '@emotion/styled'
 import { Skeleton, Theme } from '@mui/material'
 import FormControl from '@mui/material/FormControl'
@@ -135,18 +135,18 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
                     setTokenAddress(event.target.value as string)
                   }
                 >
-                  <MenuItem value={ethers.constants.AddressZero}>
+                  <MenuItem value={ethers.ZeroAddress}>
                     {/* Safe Balance for native token */}
                     <TokenBalance
-                      value={utils.formatEther(safeBalance || '0')}
+                      value={ethers.formatEther(safeBalance || '0')}
                       tokenSymbol={chain?.token || ''}
                     />
                   </MenuItem>
                   {Object.values(erc20Balances).map((erc20Balance) => (
-                    <MenuItem value={erc20Balance.address}>
+                    <MenuItem value={erc20Balance.address} key={erc20Balance.address}>
                       {/* ERC20 Safe Balances */}
                       <TokenBalance
-                        value={utils.formatUnits(erc20Balance.balance || 0, erc20Balance.decimals)}
+                        value={ethers.formatUnits(erc20Balance.balance || 0, erc20Balance.decimals)}
                         tokenSymbol={erc20Balance.symbol}
                       />
                     </MenuItem>
@@ -155,7 +155,7 @@ function SafeInfo({ safeAddress, chainId }: SafeInfoProps) {
               </FormControl>
             ) : (
               <TokenBalance
-                value={utils.formatEther(safeBalance || '0')}
+                value={ethers.formatEther(safeBalance || '0')}
                 tokenSymbol={chain?.token || ''}
               />
             )}

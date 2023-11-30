@@ -26,3 +26,6 @@ yarn-error.log*
 # Yalc files
 .yalc
 yalc.lock
+
+# Local Netlify folder
+.netlify

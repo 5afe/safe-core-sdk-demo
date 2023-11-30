@@ -19,7 +19,7 @@ const ChainSelector = () => {
           onChange={(event: SelectChangeEvent) => setChainId(event.target.value as string)}
         >
           {chains.map((chain) => (
-            <MenuItem value={chain.id} onClick={() => setChainId(chain.id)}>
+            <MenuItem value={chain.id} onClick={() => setChainId(chain.id)} key={chain.id}>
               <div
                 style={{
                   display: 'flex',

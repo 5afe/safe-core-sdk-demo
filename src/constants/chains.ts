@@ -80,7 +80,28 @@ export const mumbaiChain: Chain = {
   ]
 }
 
-const chains: Chain[] = [gnosisChain, goerliChain, mainnetChain, mumbaiChain, polygonChain]
+export const sepoliaChain: Chain = {
+  id: '0xaa36a7',
+  token: 'SepoliaETH',
+  shortName: 'eth',
+  label: 'Sepolia',
+  rpcUrl: 'https://ethereum-sepolia.publicnode.com/',
+  blockExplorerUrl: 'https://sepolia.polygonscan.com',
+  color: '#AA36A7',
+  isStripePaymentsEnabled: false,
+  isMoneriumPaymentsEnabled: false,
+  faucetUrl: 'https://sepoliafaucet.com/',
+  supportedErc20Tokens: ['0x8267cF9254734C6Eb452a7bb9AAF97B392258b21']
+}
+
+const chains: Chain[] = [
+  gnosisChain,
+  goerliChain,
+  mainnetChain,
+  mumbaiChain,
+  polygonChain,
+  sepoliaChain
+]
 
 export const initialChain = mumbaiChain
 
