@@ -1,4 +1,4 @@
-export const WEB3AUTH_SNIPPET = `import { SafeAuthPack, SafeAuthInitOptions } from '@safe-global/auth-kit'
+export const WEB3AUTH_SNIPPET = (chainId: string) => `import { SafeAuthPack, SafeAuthInitOptions } from '@safe-global/auth-kit'
 
 const safeAuthPack = new SafeAuthPack()
 
@@ -6,8 +6,8 @@ const options: SafeAuthInitOptions = {
   enableLogging: true,
   showWidgetButton: false,
   chainConfig: {
-    chainId: chainId,
-    rpcTarget: rpcUrl
+    chainId: ${chainId},
+    rpcTarget: 'https://your-rpc-url'
   }
 }
 

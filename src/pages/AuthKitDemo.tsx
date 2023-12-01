@@ -13,7 +13,7 @@ import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { WEB3AUTH_SNIPPET } from 'src/utils/snippets'
 
 const AuthKitDemo = () => {
-  const { loginWeb3Auth, isAuthenticated } = useAccountAbstraction()
+  const { loginWeb3Auth, isAuthenticated, chainId } = useAccountAbstraction()
 
   return (
     <>
@@ -85,7 +85,7 @@ const AuthKitDemo = () => {
         How to use it
       </Typography>
 
-      <Code text={WEB3AUTH_SNIPPET} language={'javascript'} />
+      <Code text={WEB3AUTH_SNIPPET(chainId)} language={'javascript'} />
     </>
   )
 }
