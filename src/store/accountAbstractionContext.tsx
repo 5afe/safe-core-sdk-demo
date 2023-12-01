@@ -1,20 +1,20 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { ethers, utils } from 'ethers'
-import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from '@web3auth/base'
-import { Web3AuthOptions } from '@web3auth/modal'
-import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
+import { ethers } from 'ethers'
 
 import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
-import { Web3AuthModalPack } from '@safe-global/auth-kit'
+import { SafeAuthInitOptions, SafeAuthPack } from '@safe-global/auth-kit'
 import { MoneriumPack, StripePack } from '@safe-global/onramp-kit'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
+import { RelayResponse as GelatoRelayResponse } from '@gelatonetwork/relay-sdk'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { MetaTransactionData, MetaTransactionOptions } from '@safe-global/safe-core-sdk-types'
 
-import { initialChain } from 'src/chains/chains'
+import { initialChain } from 'src/constants/chains'
 import usePolling from 'src/hooks/usePolling'
 import Chain from 'src/models/chain'
+import { ERC20Token } from 'src/models/erc20token'
 import getChain from 'src/utils/getChain'
+import { getERC20Info } from 'src/utils/getERC20Info'
 import getMoneriumInfo, { MoneriumInfo } from 'src/utils/getMoneriumInfo'
 import isMoneriumRedirect from 'src/utils/isMoneriumRedirect'
 
@@ -22,15 +22,19 @@ type accountAbstractionContextValue = {
   ownerAddress?: string
   chainId: string
   safes: string[]
+  tokenAddress: string
+  erc20token?: ERC20Token
   chain?: Chain
   isAuthenticated: boolean
-  web3Provider?: ethers.providers.Web3Provider
+  web3Provider?: ethers.BrowserProvider
   loginWeb3Auth: () => void
   logoutWeb3Auth: () => void
   setChainId: (chainId: string) => void
   safeSelected?: string
   safeBalance?: string
+  erc20Balances?: Record<string, ERC20Token>
   setSafeSelected: React.Dispatch<React.SetStateAction<string>>
+  setTokenAddress: React.Dispatch<React.SetStateAction<string>>
   isRelayerLoading: boolean
   relayTransaction: () => Promise<void>
   gelatoTaskId?: string
@@ -39,6 +43,7 @@ type accountAbstractionContextValue = {
   startMoneriumFlow: () => Promise<void>
   closeMoneriumFlow: () => void
   moneriumInfo?: MoneriumInfo
+  accountAbstractionKit?: AccountAbstraction
 }
 
 const initialState = {
@@ -48,8 +53,10 @@ const initialState = {
   relayTransaction: async () => {},
   setChainId: () => {},
   setSafeSelected: () => {},
+  setTokenAddress: () => {},
   onRampWithStripe: async () => {},
   safes: [],
+  tokenAddress: ethers.ZeroAddress,
   chainId: initialChain.id,
   isRelayerLoading: true,
   openStripeWidget: async () => {},
@@ -71,6 +78,7 @@ const useAccountAbstraction = () => {
 }
 
 const MONERIUM_TOKEN = 'monerium_token'
+const MONERIUM_SELECTED_SAFE = 'monerium_safe_selected'
 
 const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => {
   // owner address from the email  (provided by web3Auth)
@@ -78,6 +86,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   // safes owned by the user
   const [safes, setSafes] = useState<string[]>([])
+
+  // selected token to be used for fee payments (native token by default)
+  const [tokenAddress, setTokenAddress] = useState<string>(ethers.ZeroAddress)
 
   // chain selected
   const [chainId, setChainId] = useState<string>(() => {
@@ -89,9 +100,10 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   })
 
   // web3 provider to perform signatures
-  const [web3Provider, setWeb3Provider] = useState<ethers.providers.Web3Provider>()
+  const [web3Provider, setWeb3Provider] = useState<ethers.BrowserProvider>()
 
-  const isAuthenticated = !!ownerAddress && !!chainId
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+
   const chain = getChain(chainId) || initialChain
 
   // reset React state when you switch the chain
@@ -104,99 +116,82 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   }, [chain])
 
   // authClient
-  const [web3AuthModalPack, setWeb3AuthModalPack] = useState<Web3AuthModalPack>()
+  const [safeAuthPack, setSafeAuthPack] = useState<SafeAuthPack>()
 
   // onRampClient
   const [stripePack, setStripePack] = useState<StripePack>()
 
   useEffect(() => {
     ;(async () => {
-      const options: Web3AuthOptions = {
-        clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID || '',
-        web3AuthNetwork: 'testnet',
+      if (safeAuthPack) {
+        safeAuthPack.destroy()
+      }
+
+      const options: SafeAuthInitOptions = {
+        enableLogging: true,
+        showWidgetButton: false,
         chainConfig: {
-          chainNamespace: CHAIN_NAMESPACES.EIP155,
           chainId: chain.id,
           rpcTarget: chain.rpcUrl
-        },
-        uiConfig: {
-          theme: 'dark',
-          loginMethodsOrder: ['google', 'facebook']
         }
       }
 
-      const modalConfig = {
-        [WALLET_ADAPTERS.TORUS_EVM]: {
-          label: 'torus',
-          showOnModal: false
-        },
-        [WALLET_ADAPTERS.METAMASK]: {
-          label: 'metamask',
-          showOnDesktop: true,
-          showOnMobile: false
-        }
-      }
-
-      const openloginAdapter = new OpenloginAdapter({
-        loginSettings: {
-          mfaLevel: 'mandatory'
-        },
-        adapterSettings: {
-          uxMode: 'popup',
-          whiteLabel: {
-            name: 'Safe'
-          }
-        }
-      })
-
-      const web3AuthModalPack = new Web3AuthModalPack({
+      const authPack = new SafeAuthPack({
         txServiceUrl: chain.transactionServiceUrl
       })
 
-      await web3AuthModalPack.init({
-        options,
-        adapters: [openloginAdapter],
-        modalConfig
-      })
+      await authPack.init(options)
 
-      setWeb3AuthModalPack(web3AuthModalPack)
+      setSafeAuthPack(authPack)
+
+      // If the provider has an account the we can try to sign in the user
+      authPack.subscribe('accountsChanged', async (accounts) => {
+        if (accounts.length > 0) {
+          const { safes, eoa } = await authPack.signIn()
+          const provider = authPack.getProvider()
+
+          // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
+          setChainId(chain.id)
+          setOwnerAddress(eoa)
+          setSafes(safes || [])
+          if (provider) {
+            setWeb3Provider(new ethers.BrowserProvider(provider))
+          }
+          setIsAuthenticated(true)
+        }
+      })
     })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chain])
 
   // auth-kit implementation
   const loginWeb3Auth = useCallback(async () => {
-    if (!web3AuthModalPack) return
+    if (!safeAuthPack) return
 
     try {
-      const { safes, eoa } = await web3AuthModalPack.signIn()
-      const provider = web3AuthModalPack.getProvider() as ethers.providers.ExternalProvider
+      const { safes, eoa } = await safeAuthPack.signIn()
+      const provider = safeAuthPack.getProvider()!
 
       // we set react state with the provided values: owner (eoa address), chain, safes owned & web3 provider
       setChainId(chain.id)
       setOwnerAddress(eoa)
       setSafes(safes || [])
-      setWeb3Provider(new ethers.providers.Web3Provider(provider))
+      setWeb3Provider(new ethers.BrowserProvider(provider))
+      setIsAuthenticated(true)
     } catch (error) {
       console.log('error: ', error)
     }
-  }, [chain, web3AuthModalPack])
-
-  useEffect(() => {
-    if (web3AuthModalPack && web3AuthModalPack.getProvider()) {
-      ;(async () => {
-        await loginWeb3Auth()
-      })()
-    }
-  }, [web3AuthModalPack, loginWeb3Auth])
+  }, [chain, safeAuthPack])
 
   const logoutWeb3Auth = () => {
-    web3AuthModalPack?.signOut()
+    safeAuthPack?.signOut()
     setOwnerAddress('')
     setSafes([])
     setChainId(chain.id)
     setWeb3Provider(undefined)
     setSafeSelected('')
     setGelatoTaskId(undefined)
+    setIsAuthenticated(false)
     closeMoneriumFlow()
   }
 
@@ -210,13 +205,13 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     ;(async () => {
       if (!web3Provider || !safeSelected) return
 
-      const safeOwner = web3Provider.getSigner()
+      const safeOwner = await web3Provider.getSigner()
       const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: safeOwner })
 
       const safeSdk = await Safe.create({
-        ethAdapter: ethAdapter,
+        ethAdapter,
         safeAddress: safeSelected,
-        isL1SafeMasterCopy: true
+        isL1SafeSingleton: true
       })
 
       const pack = new MoneriumPack({
@@ -235,6 +230,8 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   const startMoneriumFlow = useCallback(
     async (authCode?: string, refreshToken?: string) => {
       if (!moneriumPack) return
+
+      localStorage.setItem(MONERIUM_SELECTED_SAFE, safeSelected)
 
       const moneriumClient = await moneriumPack.open({
         redirectUrl: process.env.REACT_APP_MONERIUM_REDIRECT_URL,
@@ -270,26 +267,44 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   // TODO: add disconnect owner wallet logic ?
 
+  const [accountAbstractionKit, setAccountAbstractionKit] = useState<AccountAbstraction>()
+
   // conterfactual safe Address if its not deployed yet
   useEffect(() => {
     const getSafeAddress = async () => {
       if (web3Provider) {
-        const signer = web3Provider.getSigner()
-        const relayPack = new GelatoRelayPack()
-        const safeAccountAbstraction = new AccountAbstraction(signer)
-
-        await safeAccountAbstraction.init({ relayPack })
-
         const hasSafes = safes.length > 0
+        const storedSafe = localStorage.getItem(MONERIUM_SELECTED_SAFE) || undefined
 
-        const safeSelected = hasSafes ? safes[0] : await safeAccountAbstraction.getSafeAddress()
+        const safeSelected = hasSafes
+          ? storedSafe || safes[0]
+          : await accountAbstractionKit?.protocolKit.getAddress()
 
-        setSafeSelected(safeSelected)
+        setSafeSelected(safeSelected || '')
       }
     }
 
     getSafeAddress()
-  }, [safes, web3Provider])
+  }, [accountAbstractionKit?.protocolKit, safes, web3Provider])
+
+  useEffect(() => {
+    if (!web3Provider) return
+    ;(async () => {
+      // Instantiate AccountAbstraction kit
+      const ethAdapter = new EthersAdapter({
+        ethers,
+        signerOrProvider: await web3Provider.getSigner()
+      })
+      const safeAccountAbstraction = new AccountAbstraction(ethAdapter)
+      await safeAccountAbstraction.init()
+      const gelatoRelayPack = new GelatoRelayPack({
+        protocolKit: safeAccountAbstraction.protocolKit
+      })
+      safeAccountAbstraction.setRelayKit(gelatoRelayPack)
+
+      setAccountAbstractionKit(safeAccountAbstraction)
+    })()
+  }, [web3Provider])
 
   const [isRelayerLoading, setIsRelayerLoading] = useState<boolean>(false)
   const [gelatoTaskId, setGelatoTaskId] = useState<string>()
@@ -305,18 +320,12 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     if (web3Provider) {
       setIsRelayerLoading(true)
 
-      const signer = web3Provider.getSigner()
-      const relayPack = new GelatoRelayPack()
-      const safeAccountAbstraction = new AccountAbstraction(signer)
-
-      await safeAccountAbstraction.init({ relayPack })
-
       // we use a dump safe transfer as a demo transaction
       const dumpSafeTransafer: MetaTransactionData[] = [
         {
           to: safeSelected,
           data: '0x',
-          value: utils.parseUnits('0.01', 'ether').toString(),
+          value: ethers.parseUnits('0.01', 'ether').toString(),
           operation: 0 // OperationType.Call,
         }
       ]
@@ -324,13 +333,17 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       const options: MetaTransactionOptions = {
         isSponsored: false,
         gasLimit: '600000', // in this alfa version we need to manually set the gas limit
-        gasToken: ethers.constants.AddressZero // native token
+        gasToken: tokenAddress
       }
 
-      const gelatoTaskId = await safeAccountAbstraction.relayTransaction(dumpSafeTransafer, options)
+      const response = (await accountAbstractionKit?.relayTransaction(
+        dumpSafeTransafer,
+        options
+      )) as GelatoRelayResponse
 
       setIsRelayerLoading(false)
-      setGelatoTaskId(gelatoTaskId)
+      console.log(response)
+      setGelatoTaskId(response.taskId)
     }
   }
 
@@ -368,9 +381,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     stripePack?.close()
   }
 
-  // we can pay Gelato tx relayer fees with native token & USDC
-  // TODO: ADD native Safe Balance polling
-  // TODO: ADD USDC Safe Balance polling
+  // we can pay Gelato tx relayer fees with native token & ERC20
 
   // fetch safe address balance with polling
   const fetchSafeBalance = useCallback(async () => {
@@ -381,11 +392,31 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   const safeBalance = usePolling(fetchSafeBalance)
 
+  // fetch safe's ERC20 balances
+  const fetchErc20SafeBalances = useCallback(async (): Promise<Record<string, ERC20Token>> => {
+    if (!web3Provider) {
+      return {}
+    }
+
+    return Promise.all(
+      chain.supportedErc20Tokens?.map((erc20Address) =>
+        getERC20Info(erc20Address, web3Provider, safeSelected)
+      ) || []
+    ).then((tokens) =>
+      tokens.reduce((acc, token) => (!!token ? { ...acc, [token.address]: token } : acc), {})
+    )
+  }, [web3Provider, safeSelected, chain])
+
+  const erc20Balances = usePolling(fetchErc20SafeBalances)
+  const erc20token = erc20Balances?.[tokenAddress]
+
   const state = {
     ownerAddress,
     chainId,
     chain,
     safes,
+    erc20token,
+    tokenAddress,
 
     isAuthenticated,
 
@@ -398,7 +429,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
     safeSelected,
     safeBalance,
+    erc20Balances,
     setSafeSelected,
+    setTokenAddress,
 
     isRelayerLoading,
     relayTransaction,
@@ -409,7 +442,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
     startMoneriumFlow,
     closeMoneriumFlow,
-    moneriumInfo
+    moneriumInfo,
+
+    accountAbstractionKit
   }
 
   return (

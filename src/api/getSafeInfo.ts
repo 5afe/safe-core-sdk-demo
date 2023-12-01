@@ -1,5 +1,5 @@
 import axios, { RawAxiosRequestConfig } from 'axios'
-import { utils } from 'ethers'
+import { ethers } from 'ethers'
 
 import getChain from 'src/utils/getChain'
 
@@ -17,7 +17,7 @@ const getSafeInfo = async (
 ): Promise<SafeInfoType> => {
   const chain = getChain(connectedChainId)
 
-  const address = utils.getAddress(safeAddress)
+  const address = ethers.getAddress(safeAddress)
 
   // Mumbai has no transaction service because it is not part of our official UI https://app.safe.global/
   if (!chain?.transactionServiceUrl) {

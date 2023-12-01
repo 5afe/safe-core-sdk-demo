@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react'
 import styled from '@emotion/styled'
 import { Theme } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -7,12 +8,12 @@ import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
-import { useCallback, useEffect } from 'react'
 
 import { TransactionStatusResponse } from '@gelatonetwork/relay-sdk'
 import AddressLabel from 'src/components/address-label/AddressLabel'
 import useApi from 'src/hooks/useApi'
 import getChain from 'src/utils/getChain'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 
 type GelatoTaskStatusLabelProps = {
   gelatoTaskId: string
@@ -30,10 +31,13 @@ const GelatoTaskStatusLabel = ({
   transactionHash,
   setTransactionHash
 }: GelatoTaskStatusLabelProps) => {
-  const fetchGelatoTaskInfo = useCallback(
-    async () => await new GelatoRelayPack().getTaskStatus(gelatoTaskId),
-    [gelatoTaskId]
-  )
+  const { accountAbstractionKit } = useAccountAbstraction()
+  const fetchGelatoTaskInfo = useCallback(async () => {
+    const gelatoRelayPack = accountAbstractionKit?.relayKit as GelatoRelayPack
+    const taskStatusResponse = await gelatoRelayPack.getTaskStatus(gelatoTaskId)
+
+    return taskStatusResponse
+  }, [gelatoTaskId, accountAbstractionKit])
 
   const { data: gelatoTaskInfo } = useApi(fetchGelatoTaskInfo, pollingTime)
 
@@ -133,9 +137,7 @@ const getGelatoTaskStatusColor = (
     ExecPending: theme.palette.info.light,
     ExecSuccess: theme.palette.success.light,
     Cancelled: theme.palette.error.light,
-    ExecReverted: theme.palette.error.light,
-    Blacklisted: theme.palette.error.light,
-    NotFound: theme.palette.error.light
+    ExecReverted: theme.palette.error.light
   }
 
   return colors[taskStatus]
@@ -148,9 +150,7 @@ const getGelatoTaskStatusLabel = (taskStatus: TransactionStatusResponse['taskSta
     ExecPending: 'Executing',
     ExecSuccess: 'Success',
     Cancelled: 'Cancelled',
-    ExecReverted: 'Reverted',
-    Blacklisted: 'Blacklisted',
-    NotFound: 'Not Found'
+    ExecReverted: 'Reverted'
   }
 
   return label[taskStatus]

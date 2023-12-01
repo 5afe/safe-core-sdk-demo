@@ -1,62 +1,26 @@
-export const WEB3AUTH_SNIPPET = (chainId: string) => `import { Web3AuthModalPack } from '@safe-global/auth-kit'
-import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
+export const WEB3AUTH_SNIPPET = (chainId: string) => `import { SafeAuthPack, SafeAuthInitOptions } from '@safe-global/auth-kit'
 
-const options: Web3AuthOptions = {
-  clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID,
-  web3AuthNetwork: 'testnet',
+const safeAuthPack = new SafeAuthPack()
+
+const options: SafeAuthInitOptions = {
+  enableLogging: true,
+  showWidgetButton: false,
   chainConfig: {
-    chainNamespace: CHAIN_NAMESPACES.EIP155,
     chainId: ${chainId},
-    rpcTarget: '...'
-  },
-  uiConfig: {
-    theme: 'dark',
-    loginMethodsOrder: ['google', 'facebook']
+    rpcTarget: 'https://your-rpc-url'
   }
 }
 
-const modalConfig = {
-  [WALLET_ADAPTERS.TORUS_EVM]: {
-    label: 'torus',
-    showOnModal: false
-  },
-  [WALLET_ADAPTERS.METAMASK]: {
-    label: 'metamask',
-    showOnDesktop: true,
-    showOnMobile: false
-  }
-}
+await safeAuthPack.init(options)
 
-const openloginAdapter = new OpenloginAdapter({
-  loginSettings: {
-    mfaLevel: 'mandatory'
-  },
-  adapterSettings: {
-    uxMode: 'popup',
-    whiteLabel: {
-      name: 'Safe'
-    }
-  }
-})
-
-const web3AuthModalPack = new Web3AuthModalPack({
-  txServiceUrl: 'https://safe-transaction-{chain}.safe.global',
-})
-
-await web3AuthModalPack.init({
-  options,
-  adapters: [openloginAdapter],
-  modalConfig
-})
-
-// Allow to login and get the derived EOA
-await web3AuthModalPack.signIn()
+// Log in and get the derived EOA
+await safeAuthPack.signIn()
 
 // Logout
-await web3AuthModalPack.signOut()
+await safeAuthPack.signOut()
 
 // Get the provider
-web3AuthModalPack.getProvider()
+safeAuthPack.getProvider()
 `
 
 export const STRIPE_SNIPPET = `import { StripePack } from '@safe-global/onramp-kit'
@@ -141,12 +105,33 @@ moneriumPack.subscribe(OrderState.placed, (notification) => {
 moneriumPack.close()
 `
 
-export const GELATO_SNIPPET = `import { GelatoRelayPack } from '@safe-global/relay-kit'
+export const GELATO_SNIPPET = `import { ethers } from 'ethers'
+import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
+import { GelatoRelayPack } from '@safe-global/relay-kit'
+import { MetaTransactionData, OperationType } from '@safe-global/safe-core-sdk-types'
 
-const relayPack = new GelatoRelayPack()
+const RPC_URL = 'https://...'
+const signerPrivateKey = process.env.OWNER_1_PRIVATE_KEY!
+const safeAddress = '0x...' // Safe from which the transaction will be sent
 
-relayPack.relayTransaction({
-  target: '0x...', // the Safe address
-  encodedTransaction: '0x...', // Encoded Safe transaction data
-  chainId: 5
-})`
+const provider = new ethers.JsonRpcProvider(RPC_URL)
+const signer = new ethers.Wallet(signerPrivateKey, provider)
+const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: signer })
+
+// Initialize the kits
+const protocolKit = await Safe.create({ ethAdapter, safeAddress })
+const relayKit = new GelatoRelayPack({ protocolKit, apiKey }) // apiKey is mandatory only for 1Balance
+
+// Prepare the transaction
+const transactions: MetaTransactionData[] = [{
+  to: '0x...', // the destination address
+  data: '0x',
+  value: withdrawAmount,
+  operation: OperationType.Call
+}]
+
+const safeTransaction = await relayKit.createRelayedTransaction({ transactions })
+const signedSafeTransaction = await protocolKit.signTransaction(safeTransaction)
+
+// Send the signed transaction to the relay
+relayKit.executeRelayTransaction(signedSafeTransaction)`
