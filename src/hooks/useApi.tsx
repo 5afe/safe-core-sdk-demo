@@ -26,7 +26,7 @@ function useApi<T>(apiCall: apiCallParam<T>, pollingTime?: number): useApiHookRe
       }
     }
 
-    let intervalId: NodeJS.Timer
+    let intervalId: NodeJS.Timeout
 
     if (pollingTime) {
       intervalId = setInterval(() => {
