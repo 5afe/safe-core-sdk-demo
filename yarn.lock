@@ -2380,10 +2380,10 @@
     ethers "^6.7.1"
     node-fetch "^2.7.0"
 
-"@safe-global/auth-kit@2.0.0-alpha.10":
-  version "2.0.0-alpha.10"
-  resolved "https://registry.yarnpkg.com/@safe-global/auth-kit/-/auth-kit-2.0.0-alpha.10.tgz#a02d816961444a1351106259fb85d400bc18d304"
-  integrity sha512-uDDSEH54RiEkuRDKeT9IV5aeSaUnyHnFv5VhozwTa2nI7psOB1SnXuQY+HMcyfq2cLEHgRUuE9DwBMg0JeDj+w==
+"@safe-global/auth-kit@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/auth-kit/-/auth-kit-2.0.0.tgz#d4ad31f5d14d753b9d0be9250ac8e928ee10b759"
+  integrity sha512-2o3+AHdVSXhYm5Rkt4N2Rg60XlIhtF1IzGrOWt2TFA7OUSnkAX39Z9Lpk4u3TKHlin1FKg7GYNhWTZF16m+9zw==
   dependencies:
     "@safe-global/api-kit" "^2.0.0"
     "@safe-global/protocol-kit" "^2.0.0"
