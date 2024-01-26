@@ -16,22 +16,6 @@ export const gnosisChain: Chain = {
   ]
 }
 
-export const goerliChain: Chain = {
-  id: '0x5',
-  token: 'gETH',
-  label: 'Görli',
-  shortName: 'gor',
-  rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  blockExplorerUrl: 'https://goerli.etherscan.io',
-  color: '#fbc02d',
-  transactionServiceUrl: 'https://safe-transaction-goerli.safe.global',
-  isStripePaymentsEnabled: false,
-  isMoneriumPaymentsEnabled: true,
-  supportedErc20Tokens: [
-    '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6' // WETH
-  ]
-}
-
 export const mainnetChain: Chain = {
   id: '0x1',
   token: 'ETH',
@@ -89,14 +73,13 @@ export const sepoliaChain: Chain = {
   blockExplorerUrl: 'https://sepolia.polygonscan.com',
   color: '#AA36A7',
   isStripePaymentsEnabled: false,
-  isMoneriumPaymentsEnabled: false,
+  isMoneriumPaymentsEnabled: true,
   faucetUrl: 'https://sepoliafaucet.com/',
   supportedErc20Tokens: ['0x8267cF9254734C6Eb452a7bb9AAF97B392258b21']
 }
 
 const chains: Chain[] = [
   gnosisChain,
-  goerliChain,
   mainnetChain,
   mumbaiChain,
   polygonChain,
