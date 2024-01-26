@@ -1,9 +1,9 @@
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
 import styled from '@emotion/styled'
 import { Theme } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
 
 import safeLogo from 'src/assets/safe-logo.svg'
 import ChainSelector from 'src/components/chain-selector/ChainSelector'
@@ -69,7 +69,7 @@ const Intro = ({ setStep }: IntroProps) => {
       </Typography>
 
       <Typography>
-        Please note: the Onramp kit will only work in the EU on Görli and in the US on Mumbai test chains.
+        Please note: the Onramp kit will only work in the EU on Sepolia and in the US on Mumbai test chains.
       </Typography>
 
       <Box display="flex" gap={2} marginTop="32px" alignItems="center">

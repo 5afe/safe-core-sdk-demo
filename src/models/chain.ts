@@ -9,7 +9,7 @@ type Chain = {
   blockExplorerUrl: string
   transactionServiceUrl?: string
   isStripePaymentsEnabled: boolean // only available in Mumbai chain
-  isMoneriumPaymentsEnabled: boolean // only available in Goerli chain
+  isMoneriumPaymentsEnabled: boolean // only available in Sepolia chain
   faucetUrl?: string
   supportedErc20Tokens?: string[] // erc20 token contract addresses that can be used to pay transaction fees
 }
