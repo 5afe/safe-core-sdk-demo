@@ -1,9 +1,9 @@
-import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
 import Link from '@mui/material/Link'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 
-import introVideo from 'src/assets/intro-chip.webm'
 import introImage from 'src/assets/intro-chip.png'
+import introVideo from 'src/assets/intro-chip.webm'
 
 const SafeCoreInfo = () => {
   return (
@@ -16,12 +16,12 @@ const SafeCoreInfo = () => {
 
       {/* Links */}
       <Typography marginLeft={'42px'} marginTop={'24px'}>
-        More information about the SDK:
+        Learn more about the SDK:
       </Typography>
 
       <Stack direction="row" alignItems="center" spacing={2} marginTop={'8px'} marginLeft={'42px'}>
         <Link href="https://github.com/safe-global/safe-core-sdk" target="_blank">
-          Github
+          GitHub
         </Link>
 
         <Link href="https://docs.safe.global/safe-core-aa-sdk/safe-core-sdk" target="_blank">
