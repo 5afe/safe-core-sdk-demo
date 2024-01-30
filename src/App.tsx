@@ -11,7 +11,7 @@ import Providers from 'src/components/providers/Providers'
 import AuthKitDemo from 'src/pages/AuthKitDemo'
 import Intro from 'src/pages/Intro'
 import OnRampKitDemo from 'src/pages/OnRampKitDemo'
-import RelayerKitDemo from 'src/pages/RelayerKitDemo'
+import RelayKitDemo from 'src/pages/RelayKitDemo'
 import NavMenu from './components/nav-menu/NavMenu'
 import SafeCoreInfo from './components/safe-core-info/SafeCoreInfo'
 import { useAccountAbstraction } from './store/accountAbstractionContext'
@@ -127,6 +127,6 @@ const steps = [
   },
   {
     // Relay Kit step
-    component: RelayerKitDemo
+    component: RelayKitDemo
   }
 ]

@@ -21,7 +21,7 @@ import { GELATO_SNIPPET } from 'src/utils/snippets'
 
 const transferAmount = 0.01
 
-const RelayerKitDemo = () => {
+const RelayKitDemo = () => {
   const {
     chainId,
     chain,
@@ -30,7 +30,7 @@ const RelayerKitDemo = () => {
     safeBalance,
     erc20token,
 
-    isRelayerLoading,
+    isRelayLoading,
     relayTransaction,
     gelatoTaskId,
 
@@ -121,15 +121,15 @@ const RelayerKitDemo = () => {
               />
             )}
 
-            {isRelayerLoading && <LinearProgress sx={{ alignSelf: 'stretch' }} />}
+            {isRelayLoading && <LinearProgress sx={{ alignSelf: 'stretch' }} />}
 
-            {!isRelayerLoading && !gelatoTaskId && (
+            {!isRelayLoading && !gelatoTaskId && (
               <>
                 <Typography fontSize="14px">
                   Check the status of your relayed transaction.
                 </Typography>
 
-                {/* send fake transaction to Gelato relayer */}
+                {/* send fake transaction to Gelato relay */}
                 <Button
                   startIcon={<SendIcon />}
                   variant="contained"
@@ -184,4 +184,4 @@ const RelayerKitDemo = () => {
   )
 }
 
-export default RelayerKitDemo
+export default RelayKitDemo
