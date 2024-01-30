@@ -21,7 +21,7 @@ import { GELATO_SNIPPET } from 'src/utils/snippets'
 
 const transferAmount = 0.01
 
-const RelayerKitDemo = () => {
+const RelayKitDemo = () => {
   const {
     chainId,
     chain,
@@ -30,7 +30,7 @@ const RelayerKitDemo = () => {
     safeBalance,
     erc20token,
 
-    isRelayerLoading,
+    isRelayLoading,
     relayTransaction,
     gelatoTaskId,
 
@@ -61,13 +61,13 @@ const RelayerKitDemo = () => {
       </Typography>
 
       <Typography marginTop="16px">
-        Allow users to pay fees using any ERC-20 tokens, without having to manage gas. Sponsor
-        transactions on behalf of your users. On your first relayed transaction, a Safe Account will
-        be automatically deployed and your address will be assigned as the Safe owner.
+        Allow users to pay fees using any ERC-20 token, without having to manage gas. Sponsor
+        transactions on behalf of your users. On your first relayed transaction, a Safe account will
+        be automatically deployed and your connected address will be assigned as the Safe owner.
       </Typography>
 
       <Typography marginTop="24px" marginBottom="8px">
-        Find more info at:
+        Learn more:
       </Typography>
 
       <Stack direction="row" alignItems="center" spacing={2}>
@@ -97,7 +97,7 @@ const RelayerKitDemo = () => {
         />
       ) : (
         <Box display="flex" gap={3}>
-          {/* safe Account */}
+          {/* Safe account */}
           <SafeAccount flex={1} />
 
           {/* Relay Transaction */}
@@ -121,15 +121,15 @@ const RelayerKitDemo = () => {
               />
             )}
 
-            {isRelayerLoading && <LinearProgress sx={{ alignSelf: 'stretch' }} />}
+            {isRelayLoading && <LinearProgress sx={{ alignSelf: 'stretch' }} />}
 
-            {!isRelayerLoading && !gelatoTaskId && (
+            {!isRelayLoading && !gelatoTaskId && (
               <>
                 <Typography fontSize="14px">
                   Check the status of your relayed transaction.
                 </Typography>
 
-                {/* send fake transaction to Gelato relayer */}
+                {/* send fake transaction to Gelato relay */}
                 <Button
                   startIcon={<SendIcon />}
                   variant="contained"
@@ -141,7 +141,7 @@ const RelayerKitDemo = () => {
 
                 {!hasFunds && (
                   <Typography color="error">
-                    Insufficient funds. Send some funds to the Safe Account
+                    Insufficient funds. Send some funds to your Safe account.
                   </Typography>
                 )}
 
@@ -184,4 +184,4 @@ const RelayerKitDemo = () => {
   )
 }
 
-export default RelayerKitDemo
+export default RelayKitDemo

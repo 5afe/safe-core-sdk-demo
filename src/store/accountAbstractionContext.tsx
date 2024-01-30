@@ -35,7 +35,7 @@ type accountAbstractionContextValue = {
   erc20Balances?: Record<string, ERC20Token>
   setSafeSelected: React.Dispatch<React.SetStateAction<string>>
   setTokenAddress: React.Dispatch<React.SetStateAction<string>>
-  isRelayerLoading: boolean
+  isRelayLoading: boolean
   relayTransaction: () => Promise<void>
   gelatoTaskId?: string
   openStripeWidget: () => Promise<void>
@@ -58,7 +58,7 @@ const initialState = {
   safes: [],
   tokenAddress: ethers.ZeroAddress,
   chainId: initialChain.id,
-  isRelayerLoading: true,
+  isRelayLoading: true,
   openStripeWidget: async () => {},
   closeStripeWidget: async () => {},
   startMoneriumFlow: async () => {},
@@ -306,19 +306,19 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     })()
   }, [web3Provider])
 
-  const [isRelayerLoading, setIsRelayerLoading] = useState<boolean>(false)
+  const [isRelayLoading, setIsRelayLoading] = useState<boolean>(false)
   const [gelatoTaskId, setGelatoTaskId] = useState<string>()
 
   // refresh the Gelato task id
   useEffect(() => {
-    setIsRelayerLoading(false)
+    setIsRelayLoading(false)
     setGelatoTaskId(undefined)
   }, [chainId])
 
   // relay-kit implementation using Gelato
   const relayTransaction = async () => {
     if (web3Provider) {
-      setIsRelayerLoading(true)
+      setIsRelayLoading(true)
 
       // we use a dump safe transfer as a demo transaction
       const dumpSafeTransafer: MetaTransactionData[] = [
@@ -341,7 +341,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
         options
       )) as GelatoRelayResponse
 
-      setIsRelayerLoading(false)
+      setIsRelayLoading(false)
       console.log(response)
       setGelatoTaskId(response.taskId)
     }
@@ -381,7 +381,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     stripePack?.close()
   }
 
-  // we can pay Gelato tx relayer fees with native token & ERC20
+  // we can pay Gelato tx relay fees with native token & ERC20
 
   // fetch safe address balance with polling
   const fetchSafeBalance = useCallback(async () => {
@@ -433,7 +433,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     setSafeSelected,
     setTokenAddress,
 
-    isRelayerLoading,
+    isRelayLoading,
     relayTransaction,
     gelatoTaskId,
 

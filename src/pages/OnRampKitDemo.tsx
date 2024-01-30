@@ -1,29 +1,28 @@
-import { useEffect, useState } from 'react'
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletRounded'
-import LoginIcon from '@mui/icons-material/Login'
 import CloseIcon from '@mui/icons-material/CloseRounded'
-import Tab from '@mui/material/Tab'
-import Tabs from '@mui/material/Tabs'
+import LoginIcon from '@mui/icons-material/Login'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import { useEffect, useState } from 'react'
 
-import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
-import { MONERIUM_SNIPPET, STRIPE_SNIPPET } from 'src/utils/snippets'
-import isContractAddress from 'src/utils/isContractAddress'
-
-import Code from 'src/components/code/Code'
 import AuthenticateMessage from 'src/components/authenticate-message/AuthenticateMessage'
-import { ConnectedContainer } from 'src/components/styles'
-import SafeAccount from 'src/components/safe-account/SafeAccount'
-import MoneriumDeploySafeAccount from 'src/components/monerium/MoneriumDeploySafeAccount'
+import Code from 'src/components/code/Code'
 import MoneriumChainWarning from 'src/components/monerium/MoneriumChainWarning'
+import MoneriumDeploySafeAccount from 'src/components/monerium/MoneriumDeploySafeAccount'
 import MoneriumInfo from 'src/components/monerium/MoneriumInfo'
+import SafeAccount from 'src/components/safe-account/SafeAccount'
+import { ConnectedContainer } from 'src/components/styles'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import isContractAddress from 'src/utils/isContractAddress'
+import { MONERIUM_SNIPPET, STRIPE_SNIPPET } from 'src/utils/snippets'
 
 type OnRampKitDemoProps = {
   setStep: (newStep: number) => void
@@ -74,7 +73,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
       </Typography>
 
       <Typography marginTop="24px" marginBottom="8px">
-        Find more info at:
+        Learn more:
       </Typography>
 
       <Stack direction="row" alignItems="center" spacing={2}>
@@ -104,7 +103,7 @@ const OnRampKitDemo = ({ setStep }: OnRampKitDemoProps) => {
         />
       ) : (
         <Box display="flex" gap={3} alignItems="flex-wrap">
-          {/* safe Account */}
+          {/* Safe account */}
           <SafeAccount flex={1} minHeight={265} />
 
           {/* Provider widget */}

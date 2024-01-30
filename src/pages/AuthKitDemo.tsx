@@ -27,7 +27,7 @@ const AuthKitDemo = () => {
       </Typography>
 
       <Typography marginTop="24px" marginBottom="8px">
-        Find more info at:
+        Learn more:
       </Typography>
 
       <Stack direction="row" alignItems="center" spacing={2}>
@@ -52,7 +52,7 @@ const AuthKitDemo = () => {
 
       {isAuthenticated ? (
         <Box display="flex" gap={3}>
-          {/* safe Account */}
+          {/* Safe account */}
           <SafeAccount flex={1} />
 
           {/* owner ID */}

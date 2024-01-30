@@ -1,14 +1,14 @@
-import Typography from '@mui/material/Typography'
-import SafeInfo from 'src/components/safe-info/SafeInfo'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
 import { BoxProps } from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
+import MenuItem from '@mui/material/MenuItem'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import Typography from '@mui/material/Typography'
 import AddressLabel from 'src/components/address-label/AddressLabel'
+import SafeInfo from 'src/components/safe-info/SafeInfo'
 
+import { InputLabel } from '@mui/material'
 import { ConnectedContainer } from 'src/components/styles'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
-import { InputLabel } from '@mui/material'
 
 function SafeAccount(props: BoxProps) {
   const { safeSelected, chainId, safes, setSafeSelected } = useAccountAbstraction()
@@ -18,7 +18,7 @@ function SafeAccount(props: BoxProps) {
       <Typography fontWeight="700">Safe Account</Typography>
 
       <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-        Your Safe account (Smart Contract) holds and protects your assets.
+        Your Safe (smart contract account) holds and protects your assets.
       </Typography>
 
       {!!safes && safes.length > 1 && (
