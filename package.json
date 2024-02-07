@@ -9,7 +9,7 @@
     "@mui/material": "^5.14.19",
     "@safe-global/account-abstraction-kit-poc": "2.0.0",
     "@safe-global/auth-kit": "2.0.0",
-    "@safe-global/onramp-kit": "2.0.0",
+    "@safe-global/onramp-kit": "3.0.0",
     "@safe-global/protocol-kit": "2.0.0",
     "@safe-global/relay-kit": "2.0.0",
     "@safe-global/safe-react-components": "^2.0.6",
