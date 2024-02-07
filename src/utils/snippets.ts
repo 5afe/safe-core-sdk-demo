@@ -72,6 +72,7 @@ const safeSdk = await Safe.create({
 
 const moneriumPack = new MoneriumPack({
   clientId: process.env.REACT_APP_MONERIUM_CLIENT_ID || '',
+  redirectUrl: 'http://localhost:3000',
   environment: 'sandbox'
 })
 
@@ -79,20 +80,16 @@ await moneriumPack.init({
   safeSdk
 })
 
-const moneriumClient = await moneriumPack.open({
-  redirectUrl: 'http://localhost:3000',
-  authCode,
-  refreshToken
-})
+// On-click action to initiate the authorization flow, this will redirect the user to login to Monerium.
+await moneriumPack.open({ initiateAuthFlow: true })
+
+// On render action to check if the user is already authorized, if so we can get the Monerium client directly.
+const moneriumClient = await moneriumPack.open()
 
 const authContext = await moneriumClient.getAuthContext()
 const profile = await moneriumClient.getProfile(authContext.defaultProfile)
 const balances = await moneriumClient.getBalances()
 const orders = await moneriumClient.getOrders()
-
-if (moneriumClient.bearerProfile) {
-  localStorage.setItem(MONERIUM_TOKEN, moneriumClient.bearerProfile.refresh_token)
-}
 
 moneriumPack.subscribe(OrderState.pending, (notification) => {
   console.log(notification.meta.state)

@@ -2136,10 +2136,12 @@
     semver "^7.5.4"
     superstruct "^1.0.3"
 
-"@monerium/sdk@2.6.5":
-  version "2.6.5"
-  resolved "https://registry.yarnpkg.com/@monerium/sdk/-/sdk-2.6.5.tgz#ccb84ef96420f008e6e67bd146d710ba204a0b8f"
-  integrity sha512-fEAJk2gNuirzub2IacICQ2khONeHpUD1LbEtq1RXBDPRusCmftDYufQRnv6oQBSw+prTHGnvzo2gU/0q4HszEw==
+"@monerium/sdk@^2.9.0":
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/@monerium/sdk/-/sdk-2.11.0.tgz#d926609bcbd9c2c87a3b3c755c71da35c47f0cd8"
+  integrity sha512-GyNKnlpLu+jsp7cV/FsR4G993Y5zix0cCQu5c574M24wGzw7aK+uWEphRK9/DKCwR590Y9IXmnYcxQMLp4ahag==
+  dependencies:
+    crypto-js "^4.2.0"
 
 "@mui/base@5.0.0-beta.25":
   version "5.0.0-beta.25"
@@ -2273,6 +2275,11 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.2.tgz#6f26dbc8fbc7205873ce3cee2f690eba0d421b39"
   integrity sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==
 
+"@noble/hashes@^1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.3.tgz#39908da56a4adc270147bb07968bf3b16cfe1699"
+  integrity sha512-V7/fPHgl+jsVPXqqeOzT8egNj2iBIVt+ECeMMG8TdcnTikP3oaBtUVqpT/gYCR68aEBJSF+XbYUxStjbFMqIIA==
+
 "@noble/secp256k1@1.7.1", "@noble/secp256k1@~1.7.0":
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.7.1.tgz#b251c70f824ce3ca7f8dc3df08d58f005cc0507c"
@@ -2380,6 +2387,16 @@
     ethers "^6.7.1"
     node-fetch "^2.7.0"
 
+"@safe-global/api-kit@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/api-kit/-/api-kit-2.1.0.tgz#ae87aadf15d508549fbb115e601317d568a6a11a"
+  integrity sha512-pobd2UtvmuUVXn42u6IEW/Lm6ltYx0JBR7qKBigcK3XtNNffYHsS8qIKoDYmG9GG34b+pPLOyLtENcgrYLpzvw==
+  dependencies:
+    "@safe-global/protocol-kit" "^3.0.0"
+    "@safe-global/safe-core-sdk-types" "^4.0.0"
+    ethers "^6.7.1"
+    node-fetch "^2.7.0"
+
 "@safe-global/auth-kit@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@safe-global/auth-kit/-/auth-kit-2.0.0.tgz#d4ad31f5d14d753b9d0be9250ac8e928ee10b759"
@@ -2390,15 +2407,15 @@
     "@web3auth/safeauth-embed" "^0.0.0"
     ethers "^6.7.1"
 
-"@safe-global/onramp-kit@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/onramp-kit/-/onramp-kit-2.0.0.tgz#12f6847c5e51ef5973c6f9bd2cfe250c5f169142"
-  integrity sha512-B82BM/1IEptt5OHjS+bEYiAVD0hKpu82cBpVow675xSjmhNMkRxu9LdXIWgY6PYTgSIx2RZfujLOw3aOOmUMkg==
+"@safe-global/onramp-kit@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/onramp-kit/-/onramp-kit-3.0.0.tgz#b27fe4ec0a5d9e46b13a3fe6cb710e8eb392359f"
+  integrity sha512-BxWOtrxGMZoMDKnPRX5z251f0Kj0x/NvFYNLhQuMca4DmRq50IY7TH6UHUyfTm0i+7cF1h++k3jdUoY5eMOEwA==
   dependencies:
-    "@monerium/sdk" "2.6.5"
-    "@safe-global/api-kit" "^2.0.0"
-    "@safe-global/protocol-kit" "^2.0.0"
-    "@safe-global/safe-core-sdk-types" "^3.0.0"
+    "@monerium/sdk" "^2.9.0"
+    "@safe-global/api-kit" "^2.1.0"
+    "@safe-global/protocol-kit" "^3.0.0"
+    "@safe-global/safe-core-sdk-types" "^4.0.0"
     "@stripe/crypto" "^0.0.4"
     "@stripe/stripe-js" "^1.54.2"
     ethers "^6.7.1"
@@ -2410,6 +2427,20 @@
   dependencies:
     "@noble/hashes" "^1.3.2"
     "@safe-global/safe-deployments" "^1.28.0"
+    ethereumjs-util "^7.1.5"
+    ethers "^6.7.1"
+    semver "^7.5.4"
+    web3 "^1.10.3"
+    web3-core "^1.10.3"
+    web3-utils "^1.10.3"
+
+"@safe-global/protocol-kit@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-3.0.0.tgz#9db15a214bf307af81b082eab329b33642d5acd8"
+  integrity sha512-0x/VqxWQvjUpkK9VeO/llfYMNoUV/Zngq3PKD8mC3H40v/KzOa2jUSgwxkTiRJRxH1cjuwAG+tXcdVluk73Wfw==
+  dependencies:
+    "@noble/hashes" "^1.3.3"
+    "@safe-global/safe-deployments" "^1.32.0"
     ethereumjs-util "^7.1.5"
     ethers "^6.7.1"
     semver "^7.5.4"
@@ -2436,10 +2467,27 @@
     web3-core "^1.10.3"
     web3-utils "^1.10.3"
 
+"@safe-global/safe-core-sdk-types@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-4.0.0.tgz#68f6206d14cac077986f99d8c9b75348d63cf5f3"
+  integrity sha512-KZPkCK3Ttnt3nSqn+M/rkkaY6ZZXy/vBC8lvI3lp3Y8SRgERdIymgLYqiizs+JTT9FZk+IFwfCaZz+4gFqvmpw==
+  dependencies:
+    "@safe-global/safe-deployments" "^1.32.0"
+    ethers "^6.7.1"
+    web3-core "^1.10.3"
+    web3-utils "^1.10.3"
+
 "@safe-global/safe-deployments@^1.28.0":
   version "1.28.0"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.28.0.tgz#9984b513999e5a1cd4449ed2c1ba9a66cb5b223c"
   integrity sha512-zWn55unMucN3i3awjDA0XxH9BzGNHyC/qCbuISBh0GMZP/q+VCxERAOEO4OqwyGaxk6sSAzP4usGdmgz2y2svg==
+  dependencies:
+    semver "^7.3.7"
+
+"@safe-global/safe-deployments@^1.32.0":
+  version "1.32.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.32.0.tgz#3632194d883aa07bd446a6e530e825ba022c9b76"
+  integrity sha512-7RXmnBrUzJ9+Iat74yx3Gel0kygmsaWjJhqr+0Fy8mkP5ly/6dTZ/2ize1pv3j9Yal04NTOqXbaJG4JnbTANQw==
   dependencies:
     semver "^7.3.7"
 
@@ -4882,6 +4930,11 @@ crypto-browserify@^3.12.0:
     public-encrypt "^4.0.0"
     randombytes "^2.0.0"
     randomfill "^1.0.3"
+
+crypto-js@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
+  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
 
 crypto-random-string@^2.0.0:
   version "2.0.0"

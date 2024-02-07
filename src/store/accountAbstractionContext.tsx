@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 
 import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
 import { SafeAuthInitOptions, SafeAuthPack } from '@safe-global/auth-kit'
-import { MoneriumPack, StripePack } from '@safe-global/onramp-kit'
+import { MoneriumPack, SafeMoneriumClient, StripePack } from '@safe-global/onramp-kit'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
 import { RelayResponse as GelatoRelayResponse } from '@gelatonetwork/relay-sdk'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
@@ -216,6 +216,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
       const pack = new MoneriumPack({
         clientId: process.env.REACT_APP_MONERIUM_CLIENT_ID || '',
+        redirectUrl: process.env.REACT_APP_MONERIUM_REDIRECT_URL || '',
         environment: 'sandbox'
       })
 
@@ -227,21 +228,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     })()
   }, [web3Provider, safeSelected])
 
-  const startMoneriumFlow = useCallback(
-    async (authCode?: string, refreshToken?: string) => {
-      if (!moneriumPack) return
-
-      localStorage.setItem(MONERIUM_SELECTED_SAFE, safeSelected)
-
-      const moneriumClient = await moneriumPack.open({
-        redirectUrl: process.env.REACT_APP_MONERIUM_REDIRECT_URL,
-        authCode,
-        refreshToken
-      })
-
+  const fetchData = useCallback(
+    async (moneriumClient: SafeMoneriumClient) => {
       if (moneriumClient.bearerProfile) {
-        localStorage.setItem(MONERIUM_TOKEN, moneriumClient.bearerProfile.refresh_token)
-
         const authContext = await moneriumClient.getAuthContext()
         const profile = await moneriumClient.getProfile(authContext.defaultProfile)
         const balances = await moneriumClient.getBalances(authContext.defaultProfile)
@@ -249,8 +238,18 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
         setMoneriumInfo(getMoneriumInfo(safeSelected, authContext, profile, balances))
       }
     },
-    [moneriumPack, safeSelected]
+    [safeSelected]
   )
+
+  const startMoneriumFlow = useCallback(async () => {
+    if (!moneriumPack) return
+
+    localStorage.setItem(MONERIUM_SELECTED_SAFE, safeSelected)
+
+    const moneriumClient = await moneriumPack.open({ initiateAuthFlow: true })
+
+    fetchData(moneriumClient)
+  }, [moneriumPack, safeSelected, fetchData])
 
   const closeMoneriumFlow = useCallback(() => {
     moneriumPack?.close()
@@ -259,11 +258,12 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   }, [moneriumPack])
 
   useEffect(() => {
-    const authCode = new URLSearchParams(window.location.search).get('code') || undefined
-    const refreshToken = localStorage.getItem(MONERIUM_TOKEN) || undefined
+    ;(async () => {
+      const moneriumClient = (await moneriumPack?.open()) as SafeMoneriumClient
 
-    if (authCode || refreshToken) startMoneriumFlow(authCode, refreshToken)
-  }, [startMoneriumFlow])
+      fetchData(moneriumClient)
+    })()
+  }, [moneriumPack, fetchData])
 
   // TODO: add disconnect owner wallet logic ?
 
